@@ -8,6 +8,7 @@ public final class SiblingRouteAuthParityCheckFactory implements CheckFactory {
 
     @Override
     public McpCheck create(CheckServices services) {
-        return new SiblingRouteAuthParityCheck(services.eventLog(), services.authStrategy(), services.probeService());
+        return new SiblingRouteAuthParityCheck(services.eventLog(), services.authStrategy(), services.probeService(),
+                services.outsideBurp());
     }
 }

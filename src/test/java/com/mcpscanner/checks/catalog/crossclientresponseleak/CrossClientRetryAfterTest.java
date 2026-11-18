@@ -4,6 +4,7 @@ import burp.api.montoya.http.HttpService;
 import com.mcpscanner.auth.NoAuthStrategy;
 import com.mcpscanner.checks.registry.HostCheckAdapter;
 import com.mcpscanner.checks.registry.ScanCheckSettings;
+import com.mcpscanner.checks.shared.session.OutsideBurpConnections;
 import com.mcpscanner.logging.McpEventLog;
 import com.mcpscanner.testutil.MontoyaTestFactory;
 import org.junit.jupiter.api.BeforeEach;
@@ -51,6 +52,6 @@ class CrossClientRetryAfterTest {
         when(settings.isEnabled(anyString(), anyBoolean())).thenReturn(true);
         Optional<HttpService> noSseProbes = Optional.empty();
         return new HostCheckAdapter(settings, eventLog, new CrossClientResponseLeakCheck(eventLog,
-                NoAuthStrategy::new, () -> noSseProbes, Duration.ofMillis(300)));
+                NoAuthStrategy::new, () -> noSseProbes, Duration.ofMillis(300), OutsideBurpConnections.validating()));
     }
 }

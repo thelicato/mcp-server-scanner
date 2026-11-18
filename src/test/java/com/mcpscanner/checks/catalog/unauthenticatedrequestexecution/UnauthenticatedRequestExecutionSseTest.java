@@ -6,6 +6,7 @@ import burp.api.montoya.http.message.requests.HttpRequest;
 import burp.api.montoya.scanner.audit.issues.AuditIssue;
 import com.mcpscanner.checks.shared.stream.ScriptedEventStreams;
 import com.mcpscanner.auth.BearerTokenAuthStrategy;
+import com.mcpscanner.checks.shared.session.OutsideBurpConnections;
 import com.mcpscanner.client.McpClientManager;
 import com.mcpscanner.client.McpScannerSession;
 import com.mcpscanner.client.McpServerConfig;
@@ -114,7 +115,7 @@ class UnauthenticatedRequestExecutionSseTest {
         HttpRequestResponse base = http.sendRequest(baseRequest(session));
         assertThat(base.response().bodyToString()).contains(LegacySseMcpServer.SECRET);
         return new UnauthenticatedRequestExecutionCheck(McpEventLog.noop(), () -> BEARER, session::probeBaselineService,
-                ScriptedEventStreams.none()).audit(base, http);
+                ScriptedEventStreams.none(), OutsideBurpConnections.validating()).audit(base, http);
     }
 
     private HttpRequest baseRequest(McpScannerSession session) {

@@ -4,6 +4,7 @@ import burp.api.montoya.http.message.HttpHeader;
 import burp.api.montoya.http.message.HttpRequestResponse;
 import burp.api.montoya.http.message.requests.HttpRequest;
 import burp.api.montoya.http.message.responses.HttpResponse;
+import com.mcpscanner.http.CertificateValidation;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -21,15 +22,16 @@ final class UnstreamingProbeClient implements OutsideBurpClient {
     private static final Set<String> CLIENT_MANAGED_HEADERS = caseInsensitive(
             "Host", "Content-Length", "Connection", "Expect", "Upgrade", "Transfer-Encoding");
 
-    private final HttpClient client = HttpClient.newBuilder()
-            .version(HttpClient.Version.HTTP_1_1)
-            .connectTimeout(CONNECT_TIMEOUT)
-            .followRedirects(HttpClient.Redirect.NEVER)
-            .build();
+    private final HttpClient client;
     private final Duration responseTimeout;
     private final ProbeReplyReader replies;
 
-    UnstreamingProbeClient(Duration responseTimeout) {
+    UnstreamingProbeClient(Duration responseTimeout, CertificateValidation certificates) {
+        this.client = certificates.httpClient()
+                .version(HttpClient.Version.HTTP_1_1)
+                .connectTimeout(CONNECT_TIMEOUT)
+                .followRedirects(HttpClient.Redirect.NEVER)
+                .build();
         this.responseTimeout = responseTimeout;
         this.replies = new ProbeReplyReader(responseTimeout);
     }

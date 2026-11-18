@@ -1,5 +1,7 @@
 package com.mcpscanner.auth.oauth.discovery;
 
+import com.mcpscanner.http.CertificateValidation;
+
 import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -12,10 +14,14 @@ final class StreamGetChallengeSender implements ChallengeSender {
 
     private static final Duration TIMEOUT = Duration.ofSeconds(5);
 
-    private final HttpClient client = HttpClient.newBuilder()
-            .followRedirects(HttpClient.Redirect.NEVER)
-            .connectTimeout(TIMEOUT)
-            .build();
+    private final HttpClient client;
+
+    StreamGetChallengeSender(CertificateValidation certificates) {
+        this.client = certificates.httpClient()
+                .followRedirects(HttpClient.Redirect.NEVER)
+                .connectTimeout(TIMEOUT)
+                .build();
+    }
 
     @Override
     public Optional<ChallengeResponse> send(URI mcpResource) {

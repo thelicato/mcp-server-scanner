@@ -29,18 +29,20 @@ public final class ProbeSessions {
     private final Optional<Duration> responseTimeout;
     private final StreamingFallback streaming;
 
-    public ProbeSessions(Supplier<AuthStrategy> authStrategy) {
-        this(authStrategy, Optional.empty());
+    public ProbeSessions(Supplier<AuthStrategy> authStrategy, OutsideBurpConnections outsideBurp) {
+        this(authStrategy, Optional.empty(), outsideBurp);
     }
 
-    public ProbeSessions(Supplier<AuthStrategy> authStrategy, Duration responseTimeout) {
-        this(authStrategy, Optional.of(responseTimeout));
+    public ProbeSessions(Supplier<AuthStrategy> authStrategy, Duration responseTimeout,
+                         OutsideBurpConnections outsideBurp) {
+        this(authStrategy, Optional.of(responseTimeout), outsideBurp);
     }
 
-    private ProbeSessions(Supplier<AuthStrategy> authStrategy, Optional<Duration> responseTimeout) {
+    private ProbeSessions(Supplier<AuthStrategy> authStrategy, Optional<Duration> responseTimeout,
+                          OutsideBurpConnections outsideBurp) {
         this.authStrategy = authStrategy;
         this.responseTimeout = responseTimeout;
-        this.streaming = responseTimeout.map(StreamingFallback::outsideBurp).orElseGet(StreamingFallback::outsideBurp);
+        this.streaming = responseTimeout.map(outsideBurp::streamingFallback).orElseGet(outsideBurp::streamingFallback);
     }
 
     public Optional<HttpProbeSession> openHttp(HttpRequestResponse base, Http http) {

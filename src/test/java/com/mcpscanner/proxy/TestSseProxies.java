@@ -8,6 +8,7 @@ import com.mcpscanner.client.ProtocolHttpTransport;
 import com.mcpscanner.config.ClientIdentityProvider;
 import com.mcpscanner.config.RedirectMode;
 import com.mcpscanner.config.ResourceCap;
+import com.mcpscanner.http.CertificateValidation;
 import com.mcpscanner.mcp.McpOperationFraming;
 import com.mcpscanner.mcp.ResendableRequests;
 
@@ -115,7 +116,7 @@ public final class TestSseProxies {
         }
 
         public SseProxyServer build() {
-            HttpClient client = httpClient != null ? httpClient : McpHttpClients.upstream();
+            HttpClient client = httpClient != null ? httpClient : McpHttpClients.upstream(CertificateValidation.enforced());
             ProtocolHttpTransport transport = recording.captures().recording(upstreamTransport != null
                     ? upstreamTransport : new JdkProtocolHttpTransport(client));
             ProxySettings settings = new ProxySettings(client, transport, responseTimeout, identityProvider,

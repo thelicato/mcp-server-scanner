@@ -8,6 +8,7 @@ import com.mcpscanner.client.McpHttpClients;
 import com.mcpscanner.client.McpScannerSession;
 import com.mcpscanner.client.McpServerConfig;
 import com.mcpscanner.client.TransportType;
+import com.mcpscanner.http.CertificateValidation;
 import com.mcpscanner.logging.McpEventLog;
 import com.mcpscanner.testutil.MontoyaTestFactory;
 import org.junit.jupiter.api.BeforeEach;
@@ -69,7 +70,7 @@ class ConnectRequestBudgetTest {
     }
 
     private static McpScannerSession connected(McpFixtureServer server, TransportType transport) {
-        McpScannerSession session = new McpScannerSession(McpHttpClients.upstream(), McpEventLog.noop());
+        McpScannerSession session = new McpScannerSession(McpHttpClients.upstream(CertificateValidation.enforced()), McpEventLog.noop());
         session.connect(new McpServerConfig(server.endpoint(), transport, new NoAuthStrategy()));
         return session;
     }

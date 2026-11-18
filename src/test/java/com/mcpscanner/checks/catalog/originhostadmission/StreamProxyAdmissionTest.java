@@ -7,6 +7,7 @@ import burp.api.montoya.scanner.audit.issues.AuditIssue;
 import com.mcpscanner.auth.BearerTokenAuthStrategy;
 import com.mcpscanner.auth.NoAuthStrategy;
 import com.mcpscanner.checks.shared.auth.CredentialHeaders;
+import com.mcpscanner.checks.shared.session.OutsideBurpConnections;
 import com.mcpscanner.checks.shared.session.ProbeSessions;
 import com.mcpscanner.checks.shared.stream.ScriptedEventStreams;
 import com.mcpscanner.logging.McpEventLog;
@@ -85,6 +86,6 @@ class StreamProxyAdmissionTest {
     private static OriginHostAdmissionCheck sseCheck() {
         return new OriginHostAdmissionCheck(McpEventLog.noop(),
                 new CredentialHeaders(() -> new BearerTokenAuthStrategy("live")), () -> Optional.of(STREAM_PROXY),
-                ScriptedEventStreams.none(), new ProbeSessions(NoAuthStrategy::new));
+                ScriptedEventStreams.none(), new ProbeSessions(NoAuthStrategy::new, OutsideBurpConnections.validating()), OutsideBurpConnections.validating());
     }
 }

@@ -87,6 +87,10 @@ public final class TestPki {
         return Files.writeString(directory.resolve(name), pem);
     }
 
+    public HttpsConfigurator server() throws GeneralSecurityException {
+        return new HttpsConfigurator(sslContext(keyManagers(Optional.of(serverIdentity)), caTrustManagers()));
+    }
+
     public HttpsConfigurator serverRequiringClientCertificate() throws GeneralSecurityException {
         return serverRequiringClientCertificate(Optional.of(HANDSHAKE_REJECTING_PROTOCOLS));
     }

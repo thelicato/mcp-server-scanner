@@ -8,6 +8,6 @@ public final class SqlInjectionCheckFactory implements CheckFactory {
 
     @Override
     public McpCheck create(CheckServices services) {
-        return new SqlInjectionCheck(services.burpNativeFields(), services.eventLog());
+        return new SqlInjectionCheck(services.burpNativeFields(), services.eventLog(), services.outsideBurp());
     }
 }

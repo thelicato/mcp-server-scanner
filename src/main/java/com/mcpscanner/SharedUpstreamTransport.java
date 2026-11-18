@@ -7,6 +7,7 @@ import com.mcpscanner.client.McpHttpClients;
 import com.mcpscanner.client.ProtocolHttpTransport;
 import com.mcpscanner.client.SelectableProtocolTransport;
 import com.mcpscanner.client.StreamedReplyFallbackTransport;
+import com.mcpscanner.http.CertificateValidation;
 import com.mcpscanner.logging.McpEventLog;
 import com.mcpscanner.proxy.SentinelStrippingTransport;
 import com.mcpscanner.proxy.UpstreamCaptures;
@@ -20,8 +21,9 @@ final class SharedUpstreamTransport {
     private final ProtocolHttpTransport sentinelFreeTransport;
 
     private SharedUpstreamTransport(BurpProtocolHttpTransport burpTransport, BooleanSupplier useBurpNetworking,
-                                    McpEventLog eventLog, UpstreamCaptures captures) {
-        ProtocolHttpTransport jdkTransport = new JdkProtocolHttpTransport(McpHttpClients.upstream());
+                                    McpEventLog eventLog, UpstreamCaptures captures,
+                                    CertificateValidation certificates) {
+        ProtocolHttpTransport jdkTransport = new JdkProtocolHttpTransport(McpHttpClients.upstream(certificates));
         this.burpTransport = burpTransport;
         this.burpUnlessStreamed = new StreamedReplyFallbackTransport(burpTransport, jdkTransport,
                 captures::forwarding, eventLog);
@@ -30,9 +32,9 @@ final class SharedUpstreamTransport {
     }
 
     static SharedUpstreamTransport over(Http http, BooleanSupplier useBurpNetworking, McpEventLog eventLog,
-                                        UpstreamCaptures captures) {
+                                        UpstreamCaptures captures, CertificateValidation certificates) {
         return new SharedUpstreamTransport(new BurpProtocolHttpTransport(http), useBurpNetworking, eventLog,
-                captures);
+                captures, certificates);
     }
 
     ProtocolHttpTransport transport() {

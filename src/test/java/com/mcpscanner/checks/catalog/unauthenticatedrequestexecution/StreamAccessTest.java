@@ -9,6 +9,7 @@ import com.mcpscanner.auth.AuthStrategy;
 import com.mcpscanner.auth.BearerTokenAuthStrategy;
 import com.mcpscanner.auth.NoAuthStrategy;
 import com.mcpscanner.checks.shared.probe.SimulatedMcpServer;
+import com.mcpscanner.checks.shared.session.OutsideBurpConnections;
 import com.mcpscanner.checks.shared.stream.ScriptedEventStreams;
 import com.mcpscanner.testutil.MontoyaTestFactory;
 import com.mcpscanner.logging.McpEventLog;
@@ -177,7 +178,7 @@ class StreamAccessTest {
     }
 
     private static UnauthenticatedRequestExecutionCheck check(AuthStrategy strategy, ScriptedEventStreams streams) {
-        return new UnauthenticatedRequestExecutionCheck(McpEventLog.noop(), () -> strategy, Optional::empty, streams);
+        return new UnauthenticatedRequestExecutionCheck(McpEventLog.noop(), () -> strategy, Optional::empty, streams, OutsideBurpConnections.validating());
     }
 
     private static AuthStrategy bearer() {

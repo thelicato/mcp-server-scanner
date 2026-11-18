@@ -6,6 +6,7 @@ import burp.api.montoya.http.message.HttpRequestResponse;
 import burp.api.montoya.http.message.requests.HttpRequest;
 import burp.api.montoya.http.message.responses.HttpResponse;
 import com.mcpscanner.auth.oauth.safety.SuspiciousDestinationGate;
+import com.mcpscanner.http.CertificateValidation;
 import com.mcpscanner.testutil.MontoyaTestFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -100,7 +101,7 @@ class OAuthMetadataDiscoveryTrailTest {
     }
 
     private DiscoveredMetadata discover() throws DiscoveryFailedException {
-        return OAuthMetadataDiscoverer.defaultInstance(http, null, ALLOW_ALL).discover(URI.create(ORIGIN + "/mcp"));
+        return OAuthMetadataDiscoverer.defaultInstance(http, null, ALLOW_ALL, CertificateValidation.enforced()).discover(URI.create(ORIGIN + "/mcp"));
     }
 
     private String prmDocument() {

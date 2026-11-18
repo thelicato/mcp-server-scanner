@@ -13,6 +13,7 @@ import com.mcpscanner.checks.api.HostSettlement;
 import com.mcpscanner.checks.api.HostTrial;
 import com.mcpscanner.checks.api.ImplementedKind;
 import com.mcpscanner.checks.shared.auth.CredentialHeaders;
+import com.mcpscanner.checks.shared.session.OutsideBurpConnections;
 import com.mcpscanner.checks.shared.session.ProbeSessions;
 import com.mcpscanner.checks.shared.stream.ScriptedEventStreams;
 import com.mcpscanner.logging.McpEventLog;
@@ -402,6 +403,6 @@ class OriginHostAdmissionCheckTest {
 
     private static OriginHostAdmissionCheck check(Supplier<AuthStrategy> strategy) {
         return new OriginHostAdmissionCheck(McpEventLog.noop(), new CredentialHeaders(strategy), Optional::empty,
-                ScriptedEventStreams.none(), new ProbeSessions(strategy));
+                ScriptedEventStreams.none(), new ProbeSessions(strategy, OutsideBurpConnections.validating()), OutsideBurpConnections.validating());
     }
 }

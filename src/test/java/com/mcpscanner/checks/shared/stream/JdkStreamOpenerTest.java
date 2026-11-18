@@ -1,6 +1,7 @@
 package com.mcpscanner.checks.shared.stream;
 
 import burp.api.montoya.http.message.requests.HttpRequest;
+import com.mcpscanner.http.CertificateValidation;
 import com.mcpscanner.logging.McpEventLog;
 import com.mcpscanner.mcp.ScannerSentinels;
 import com.mcpscanner.testutil.ImmutableHttpRequest;
@@ -62,7 +63,7 @@ class JdkStreamOpenerTest {
 
     @Test
     void aStreamTheServerHoldsOpenIsOpenedWithItsStatusHeadersAndFirstBytes() {
-        StreamOpening opening = new JdkStreamOpener(FAST).open(get("/held"));
+        StreamOpening opening = new JdkStreamOpener(FAST, CertificateValidation.enforced()).open(get("/held"));
 
         assertThat(opening.opened()).isTrue();
         assertThat(opening.status()).hasValue(200);
@@ -72,7 +73,7 @@ class JdkStreamOpenerTest {
 
     @Test
     void aStreamTheServerEndsAtOnceIsAnsweredButNotOpened() {
-        StreamOpening opening = new JdkStreamOpener(FAST).open(get("/closed"));
+        StreamOpening opening = new JdkStreamOpener(FAST, CertificateValidation.enforced()).open(get("/closed"));
 
         assertThat(opening.status()).hasValue(200);
         assertThat(opening.opened()).isFalse();
@@ -80,7 +81,7 @@ class JdkStreamOpenerTest {
 
     @Test
     void aRefusalIsRejectedWithItsBody() {
-        StreamOpening opening = new JdkStreamOpener(FAST).open(get("/refused"));
+        StreamOpening opening = new JdkStreamOpener(FAST, CertificateValidation.enforced()).open(get("/refused"));
 
         assertThat(opening.rejected()).isTrue();
         assertThat(opening.opened()).isFalse();
@@ -91,7 +92,7 @@ class JdkStreamOpenerTest {
     void aServerThatNeverAnswersIsUnansweredWithinTheHeaderTimeout() {
         StreamLimits quick = new StreamLimits(Duration.ofMillis(300), Duration.ofMillis(100), 64);
 
-        StreamOpening opening = new JdkStreamOpener(quick).open(get("/silent"));
+        StreamOpening opening = new JdkStreamOpener(quick, CertificateValidation.enforced()).open(get("/silent"));
 
         assertThat(opening.answered()).isFalse();
         assertThat(opening.status()).isEmpty();
@@ -100,7 +101,7 @@ class JdkStreamOpenerTest {
 
     @Test
     void theReadStopsAtThePrefixLimitAndCountsTheStreamAsHeldOpen() {
-        StreamOpening opening = new JdkStreamOpener(FAST).open(get("/flood"));
+        StreamOpening opening = new JdkStreamOpener(FAST, CertificateValidation.enforced()).open(get("/flood"));
 
         assertThat(opening.opened()).isTrue();
         assertThat(opening.exchange().response().bodyToString()).hasSize(64);
@@ -131,7 +132,7 @@ class JdkStreamOpenerTest {
     void aHeaderTimeoutClosesTheConnectionWhenTheHeadersArriveLater() throws InterruptedException {
         StreamLimits shortHeaderWait = new StreamLimits(Duration.ofMillis(100), Duration.ofSeconds(10), 1 << 20);
 
-        StreamOpening opening = new JdkStreamOpener(shortHeaderWait).open(get("/slow-headers"));
+        StreamOpening opening = new JdkStreamOpener(shortHeaderWait, CertificateValidation.enforced()).open(get("/slow-headers"));
 
         assertThat(opening.answered()).isFalse();
         assertThat(clientClosed.await(CAP.toSeconds(), TimeUnit.SECONDS)).as("server saw the connection close").isTrue();
@@ -141,7 +142,7 @@ class JdkStreamOpenerTest {
     void aTlsFailureIsUnansweredAndWarnsThatBurpsNetworkSettingsDoNotApply() {
         String plainPortAsHttps = "https://127.0.0.1:" + server.getAddress().getPort() + "/held";
 
-        StreamOpening opening = new JdkStreamOpener(FAST, log).open(StreamGetRequest.from(
+        StreamOpening opening = new JdkStreamOpener(FAST, log, CertificateValidation.enforced()).open(StreamGetRequest.from(
                 ImmutableHttpRequest.post(plainPortAsHttps, Map.of(), "{}"), java.util.Optional.empty()));
 
         assertThat(opening.answered()).isFalse();
@@ -151,7 +152,7 @@ class JdkStreamOpenerTest {
 
     @Test
     void aRequestTheJdkClientRefusesToBuildIsNeitherSentNorAnswered() {
-        StreamOpening opening = new JdkStreamOpener(FAST, log).open(get("/held").withMethod("CONNECT"));
+        StreamOpening opening = new JdkStreamOpener(FAST, log, CertificateValidation.enforced()).open(get("/held").withMethod("CONNECT"));
 
         assertThat(opening.sent()).isFalse();
         assertThat(opening.answered()).isFalse();
@@ -160,7 +161,7 @@ class JdkStreamOpenerTest {
 
     @Test
     void aStreamThatReachedTheServerCountsAsSent() {
-        assertThat(new JdkStreamOpener(FAST).open(get("/held")).sent()).isTrue();
+        assertThat(new JdkStreamOpener(FAST, CertificateValidation.enforced()).open(get("/held")).sent()).isTrue();
     }
 
     @Test
@@ -169,7 +170,7 @@ class JdkStreamOpenerTest {
         try (java.net.ServerSocket socket = new java.net.ServerSocket(0)) {
             closedPort = socket.getLocalPort();
         }
-        JdkStreamOpener opener = new JdkStreamOpener(FAST, log);
+        JdkStreamOpener opener = new JdkStreamOpener(FAST, log, CertificateValidation.enforced());
         HttpRequest request = StreamGetRequest.from(ImmutableHttpRequest.post(
                 "http://127.0.0.1:" + closedPort + "/mcp", Map.of(), "{}"), java.util.Optional.empty());
 
@@ -186,7 +187,7 @@ class JdkStreamOpenerTest {
                 .withHeader(ScannerSentinels.STRIP_AUTH_HEADER, ScannerSentinels.SENTINEL_VALUE)
                 .withHeader("Authorization", "Bearer kept");
 
-        StreamOpening opening = new JdkStreamOpener(FAST).open(request);
+        StreamOpening opening = new JdkStreamOpener(FAST, CertificateValidation.enforced()).open(request);
 
         assertThat(received).containsEntry("authorization", "Bearer kept")
                 .doesNotContainKeys("x-mcp-scanner-direct", "x-mcp-scanner-strip-auth");
@@ -200,7 +201,7 @@ class JdkStreamOpenerTest {
     private Thread openInBackground(StreamLimits limits, String path, Callable<Boolean> interruptWhen)
             throws InterruptedException {
         caller = new Thread(() -> {
-            new JdkStreamOpener(limits).open(get(path));
+            new JdkStreamOpener(limits, CertificateValidation.enforced()).open(get(path));
             interruptedAfterReturn = Thread.currentThread().isInterrupted();
         });
         caller.start();

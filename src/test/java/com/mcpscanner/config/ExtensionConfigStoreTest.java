@@ -235,6 +235,22 @@ class ExtensionConfigStoreTest {
     }
 
     @Test
+    void certificateValidationDefaultsOnAndPersistsSelection() {
+        Runnable listener = mock(Runnable.class);
+        config.addSettingsChangeListener(listener);
+        when(store.getBoolean("mcp.networking.validate_certificates")).thenReturn(null);
+
+        assertThat(config.validateCertificates()).isTrue();
+
+        config.setValidateCertificates(false);
+        verify(store).setBoolean("mcp.networking.validate_certificates", false);
+        verify(listener).run();
+        when(store.getBoolean("mcp.networking.validate_certificates")).thenReturn(false);
+
+        assertThat(config.validateCertificates()).isFalse();
+    }
+
+    @Test
     void theLegacyAutoDetectCheckboxReadsOnUnlessItWasTurnedOff() {
         when(store.getBoolean("mcp.auth.auto_detect")).thenReturn(null);
         assertThat(config.legacyAutoDetectAuth()).isTrue();

@@ -1,6 +1,7 @@
 package com.mcpscanner.checks.catalog.originhostadmission;
 
 import burp.api.montoya.http.message.requests.HttpRequest;
+import com.mcpscanner.checks.shared.session.OutsideBurpConnections;
 import com.mcpscanner.checks.shared.session.StreamingFallback;
 import com.mcpscanner.testutil.MontoyaTestFactory;
 import org.junit.jupiter.api.BeforeEach;
@@ -19,7 +20,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 class AdmissionTrialTest {
 
-    private final AdmissionTrial trial = new AdmissionTrial(AdmissionProbe.STANDARD_SET, StreamingFallback.outsideBurp());
+    private final AdmissionTrial trial = new AdmissionTrial(AdmissionProbe.STANDARD_SET, OutsideBurpConnections.validating().streamingFallback());
     private HttpRequest seed;
 
     @BeforeEach

@@ -1,6 +1,7 @@
 package com.mcpscanner.client;
 
 import com.mcpscanner.config.ClientIdentityProvider;
+import com.mcpscanner.http.CertificateValidation;
 import com.mcpscanner.config.ResourceCap;
 import com.mcpscanner.logging.LogRedaction;
 import com.mcpscanner.logging.McpEventLog;
@@ -39,12 +40,18 @@ public class McpClientManager {
     private volatile ToLongFunction<ResourceCap> resourceCaps = ResourceCap::defaultValue;
 
     public McpClientManager(McpEventLog eventLog) {
-        this(eventLog, ClientIdentityProvider.defaults(), JdkProtocolHttpTransport::new);
+        this(eventLog, ClientIdentityProvider.defaults(), JdkProtocolHttpTransport::new,
+                CertificateValidation.enforced());
     }
 
     public McpClientManager(McpEventLog eventLog, ClientIdentityProvider identityProvider,
                             ProtocolHttpTransport httpTransport) {
-        this(eventLog, identityProvider, httpClient -> httpTransport);
+        this(eventLog, identityProvider, httpTransport, CertificateValidation.enforced());
+    }
+
+    public McpClientManager(McpEventLog eventLog, ClientIdentityProvider identityProvider,
+                            ProtocolHttpTransport httpTransport, CertificateValidation certificates) {
+        this(eventLog, identityProvider, httpClient -> httpTransport, certificates);
     }
 
     McpClientManager(McpEventLog eventLog, McpScannerSession scannerSession) {
@@ -54,10 +61,11 @@ public class McpClientManager {
     }
 
     private McpClientManager(McpEventLog eventLog, ClientIdentityProvider identityProvider,
-                             Function<HttpClient, ProtocolHttpTransport> transportFactory) {
+                             Function<HttpClient, ProtocolHttpTransport> transportFactory,
+                             CertificateValidation certificates) {
         this.eventLog = Objects.requireNonNull(eventLog, "eventLog");
         this.operations = new OperationRequests(eventLog);
-        HttpClient httpClient = McpHttpClients.upstream();
+        HttpClient httpClient = McpHttpClients.upstream(certificates);
         this.scannerSession = new McpScannerSession(httpClient, operations.counting(transportFactory.apply(httpClient)), eventLog,
                 sseProxyAvailable::get, identityProvider);
     }

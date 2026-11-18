@@ -1,5 +1,6 @@
 package com.mcpscanner.client;
 
+import com.mcpscanner.http.CertificateValidation;
 import org.junit.jupiter.api.Test;
 
 import java.net.http.HttpClient;
@@ -11,7 +12,7 @@ class McpHttpClientsTest {
 
     @Test
     void upstreamClientNeverFollowsRedirectsOrOffersAnH2cUpgrade() {
-        HttpClient client = McpHttpClients.upstream();
+        HttpClient client = McpHttpClients.upstream(CertificateValidation.enforced());
 
         assertThat(client.followRedirects()).isEqualTo(HttpClient.Redirect.NEVER);
         assertThat(client.version()).isEqualTo(HttpClient.Version.HTTP_1_1);

@@ -5,9 +5,11 @@ import burp.api.montoya.http.RequestOptions;
 import burp.api.montoya.http.message.HttpRequestResponse;
 import burp.api.montoya.http.message.requests.HttpRequest;
 import burp.api.montoya.http.message.responses.HttpResponse;
+import com.mcpscanner.checks.shared.session.OutsideBurpConnections;
 import com.mcpscanner.checks.shared.session.StreamingFallback;
 import com.mcpscanner.checks.shared.stream.JdkStreamOpener;
 import com.mcpscanner.checks.shared.stream.StreamLimits;
+import com.mcpscanner.http.CertificateValidation;
 import com.mcpscanner.http.OutsideBurpSends;
 import com.mcpscanner.http.wire.OneConnectionServer;
 import com.mcpscanner.testutil.ClosedPort;
@@ -56,7 +58,7 @@ class ProbeCounterTest {
 
     @Test
     void aStreamTheOpenerNeverSentIsNotCounted() {
-        new JdkStreamOpener(StreamLimits.standard()).reportingTo(counting)
+        new JdkStreamOpener(StreamLimits.standard(), CertificateValidation.enforced()).reportingTo(counting)
                 .open(HttpRequest.httpRequestFromUrl("http://target.test/mcp").withMethod("CONNECT"));
 
         assertThat(counter.sent()).isZero();
@@ -166,7 +168,7 @@ class ProbeCounterTest {
         when(delegate.sendRequest(any(HttpRequest.class)))
                 .thenThrow(new IllegalStateException("Streaming response received"));
 
-        StreamingFallback.outsideBurp().around(counting).sendRequest(HttpRequest
+        OutsideBurpConnections.validating().streamingFallback().around(counting).sendRequest(HttpRequest
                 .httpRequestFromUrl("http://127.0.0.1:" + port + "/mcp").withHeader("Host", "attacker.example"));
     }
 

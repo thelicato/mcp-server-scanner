@@ -9,6 +9,6 @@ public final class CommandInjectionCheckFactory implements CheckFactory {
     @Override
     public McpCheck create(CheckServices services) {
         return new CommandInjectionCheck(services.collaboratorWatch(), services.lateIssues(),
-                services.burpNativeFields(), services.eventLog());
+                services.burpNativeFields(), services.eventLog(), services.outsideBurp());
     }
 }

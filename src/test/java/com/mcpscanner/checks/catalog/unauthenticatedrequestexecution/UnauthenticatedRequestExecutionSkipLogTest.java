@@ -3,6 +3,7 @@ package com.mcpscanner.checks.catalog.unauthenticatedrequestexecution;
 import burp.api.montoya.http.message.requests.HttpRequest;
 import com.mcpscanner.auth.BearerTokenAuthStrategy;
 import com.mcpscanner.checks.shared.probe.SimulatedMcpServer;
+import com.mcpscanner.checks.shared.session.OutsideBurpConnections;
 import com.mcpscanner.checks.shared.stream.ScriptedEventStreams;
 import com.mcpscanner.logging.McpEventLog;
 import com.mcpscanner.testutil.MontoyaTestFactory;
@@ -65,7 +66,7 @@ class UnauthenticatedRequestExecutionSkipLogTest {
 
     private void audit(SimulatedMcpServer server, HttpRequest request) {
         new UnauthenticatedRequestExecutionCheck(eventLog, () -> new BearerTokenAuthStrategy("valid-token"),
-                Optional::empty, ScriptedEventStreams.none()).audit(server.exchange(request), server.http());
+                Optional::empty, ScriptedEventStreams.none(), OutsideBurpConnections.validating()).audit(server.exchange(request), server.http());
     }
 
     private List<String> messages() {

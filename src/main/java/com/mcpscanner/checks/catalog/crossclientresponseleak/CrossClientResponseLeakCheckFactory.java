@@ -8,6 +8,7 @@ public final class CrossClientResponseLeakCheckFactory implements CheckFactory {
 
     @Override
     public McpCheck create(CheckServices services) {
-        return new CrossClientResponseLeakCheck(services.eventLog(), services.authStrategy(), services.probeService());
+        return new CrossClientResponseLeakCheck(services.eventLog(), services.authStrategy(), services.probeService(),
+                services.outsideBurp());
     }
 }

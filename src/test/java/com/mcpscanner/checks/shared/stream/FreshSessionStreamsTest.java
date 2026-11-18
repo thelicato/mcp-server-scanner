@@ -6,6 +6,7 @@ import burp.api.montoya.http.message.HttpRequestResponse;
 import burp.api.montoya.http.message.requests.HttpRequest;
 import com.mcpscanner.auth.NoAuthStrategy;
 import com.mcpscanner.checks.shared.probe.ProbeChannel;
+import com.mcpscanner.checks.shared.session.OutsideBurpConnections;
 import com.mcpscanner.checks.shared.session.ProbeSessions;
 import com.mcpscanner.testutil.FakeMcpServer;
 import com.mcpscanner.testutil.ImmutableHttpRequest;
@@ -34,7 +35,7 @@ class FreshSessionStreamsTest {
         return StreamOpening.unanswered(request);
     };
     private final FreshSessionStreams streams =
-            new FreshSessionStreams(new ProbeSessions(NoAuthStrategy::new), request -> recording.open(request));
+            new FreshSessionStreams(new ProbeSessions(NoAuthStrategy::new, OutsideBurpConnections.validating()), request -> recording.open(request));
 
     @BeforeEach
     void setUp() {
@@ -159,7 +160,7 @@ class FreshSessionStreamsTest {
             }
             return server.sendRequest(request, RequestOptions.requestOptions()).response();
         });
-        FreshSessionStreams interrupting = new FreshSessionStreams(new ProbeSessions(NoAuthStrategy::new),
+        FreshSessionStreams interrupting = new FreshSessionStreams(new ProbeSessions(NoAuthStrategy::new, OutsideBurpConnections.validating()),
                 request -> {
                     Thread.currentThread().interrupt();
                     return StreamOpening.unanswered(request);

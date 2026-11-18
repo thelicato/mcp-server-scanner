@@ -10,6 +10,7 @@ import com.mcpscanner.auth.NoAuthStrategy;
 import com.mcpscanner.checks.api.HostAudits;
 import com.mcpscanner.checks.api.HostSettlement;
 import com.mcpscanner.checks.shared.auth.CredentialHeaders;
+import com.mcpscanner.checks.shared.session.OutsideBurpConnections;
 import com.mcpscanner.checks.shared.session.ProbeSessions;
 import com.mcpscanner.checks.shared.stream.EventStreams;
 import com.mcpscanner.checks.shared.stream.ScriptedEventStreams;
@@ -125,7 +126,7 @@ class StreamAdmissionTest {
         ScriptedEventStreams streams = ScriptedEventStreams.inSessions(request -> true);
         OriginHostAdmissionCheck check = new OriginHostAdmissionCheck(McpEventLog.noop(), credentials(),
                 () -> Optional.of(HttpService.httpService("127.0.0.1", 40000, false)), streams,
-                new ProbeSessions(NoAuthStrategy::new));
+                new ProbeSessions(NoAuthStrategy::new, OutsideBurpConnections.validating()), OutsideBurpConnections.validating());
 
         check.audit(captured(toolsList(LOOPBACK_URL)), guardedPosts.http);
 
@@ -161,7 +162,7 @@ class StreamAdmissionTest {
     void theStreamTrialNeverAppliesOnTheSseTransport() {
         OriginHostAdmissionCheck check = new OriginHostAdmissionCheck(McpEventLog.noop(), credentials(),
                 () -> Optional.of(HttpService.httpService("127.0.0.1", 40000, false)),
-                ScriptedEventStreams.inSessions(request -> true), new ProbeSessions(NoAuthStrategy::new));
+                ScriptedEventStreams.inSessions(request -> true), new ProbeSessions(NoAuthStrategy::new, OutsideBurpConnections.validating()), OutsideBurpConnections.validating());
 
         assertThat(check.trials().get(1).appliesTo(captured(toolsList(LOOPBACK_URL)))).isFalse();
     }
@@ -176,7 +177,7 @@ class StreamAdmissionTest {
 
     private static OriginHostAdmissionCheck check(EventStreams streams) {
         return new OriginHostAdmissionCheck(McpEventLog.noop(), credentials(), Optional::empty, streams,
-                new ProbeSessions(NoAuthStrategy::new));
+                new ProbeSessions(NoAuthStrategy::new, OutsideBurpConnections.validating()), OutsideBurpConnections.validating());
     }
 
     private static CredentialHeaders credentials() {

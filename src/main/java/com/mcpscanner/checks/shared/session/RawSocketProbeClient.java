@@ -3,6 +3,7 @@ package com.mcpscanner.checks.shared.session;
 import burp.api.montoya.http.message.HttpRequestResponse;
 import burp.api.montoya.http.message.requests.HttpRequest;
 import burp.api.montoya.http.message.responses.HttpResponse;
+import com.mcpscanner.http.CertificateValidation;
 import com.mcpscanner.http.wire.SocketHttpTransport;
 import com.mcpscanner.http.wire.UnsentRequestException;
 import com.mcpscanner.http.wire.WireExchange;
@@ -23,8 +24,8 @@ final class RawSocketProbeClient implements OutsideBurpClient {
     private final SocketHttpTransport transport;
     private final ProbeReplyReader replies;
 
-    RawSocketProbeClient(Duration responseTimeout) {
-        this(new SocketHttpTransport(responseTimeout), new ProbeReplyReader(responseTimeout));
+    RawSocketProbeClient(Duration responseTimeout, CertificateValidation certificates) {
+        this(new SocketHttpTransport(responseTimeout, certificates), new ProbeReplyReader(responseTimeout));
     }
 
     RawSocketProbeClient(SocketHttpTransport transport, ProbeReplyReader replies) {

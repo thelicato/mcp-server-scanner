@@ -6,6 +6,7 @@ import com.mcpscanner.checks.shared.stream.ScriptedEventStreams;
 import com.mcpscanner.auth.BearerTokenAuthStrategy;
 import com.mcpscanner.checks.catalog.unauthenticatedrequestexecution.UnauthenticatedRequestExecutionCheck;
 import com.mcpscanner.checks.shared.probe.SimulatedMcpServer;
+import com.mcpscanner.checks.shared.session.OutsideBurpConnections;
 import com.mcpscanner.testutil.MontoyaTestFactory;
 import com.mcpscanner.logging.McpEventLog;
 import org.junit.jupiter.api.BeforeEach;
@@ -48,8 +49,8 @@ class UnauthenticatedExecutionCoverageTest {
         HttpRequestResponse base = server.exchange(request(toolsList(), AUTHENTICATED));
         return unauthenticatedExecution
                 ? new UnauthenticatedRequestExecutionCheck(McpEventLog.noop(), () -> new BearerTokenAuthStrategy("valid-token"),
-                        Optional::empty, ScriptedEventStreams.none()).audit(base, server.http())
+                        Optional::empty, ScriptedEventStreams.none(), OutsideBurpConnections.validating()).audit(base, server.http())
                 : new SiblingRouteAuthParityCheck(McpEventLog.noop(), () -> new BearerTokenAuthStrategy("valid-token"),
-                        Optional::empty).audit(base, server.http());
+                        Optional::empty, OutsideBurpConnections.validating()).audit(base, server.http());
     }
 }

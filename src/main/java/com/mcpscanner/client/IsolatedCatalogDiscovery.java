@@ -1,6 +1,7 @@
 package com.mcpscanner.client;
 
 import com.mcpscanner.config.ClientIdentityProvider;
+import com.mcpscanner.http.CertificateValidation;
 import com.mcpscanner.logging.McpEventLog;
 
 import java.net.http.HttpClient;
@@ -12,14 +13,16 @@ public final class IsolatedCatalogDiscovery {
     private final ClientIdentityProvider identityProvider;
     private final ProtocolHttpTransport httpTransport;
     private final ScannerSessionSettings settings;
-    private final HttpClient sseClient = McpHttpClients.upstream();
+    private final HttpClient sseClient;
 
     public IsolatedCatalogDiscovery(McpEventLog eventLog, ClientIdentityProvider identityProvider,
-                                    ProtocolHttpTransport httpTransport, ScannerSessionSettings settings) {
+                                    ProtocolHttpTransport httpTransport, ScannerSessionSettings settings,
+                                    CertificateValidation certificates) {
         this.eventLog = Objects.requireNonNull(eventLog, "eventLog");
         this.identityProvider = Objects.requireNonNull(identityProvider, "identityProvider");
         this.httpTransport = Objects.requireNonNull(httpTransport, "httpTransport");
         this.settings = Objects.requireNonNull(settings, "settings");
+        this.sseClient = McpHttpClients.upstream(certificates);
     }
 
     public ConnectResult discover(McpServerConfig config) {

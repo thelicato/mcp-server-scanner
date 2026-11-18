@@ -12,6 +12,7 @@ import com.mcpscanner.auth.NoAuthStrategy;
 import com.mcpscanner.checks.api.CheckKind;
 import com.mcpscanner.checks.api.ConnectionScoped;
 import com.mcpscanner.checks.shared.probe.SimulatedMcpServer;
+import com.mcpscanner.checks.shared.session.OutsideBurpConnections;
 import com.mcpscanner.testutil.MontoyaTestFactory;
 import com.mcpscanner.logging.McpEventLog;
 import org.junit.jupiter.api.BeforeEach;
@@ -46,7 +47,7 @@ class UnauthenticatedRequestExecutionCheckTest {
 
     private static UnauthenticatedRequestExecutionCheck check(AuthStrategy strategy) {
         return new UnauthenticatedRequestExecutionCheck(McpEventLog.noop(), () -> strategy, Optional::empty,
-                ScriptedEventStreams.none());
+                ScriptedEventStreams.none(), OutsideBurpConnections.validating());
     }
 
     private static UnauthenticatedRequestExecutionCheck bearerCheck() {

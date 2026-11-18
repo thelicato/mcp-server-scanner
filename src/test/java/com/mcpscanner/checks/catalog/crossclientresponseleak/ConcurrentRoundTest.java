@@ -5,6 +5,7 @@ import burp.api.montoya.http.message.HttpRequestResponse;
 import burp.api.montoya.http.message.requests.HttpRequest;
 import com.mcpscanner.auth.NoAuthStrategy;
 import com.mcpscanner.checks.api.CheckLog;
+import com.mcpscanner.checks.shared.session.OutsideBurpConnections;
 import com.mcpscanner.checks.shared.session.ProbeSessions;
 import com.mcpscanner.http.ForwardingHttp;
 import com.mcpscanner.logging.McpEventLog;
@@ -49,7 +50,7 @@ class ConcurrentRoundTest {
     }
 
     private static List<ProbeClient> openClients(Http http) {
-        ProbeClients clients = new ProbeClients(new ProbeSessions(NoAuthStrategy::new, Duration.ofSeconds(2)),
+        ProbeClients clients = new ProbeClients(new ProbeSessions(NoAuthStrategy::new, Duration.ofSeconds(2), OutsideBurpConnections.validating()),
                 CheckLog.labelled(McpEventLog.noop(), "test"));
         return clients.openAll(LeakServers.echoableToolCall(), http, CLIENTS).opened().orElseThrow();
     }

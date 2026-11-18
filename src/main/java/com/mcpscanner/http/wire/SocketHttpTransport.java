@@ -1,5 +1,7 @@
 package com.mcpscanner.http.wire;
 
+import com.mcpscanner.http.CertificateValidation;
+
 import javax.net.ssl.SNIServerName;
 import javax.net.ssl.SSLParameters;
 import javax.net.ssl.SSLSocket;
@@ -23,8 +25,8 @@ public final class SocketHttpTransport {
     private final Duration connectTimeout;
     private final SSLSocketFactory tls;
 
-    public SocketHttpTransport(Duration readTimeout) {
-        this(readTimeout, (SSLSocketFactory) SSLSocketFactory.getDefault());
+    public SocketHttpTransport(Duration readTimeout, CertificateValidation certificates) {
+        this(readTimeout, certificates.socketFactory());
     }
 
     public SocketHttpTransport(Duration readTimeout, SSLSocketFactory tls) {

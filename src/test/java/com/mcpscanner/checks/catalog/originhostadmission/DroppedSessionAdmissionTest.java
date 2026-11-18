@@ -7,6 +7,7 @@ import burp.api.montoya.scanner.audit.issues.AuditIssue;
 import com.mcpscanner.auth.NoAuthStrategy;
 import com.mcpscanner.checks.api.HostSettlement;
 import com.mcpscanner.checks.shared.auth.CredentialHeaders;
+import com.mcpscanner.checks.shared.session.OutsideBurpConnections;
 import com.mcpscanner.checks.shared.session.ProbeSessions;
 import com.mcpscanner.checks.shared.stream.ScriptedEventStreams;
 import com.mcpscanner.logging.McpEventLog;
@@ -111,7 +112,7 @@ class DroppedSessionAdmissionTest {
         OriginHostAdmissionCheck check = new OriginHostAdmissionCheck(McpEventLog.noop(),
                 new CredentialHeaders(NoAuthStrategy::new),
                 () -> Optional.of(HttpService.httpService("127.0.0.1", 40000, false)),
-                ScriptedEventStreams.none(), new ProbeSessions(NoAuthStrategy::new));
+                ScriptedEventStreams.none(), new ProbeSessions(NoAuthStrategy::new, OutsideBurpConnections.validating()), OutsideBurpConnections.validating());
 
         check.trials().get(0).run(capturedInDroppedSession(), server.http);
 
@@ -125,6 +126,6 @@ class DroppedSessionAdmissionTest {
 
     private static OriginHostAdmissionCheck check() {
         return new OriginHostAdmissionCheck(McpEventLog.noop(), new CredentialHeaders(NoAuthStrategy::new),
-                Optional::empty, ScriptedEventStreams.none(), new ProbeSessions(NoAuthStrategy::new));
+                Optional::empty, ScriptedEventStreams.none(), new ProbeSessions(NoAuthStrategy::new, OutsideBurpConnections.validating()), OutsideBurpConnections.validating());
     }
 }

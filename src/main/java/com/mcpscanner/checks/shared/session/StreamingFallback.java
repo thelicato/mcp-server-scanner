@@ -4,6 +4,7 @@ import burp.api.montoya.http.Http;
 import burp.api.montoya.http.RequestOptions;
 import burp.api.montoya.http.message.HttpRequestResponse;
 import burp.api.montoya.http.message.requests.HttpRequest;
+import com.mcpscanner.http.CertificateValidation;
 import com.mcpscanner.http.OutsideBurpSends;
 import com.mcpscanner.mcp.BurpStreamingRefusal;
 
@@ -24,13 +25,13 @@ public final class StreamingFallback {
         this.foreignHostClient = foreignHostClient;
     }
 
-    public static StreamingFallback outsideBurp() {
-        return outsideBurp(DEFAULT_RESPONSE_TIMEOUT);
+    public static StreamingFallback outsideBurp(CertificateValidation certificates) {
+        return outsideBurp(DEFAULT_RESPONSE_TIMEOUT, certificates);
     }
 
-    static StreamingFallback outsideBurp(Duration responseTimeout) {
-        return new StreamingFallback(new UnstreamingProbeClient(responseTimeout),
-                new RawSocketProbeClient(responseTimeout));
+    static StreamingFallback outsideBurp(Duration responseTimeout, CertificateValidation certificates) {
+        return new StreamingFallback(new UnstreamingProbeClient(responseTimeout, certificates),
+                new RawSocketProbeClient(responseTimeout, certificates));
     }
 
     public Http around(Http http) {

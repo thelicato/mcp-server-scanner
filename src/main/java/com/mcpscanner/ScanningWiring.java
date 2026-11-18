@@ -112,7 +112,7 @@ record ScanningWiring(CurrentAuthHolder authHolder,
                                                AccessWiring access, LateIssueRouter lateIssues) {
         return new CheckServices(foundation.eventLog(), access.authHolder(), foundation.collaboratorWatch(),
                 session::probeBaselineService, access.roster(), access.ledger(), access.listings(),
-                session::probeSseStreams, lateIssues, foundation.burpNativeFields());
+                session::probeSseStreams, lateIssues, foundation.burpNativeFields(), foundation.certificates());
     }
 
     private static ScanMessageRenderer requestRenderer(ConnectionWiring connection) {

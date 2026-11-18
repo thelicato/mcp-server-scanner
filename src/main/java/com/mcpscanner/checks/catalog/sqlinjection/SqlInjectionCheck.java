@@ -14,6 +14,7 @@ import com.mcpscanner.checks.api.SkipReason;
 import com.mcpscanner.checks.api.SkipSubject;
 import com.mcpscanner.checks.issue.IssueIdentity;
 import com.mcpscanner.checks.shared.field.InsertionPointNames;
+import com.mcpscanner.checks.shared.session.OutsideBurpConnections;
 import com.mcpscanner.checks.shared.session.StreamingFallback;
 import com.mcpscanner.logging.McpEventLog;
 import com.mcpscanner.mcp.BurpNativeJsonRpcFields;
@@ -34,7 +35,7 @@ public final class SqlInjectionCheck implements InsertionPointCheck, ConnectionS
     private static final SkipReason UNRESPONSIVE = SkipReason.transportFailure(
             ProbeField.UNANSWERED_PROBES_BEFORE_GIVING_UP + " consecutive probes got no response");
 
-    private final StreamingFallback streamedReplies = StreamingFallback.outsideBurp();
+    private final StreamingFallback streamedReplies;
     private final CheckLog log;
     private final RateLimitedProbing rateLimited;
     private final InsertionPointNames insertionPointNames;
@@ -42,11 +43,14 @@ public final class SqlInjectionCheck implements InsertionPointCheck, ConnectionS
     private final Confirmation confirmation;
     private final SqlInjectionIssues issues = new SqlInjectionIssues(SqlInjectionDescriptor.DESCRIPTOR);
 
-    public SqlInjectionCheck(BurpNativeJsonRpcFields burpNativeFields, McpEventLog eventLog) {
-        this(new Canaries(), burpNativeFields, eventLog);
+    public SqlInjectionCheck(BurpNativeJsonRpcFields burpNativeFields, McpEventLog eventLog,
+                             OutsideBurpConnections outsideBurp) {
+        this(new Canaries(), burpNativeFields, eventLog, outsideBurp);
     }
 
-    SqlInjectionCheck(Canaries canaries, BurpNativeJsonRpcFields burpNativeFields, McpEventLog eventLog) {
+    SqlInjectionCheck(Canaries canaries, BurpNativeJsonRpcFields burpNativeFields, McpEventLog eventLog,
+                      OutsideBurpConnections outsideBurp) {
+        this.streamedReplies = outsideBurp.streamingFallback();
         this.log = new CheckLog(eventLog, SqlInjectionDescriptor.DESCRIPTOR.id());
         this.rateLimited = new RateLimitedProbing(log);
         this.insertionPointNames = new InsertionPointNames(burpNativeFields);

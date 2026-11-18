@@ -8,9 +8,9 @@ import com.mcpscanner.checks.api.HostTrial;
 import com.mcpscanner.checks.api.RetryingHostCheck;
 import com.mcpscanner.checks.shared.auth.CredentialHeaders;
 import com.mcpscanner.checks.shared.session.ProbeSessions;
+import com.mcpscanner.checks.shared.session.OutsideBurpConnections;
 import com.mcpscanner.checks.shared.session.StreamingFallback;
 import com.mcpscanner.checks.shared.stream.EventStreams;
-import com.mcpscanner.checks.shared.stream.JdkStreamOpener;
 import com.mcpscanner.checks.shared.stream.StreamOpener;
 import com.mcpscanner.logging.McpEventLog;
 import com.mcpscanner.mcp.SseProbeStreams;
@@ -22,19 +22,22 @@ import java.util.function.Supplier;
 public final class OriginHostAdmissionCheck implements RetryingHostCheck, ConnectionScoped {
 
     private final List<HostTrial> trials;
-    private final StreamingFallback streamedReplies = StreamingFallback.outsideBurp();
+    private final StreamingFallback streamedReplies;
 
     public OriginHostAdmissionCheck(McpEventLog eventLog, CredentialHeaders credentials,
                                     Supplier<Optional<HttpService>> streamProxy, EventStreams streams,
-                                    ProbeSessions probeSessions) {
+                                    ProbeSessions probeSessions,
+                                    OutsideBurpConnections outsideBurp) {
         this(eventLog, credentials, streamProxy, streams, probeSessions, Optional::empty,
-                new JdkStreamOpener(eventLog));
+                outsideBurp.streamOpener(eventLog), outsideBurp);
     }
 
     public OriginHostAdmissionCheck(McpEventLog eventLog, CredentialHeaders credentials,
                                     Supplier<Optional<HttpService>> streamProxy, EventStreams streams,
                                     ProbeSessions probeSessions, Supplier<Optional<SseProbeStreams>> sseStreams,
-                                    StreamOpener streamOpener) {
+                                    StreamOpener streamOpener,
+                                    OutsideBurpConnections outsideBurp) {
+        this.streamedReplies = outsideBurp.streamingFallback();
         CheckLog log = new CheckLog(eventLog, OriginHostAdmissionDescriptor.DESCRIPTOR.id());
         AdmissionDecisions decisions = new AdmissionDecisions(log, credentials);
         CapturedSessionReplay replay = new CapturedSessionReplay(new FreshProbeSession(probeSessions, log));

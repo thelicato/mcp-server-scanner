@@ -46,7 +46,7 @@ class ProbeSessionsTest {
     private final List<String> routedServices = new ArrayList<>();
     private final List<Optional<RedirectionMode>> redirectionModes = new ArrayList<>();
     private final List<Optional<Duration>> responseTimeouts = new ArrayList<>();
-    private ProbeSessions probeSessions = new ProbeSessions(() -> BEARER);
+    private ProbeSessions probeSessions = new ProbeSessions(() -> BEARER, OutsideBurpConnections.validating());
     private boolean sessionKnown = true;
     private boolean challengeOperations;
     private boolean issueTheBaseSession;
@@ -97,7 +97,7 @@ class ProbeSessionsTest {
 
     @Test
     void appliesTheConfiguredResponseTimeoutToEveryProbeRequest() {
-        probeSessions = new ProbeSessions(() -> BEARER, Duration.ofSeconds(7));
+        probeSessions = new ProbeSessions(() -> BEARER, Duration.ofSeconds(7), OutsideBurpConnections.validating());
 
         open().terminate();
 

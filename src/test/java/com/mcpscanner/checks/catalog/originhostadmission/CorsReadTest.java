@@ -10,6 +10,7 @@ import com.mcpscanner.auth.AuthStrategy;
 import com.mcpscanner.auth.BearerTokenAuthStrategy;
 import com.mcpscanner.auth.NoAuthStrategy;
 import com.mcpscanner.checks.shared.auth.CredentialHeaders;
+import com.mcpscanner.checks.shared.session.OutsideBurpConnections;
 import com.mcpscanner.checks.shared.session.ProbeSessions;
 import com.mcpscanner.checks.shared.stream.ScriptedEventStreams;
 import com.mcpscanner.checks.shared.stream.StreamOpener;
@@ -167,16 +168,16 @@ class CorsReadTest {
 
     private static OriginHostAdmissionCheck check(Supplier<AuthStrategy> strategy) {
         return new OriginHostAdmissionCheck(McpEventLog.noop(), new CredentialHeaders(strategy), Optional::empty,
-                ScriptedEventStreams.none(), new ProbeSessions(strategy));
+                ScriptedEventStreams.none(), new ProbeSessions(strategy, OutsideBurpConnections.validating()), OutsideBurpConnections.validating());
     }
 
     private static OriginHostAdmissionCheck sseCheck(StreamOpener opener) {
         return new OriginHostAdmissionCheck(McpEventLog.noop(),
                 new CredentialHeaders(() -> new BearerTokenAuthStrategy("live")),
                 () -> Optional.of(HttpService.httpService("127.0.0.1", 40000, false)), ScriptedEventStreams.none(),
-                new ProbeSessions(NoAuthStrategy::new),
+                new ProbeSessions(NoAuthStrategy::new, OutsideBurpConnections.validating()),
                 () -> Optional.of(SseProbeStreams.at(SSE_STREAM_URL, headers -> {
                     throw new UnsupportedOperationException();
-                })), opener);
+                })), opener, OutsideBurpConnections.validating());
     }
 }

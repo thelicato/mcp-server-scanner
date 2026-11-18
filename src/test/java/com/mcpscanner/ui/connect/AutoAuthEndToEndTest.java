@@ -21,6 +21,7 @@ import com.mcpscanner.ui.OAuthConnectSupport;
 import com.mcpscanner.ui.state.ConnectAttempt;
 import com.mcpscanner.core.oauth.AuthorizationApproval;
 import com.mcpscanner.core.oauth.RegistrationMode;
+import com.mcpscanner.http.CertificateValidation;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -119,7 +120,7 @@ class AutoAuthEndToEndTest {
         RecordingRealHttp http = new RecordingRealHttp();
         SuspiciousDestinationGate allowFixture = (url, purpose) -> SuspiciousDestinationGate.Decision.allow();
         OAuthMetadataDiscoverer discoverer = OAuthMetadataDiscoverer.defaultInstance(
-                http, eventLog, allowFixture);
+                http, eventLog, allowFixture, CertificateValidation.enforced());
         OAuthAuthorizationFlow flow = new OAuthAuthorizationFlow(CallbackListenerFactory.defaultFactory(),
                 BrowserLauncher.validated(this::approveInBrowser, allowFixture), Clock.systemUTC(), allowFixture,
                 eventLog, http);

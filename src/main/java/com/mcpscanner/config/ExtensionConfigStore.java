@@ -28,6 +28,7 @@ public final class ExtensionConfigStore {
     private static final String KEY_SEND_TO_HANDLE_AUTH = "mcp.sendto.handle_auth";
     private static final String KEY_ANSWER_SERVER_PINGS = "mcp.server_pings.answer";
     private static final String KEY_USE_BURP_NETWORKING = "mcp.networking.use_burp";
+    private static final String KEY_VALIDATE_CERTIFICATES = "mcp.networking.validate_certificates";
     private static final String KEY_AUTH_AUTO_DETECT = "mcp.auth.auto_detect";
     private static final String KEY_AUTH_AUTO_DETECT_MIGRATED = "mcp.auth.auto_detect.migrated";
     private static final String KEY_OAUTH_ISSUER = "mcp.oauth.issuer";
@@ -205,6 +206,15 @@ public final class ExtensionConfigStore {
 
     public void setUseBurpNetworking(boolean use) {
         store.setBoolean(KEY_USE_BURP_NETWORKING, use);
+        notifySettingsChanged();
+    }
+
+    public boolean validateCertificates() {
+        return !Boolean.FALSE.equals(store.getBoolean(KEY_VALIDATE_CERTIFICATES));
+    }
+
+    public void setValidateCertificates(boolean validate) {
+        store.setBoolean(KEY_VALIDATE_CERTIFICATES, validate);
         notifySettingsChanged();
     }
 

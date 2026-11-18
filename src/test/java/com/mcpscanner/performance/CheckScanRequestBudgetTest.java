@@ -16,6 +16,7 @@ import com.mcpscanner.client.McpHttpClients;
 import com.mcpscanner.client.McpScannerSession;
 import com.mcpscanner.client.McpServerConfig;
 import com.mcpscanner.client.TransportType;
+import com.mcpscanner.http.CertificateValidation;
 import com.mcpscanner.logging.McpEventLog;
 import com.mcpscanner.scan.McpInsertionPointProvider;
 import com.mcpscanner.testutil.LoopbackCollaborator;
@@ -45,7 +46,7 @@ class CheckScanRequestBudgetTest {
     void connect() throws Exception {
         MontoyaTestFactory.install();
         server = new McpFixtureServer(McpFixtureProfile.streamable("2025-11-25", "2025-06-18"));
-        session = new McpScannerSession(McpHttpClients.upstream(), McpEventLog.noop());
+        session = new McpScannerSession(McpHttpClients.upstream(CertificateValidation.enforced()), McpEventLog.noop());
         session.connect(new McpServerConfig(server.endpoint(), TransportType.STREAMABLE_HTTP,
                 new BearerTokenAuthStrategy(TOKEN)));
         collaborator = LoopbackCollaborator.start();

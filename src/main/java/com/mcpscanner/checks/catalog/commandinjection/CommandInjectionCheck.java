@@ -16,6 +16,7 @@ import com.mcpscanner.checks.api.SkipSubject;
 import com.mcpscanner.checks.issue.IssueIdentity;
 import com.mcpscanner.checks.shared.collaborator.CollaboratorWatch;
 import com.mcpscanner.checks.shared.field.InsertionPointNames;
+import com.mcpscanner.checks.shared.session.OutsideBurpConnections;
 import com.mcpscanner.checks.shared.session.StreamingFallback;
 import com.mcpscanner.mcp.BurpNativeJsonRpcFields;
 import com.mcpscanner.logging.McpEventLog;
@@ -33,7 +34,7 @@ public final class CommandInjectionCheck implements InsertionPointCheck, Connect
     private static final SkipReason UNRESPONSIVE = SkipReason.transportFailure(
             ProbeField.UNANSWERED_PROBES_BEFORE_GIVING_UP + " consecutive probes got no response");
 
-    private final StreamingFallback streamedReplies = StreamingFallback.outsideBurp();
+    private final StreamingFallback streamedReplies;
     private final CheckLog log;
     private final RateLimitedProbing rateLimited;
     private final CanarySource canaries;
@@ -48,12 +49,15 @@ public final class CommandInjectionCheck implements InsertionPointCheck, Connect
             CommandInjectionDescriptor.DESCRIPTOR.references());
 
     public CommandInjectionCheck(CollaboratorWatch watch, LateIssueSink lateIssues,
-                                 BurpNativeJsonRpcFields burpNativeFields, McpEventLog eventLog) {
-        this(CanarySource.random(), watch, lateIssues, burpNativeFields, eventLog);
+                                 BurpNativeJsonRpcFields burpNativeFields, McpEventLog eventLog,
+                                 OutsideBurpConnections outsideBurp) {
+        this(CanarySource.random(), watch, lateIssues, burpNativeFields, eventLog, outsideBurp);
     }
 
     CommandInjectionCheck(CanarySource canaries, CollaboratorWatch watch, LateIssueSink lateIssues,
-                          BurpNativeJsonRpcFields burpNativeFields, McpEventLog eventLog) {
+                          BurpNativeJsonRpcFields burpNativeFields, McpEventLog eventLog,
+                          OutsideBurpConnections outsideBurp) {
+        this.streamedReplies = outsideBurp.streamingFallback();
         this.log = new CheckLog(eventLog, CommandInjectionDescriptor.DESCRIPTOR.id());
         this.rateLimited = new RateLimitedProbing(log);
         this.canaries = canaries;

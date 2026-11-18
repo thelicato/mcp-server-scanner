@@ -3,6 +3,7 @@ package com.mcpscanner.cvetargets.requests;
 import burp.api.montoya.http.message.HttpRequestResponse;
 import burp.api.montoya.http.message.requests.HttpRequest;
 import burp.api.montoya.http.message.responses.HttpResponse;
+import com.mcpscanner.http.CertificateValidation;
 import com.mcpscanner.http.wire.SocketHttpTransport;
 import com.mcpscanner.http.wire.WireExchange;
 import com.mcpscanner.http.wire.WireHeader;
@@ -34,7 +35,7 @@ public final class VerbatimHeaderHttp extends SendOnlyHttp {
     }
 
     public VerbatimHeaderHttp(Duration readTimeout) {
-        this.transport = new SocketHttpTransport(readTimeout);
+        this.transport = new SocketHttpTransport(readTimeout, CertificateValidation.enforced());
     }
 
     @Override

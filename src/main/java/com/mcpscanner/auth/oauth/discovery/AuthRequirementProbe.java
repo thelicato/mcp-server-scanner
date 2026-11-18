@@ -1,6 +1,7 @@
 package com.mcpscanner.auth.oauth.discovery;
 
 import burp.api.montoya.http.Http;
+import com.mcpscanner.http.CertificateValidation;
 import com.mcpscanner.logging.McpEventLog;
 
 import java.net.URI;
@@ -19,11 +20,12 @@ public final class AuthRequirementProbe {
     private final OAuthMetadataDiscoverer discoverer;
 
     public AuthRequirementProbe(Http http, OAuthMetadataDiscoverer discoverer) {
-        this(http, discoverer, McpEventLog.noop());
+        this(http, discoverer, McpEventLog.noop(), CertificateValidation.enforced());
     }
 
-    public AuthRequirementProbe(Http http, OAuthMetadataDiscoverer discoverer, McpEventLog eventLog) {
-        this(new PostChallengeSender(http, eventLog), new StreamGetChallengeSender(), discoverer);
+    public AuthRequirementProbe(Http http, OAuthMetadataDiscoverer discoverer, McpEventLog eventLog,
+                                CertificateValidation certificates) {
+        this(new PostChallengeSender(http, eventLog), new StreamGetChallengeSender(certificates), discoverer);
     }
 
     AuthRequirementProbe(ChallengeSender post, ChallengeSender streamGet, OAuthMetadataDiscoverer discoverer) {

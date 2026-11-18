@@ -24,6 +24,7 @@ import com.mcpscanner.checks.shared.probe.BaselineAcquisition;
 import com.mcpscanner.checks.shared.probe.ControlRefusal;
 import com.mcpscanner.checks.shared.probe.IndependentSessionSender;
 import com.mcpscanner.checks.shared.probe.ProbeChannel;
+import com.mcpscanner.checks.shared.session.OutsideBurpConnections;
 import com.mcpscanner.checks.shared.session.StreamingFallback;
 import com.mcpscanner.checks.shared.stream.EventStreams;
 import com.mcpscanner.logging.McpEventLog;
@@ -60,11 +61,13 @@ public final class UnauthenticatedRequestExecutionCheck implements RequestCheck,
     private final ScopeClaims forwardedClientScopes = new ScopeClaims();
     private final ScopeClaims streamScopes = new ScopeClaims();
     private final StreamAccessTier streamTier;
-    private final StreamingFallback streamedReplies = StreamingFallback.outsideBurp();
+    private final StreamingFallback streamedReplies;
 
     public UnauthenticatedRequestExecutionCheck(McpEventLog eventLog, Supplier<AuthStrategy> authStrategy,
                                                 Supplier<Optional<HttpService>> streamProxy,
-                                                EventStreams streams) {
+                                                EventStreams streams,
+                                                OutsideBurpConnections outsideBurp) {
+        this.streamedReplies = outsideBurp.streamingFallback();
         this.log = new CheckLog(eventLog, UnauthenticatedRequestExecutionDescriptor.DESCRIPTOR.id());
         this.authStrategy = authStrategy;
         this.streamProxy = streamProxy;

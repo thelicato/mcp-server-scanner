@@ -3,6 +3,7 @@ package com.mcpscanner.auth.oauth.discovery;
 import burp.api.montoya.http.Http;
 import com.mcpscanner.auth.oauth.safety.DefaultSuspiciousDestinationGate;
 import com.mcpscanner.auth.oauth.safety.SuspiciousDestinationGate;
+import com.mcpscanner.http.CertificateValidation;
 import com.mcpscanner.logging.McpEventLog;
 
 import java.net.URI;
@@ -19,23 +20,26 @@ public final class OAuthMetadataDiscoverer {
     private final McpEventLog eventLog;
     private final Http defaultProbeHttp;
     private final boolean defaultProbeHttpRequired;
+    private final CertificateValidation certificates;
 
     public OAuthMetadataDiscoverer(List<MetadataProbe> probes) {
         this(probes, null);
     }
 
     public OAuthMetadataDiscoverer(List<MetadataProbe> probes, McpEventLog eventLog) {
-        this(fixedProbes(probes), eventLog, null, false);
+        this(fixedProbes(probes), eventLog, null, false, CertificateValidation.enforced());
     }
 
     private OAuthMetadataDiscoverer(Function<DiscoveryTrail, List<MetadataProbe>> probesForTrail,
                                     McpEventLog eventLog,
                                     Http defaultProbeHttp,
-                                    boolean defaultProbeHttpRequired) {
+                                    boolean defaultProbeHttpRequired,
+                                    CertificateValidation certificates) {
         this.probesForTrail = probesForTrail;
         this.eventLog = eventLog;
         this.defaultProbeHttp = defaultProbeHttp;
         this.defaultProbeHttpRequired = defaultProbeHttpRequired;
+        this.certificates = certificates;
     }
 
     public DiscoveredMetadata discover(URI mcpResource) throws DiscoveryFailedException {
@@ -62,7 +66,7 @@ public final class OAuthMetadataDiscoverer {
 
     public AuthRequirement requirementFor(URI mcpResource, ChallengeStrategy strategy) {
         Objects.requireNonNull(defaultProbeHttp, "Http is required to probe the auth requirement");
-        return new AuthRequirementProbe(defaultProbeHttp, this, eventLog).probe(mcpResource, strategy);
+        return new AuthRequirementProbe(defaultProbeHttp, this, eventLog, certificates).probe(mcpResource, strategy);
     }
 
     private void logSuccess(DiscoveredMetadata metadata) {
@@ -89,17 +93,19 @@ public final class OAuthMetadataDiscoverer {
     }
 
     public static OAuthMetadataDiscoverer defaultInstance(Http http, McpEventLog eventLog) {
-        return defaultInstance(http, eventLog, DefaultSuspiciousDestinationGate.denyingSuspicious(eventLog));
+        return defaultInstance(http, eventLog, DefaultSuspiciousDestinationGate.denyingSuspicious(eventLog),
+                CertificateValidation.enforced());
     }
 
     public static OAuthMetadataDiscoverer defaultInstance(Http http,
                                                           McpEventLog eventLog,
-                                                          SuspiciousDestinationGate gate) {
+                                                          SuspiciousDestinationGate gate,
+                                                          CertificateValidation certificates) {
         PrmToAsResolver prmToAsResolver = new PrmToAsResolver(http, eventLog, gate);
         return new OAuthMetadataDiscoverer(trail -> List.of(
                 new WwwAuthenticateProbe(http, prmToAsResolver, gate, eventLog, trail),
                 new PrmWellKnownProbe(http, prmToAsResolver, gate, eventLog, trail),
                 new AsWellKnownProbe(http, gate, eventLog)),
-                eventLog, http, true);
+                eventLog, http, true, certificates);
     }
 }

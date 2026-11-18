@@ -5,6 +5,7 @@ import burp.api.montoya.scanner.audit.issues.AuditIssue;
 import com.mcpscanner.checks.api.SettlingLateIssues;
 import com.mcpscanner.checks.shared.collaborator.CollaboratorWatch;
 import com.mcpscanner.checks.shared.collaborator.TestWatches;
+import com.mcpscanner.checks.shared.session.OutsideBurpConnections;
 import com.mcpscanner.logging.McpEventLog;
 import com.mcpscanner.mcp.BurpNativeJsonRpcFields;
 import com.mcpscanner.testutil.MontoyaTestFactory;
@@ -60,7 +61,7 @@ class CommandInjectionStreamedReplyTest {
         CollaboratorWatch watch = TestWatches.immediate(Optional::empty);
         SettlingLateIssues settling = new SettlingLateIssues(watch);
         CommandInjectionCheck check = new CommandInjectionCheck(() -> CANARY, watch, settling,
-                BurpNativeJsonRpcFields.PRESENT, eventLog);
+                BurpNativeJsonRpcFields.PRESENT, eventLog, OutsideBurpConnections.validating());
         return check.audit(base, tools.argumentField(base), StreamingRefusingBurp.http());
     }
 

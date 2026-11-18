@@ -6,6 +6,7 @@ import com.mcpscanner.checks.shared.auth.CredentialHeaders;
 import com.mcpscanner.checks.shared.session.ProbeSessions;
 import com.mcpscanner.checks.api.CheckLog;
 import com.mcpscanner.checks.api.HostAudits;
+import com.mcpscanner.checks.shared.session.OutsideBurpConnections;
 import com.mcpscanner.checks.shared.stream.EventStreams;
 import com.mcpscanner.checks.shared.stream.ScriptedEventStreams;
 import com.mcpscanner.logging.McpEventLog;
@@ -114,7 +115,7 @@ class OriginHostAdmissionSkipLogTest {
     void logsThatTheStreamTestDoesNotRunOnTheSseTransport() {
         audits(new OriginHostAdmissionCheck(eventLog, credentials(),
                 () -> Optional.of(HttpService.httpService("127.0.0.1", 40000, false)),
-                ScriptedEventStreams.inSessions(request -> true), new ProbeSessions(NoAuthStrategy::new)))
+                ScriptedEventStreams.inSessions(request -> true), new ProbeSessions(NoAuthStrategy::new, OutsideBurpConnections.validating()), OutsideBurpConnections.validating()))
                 .audit(captured(toolsList(LOOPBACK_URL)), open.http);
 
         assertThat(messages()).contains(PREFIX + "skipped " + STREAM_TEST
@@ -163,7 +164,7 @@ class OriginHostAdmissionSkipLogTest {
 
     private OriginHostAdmissionCheck check(EventStreams streams) {
         return new OriginHostAdmissionCheck(eventLog, credentials(), Optional::empty, streams,
-                new ProbeSessions(NoAuthStrategy::new));
+                new ProbeSessions(NoAuthStrategy::new, OutsideBurpConnections.validating()), OutsideBurpConnections.validating());
     }
 
     private static CredentialHeaders credentials() {

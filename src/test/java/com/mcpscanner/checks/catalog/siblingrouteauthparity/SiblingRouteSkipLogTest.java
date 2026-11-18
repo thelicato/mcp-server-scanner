@@ -4,6 +4,7 @@ import burp.api.montoya.http.message.HttpRequestResponse;
 import com.mcpscanner.auth.BearerTokenAuthStrategy;
 import com.mcpscanner.auth.NoAuthStrategy;
 import com.mcpscanner.checks.shared.probe.SimulatedMcpServer;
+import com.mcpscanner.checks.shared.session.OutsideBurpConnections;
 import com.mcpscanner.logging.McpEventLog;
 import com.mcpscanner.testutil.MontoyaTestFactory;
 import org.junit.jupiter.api.BeforeEach;
@@ -52,7 +53,7 @@ class SiblingRouteSkipLogTest {
         SimulatedMcpServer server = SimulatedMcpServer.enforcing().withUnguardedPath("/messages");
         HttpRequestResponse base = server.exchange(request(toolsList(), Map.of("Content-Type", "application/json")));
 
-        new SiblingRouteAuthParityCheck(eventLog, NoAuthStrategy::new, Optional::empty).audit(base, server.http());
+        new SiblingRouteAuthParityCheck(eventLog, NoAuthStrategy::new, Optional::empty, OutsideBurpConnections.validating()).audit(base, server.http());
 
         assertThat(messages()).contains(SKIPPED
                 + "prerequisite missing: the authenticated catalog listing did not succeed)");
@@ -76,7 +77,7 @@ class SiblingRouteSkipLogTest {
 
     private SiblingRouteAuthParityCheck bearer(int budget) {
         return new SiblingRouteAuthParityCheck(eventLog, () -> new BearerTokenAuthStrategy("valid-token"),
-                Optional::empty, budget);
+                Optional::empty, budget, OutsideBurpConnections.validating());
     }
 
     private static void audit(SimulatedMcpServer server, SiblingRouteAuthParityCheck check) {

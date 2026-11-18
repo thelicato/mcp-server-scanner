@@ -20,6 +20,7 @@ import com.mcpscanner.checks.shared.probe.BaselineAcquisition;
 import com.mcpscanner.checks.shared.probe.ControlRefusal;
 import com.mcpscanner.checks.shared.probe.IndependentSessionSender;
 import com.mcpscanner.checks.shared.probe.ProbeChannel;
+import com.mcpscanner.checks.shared.session.OutsideBurpConnections;
 import com.mcpscanner.checks.shared.session.StreamingFallback;
 import com.mcpscanner.logging.McpEventLog;
 
@@ -40,15 +41,18 @@ public final class SiblingRouteAuthParityCheck implements HostCheck {
     private final BaselineEquivalenceOracle oracle = new BaselineEquivalenceOracle(new SameCatalogItems());
     private final SiblingRouteAuthParityIssues issues =
             new SiblingRouteAuthParityIssues(SiblingRouteAuthParityDescriptor.DESCRIPTOR);
-    private final StreamingFallback streamedReplies = StreamingFallback.outsideBurp();
+    private final StreamingFallback streamedReplies;
 
     public SiblingRouteAuthParityCheck(McpEventLog eventLog, Supplier<AuthStrategy> authStrategy,
-                                       Supplier<Optional<HttpService>> sseProbeService) {
-        this(eventLog, authStrategy, sseProbeService, REQUEST_BUDGET);
+                                       Supplier<Optional<HttpService>> sseProbeService,
+                                       OutsideBurpConnections outsideBurp) {
+        this(eventLog, authStrategy, sseProbeService, REQUEST_BUDGET, outsideBurp);
     }
 
     SiblingRouteAuthParityCheck(McpEventLog eventLog, Supplier<AuthStrategy> authStrategy,
-                                Supplier<Optional<HttpService>> sseProbeService, int requestBudget) {
+                                Supplier<Optional<HttpService>> sseProbeService, int requestBudget,
+                                OutsideBurpConnections outsideBurp) {
+        this.streamedReplies = outsideBurp.streamingFallback();
         this.log = new CheckLog(eventLog, SiblingRouteAuthParityDescriptor.DESCRIPTOR.id());
         this.requestBudget = requestBudget;
         this.suite = new AuthVariantSuite(authStrategy, UUID.randomUUID().toString().substring(0, 12));

@@ -7,6 +7,7 @@ import com.mcpscanner.checks.registry.ScanCheckSettings;
 import com.mcpscanner.checks.shared.collaborator.CollaboratorWatch;
 import com.mcpscanner.config.ClientIdentityProvider;
 import com.mcpscanner.config.ExtensionConfigStore;
+import com.mcpscanner.http.CertificateValidation;
 import com.mcpscanner.http.TempFileCopies;
 import com.mcpscanner.identity.IdentityRegistry;
 import com.mcpscanner.identity.IdentityStore;
@@ -15,6 +16,7 @@ import com.mcpscanner.logging.McpEventLog;
 import com.mcpscanner.mcp.BurpNativeJsonRpcFields;
 
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 record ExtensionFoundation(ExtensionConfigStore configStore,
                            ScanCheckSettings checkSettings,
@@ -23,7 +25,8 @@ record ExtensionFoundation(ExtensionConfigStore configStore,
                            IdentityRegistry identities,
                            ToolCallRefusals toolCallRefusals,
                            CollaboratorWatch collaboratorWatch,
-                           BurpNativeJsonRpcFields burpNativeFields) {
+                           BurpNativeJsonRpcFields burpNativeFields,
+                           CertificateValidation certificates) {
 
     static ExtensionFoundation create(MontoyaApi api) {
         ExtensionConfigStore configStore = new ExtensionConfigStore(
@@ -33,7 +36,24 @@ record ExtensionFoundation(ExtensionConfigStore configStore,
         return new ExtensionFoundation(configStore, new ScanCheckSettings(configStore), eventLog,
                 ClientIdentityProvider.stored(configStore), identities, new ToolCallRefusals(identities),
                 new CollaboratorWatch(() -> collaboratorClient(api, eventLog), eventLog, TempFileCopies.burp()),
-                burpNativeFields(api, eventLog));
+                burpNativeFields(api, eventLog), certificateValidation(configStore, eventLog));
+    }
+
+    private static CertificateValidation certificateValidation(ExtensionConfigStore configStore, McpEventLog eventLog) {
+        CertificateValidation certificates = new CertificateValidation(configStore::validateCertificates);
+        AtomicBoolean validating = new AtomicBoolean(true);
+        Runnable onChange = () -> {
+            boolean validate = configStore.validateCertificates();
+            if (validating.getAndSet(validate) != validate) {
+                certificates.forgetSessions();
+                eventLog.warn(validate ? "TLS certificate validation is on again for the extension's own connections"
+                        : "TLS certificate validation is off: the extension's own connections accept any server "
+                        + "certificate");
+            }
+        };
+        onChange.run();
+        configStore.addSettingsChangeListener(onChange);
+        return certificates;
     }
 
     private static BurpNativeJsonRpcFields burpNativeFields(MontoyaApi api, McpEventLog eventLog) {

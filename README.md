@@ -125,6 +125,7 @@ This tool is designed for MCP server **operators** auditing their own deployment
 ## Known limitations
 
 - **Burp Suite Professional required**: every check runs through Burp's Scanner (active/passive audits), which Community Edition does not include. In Community the extension loads and can connect/discover, but no scan checks will run. There is no Community-compatible mode.
+- **TLS certificate validation**: connections the extension opens itself (SSE, requests while "Send requests through Burp" is off, OAuth probes and check probes outside Burp) validate server certificates unless **Disable TLS certificate validation** is ticked in Settings. Requests sent through Burp follow Burp's own TLS settings. Connections already open when the setting changes keep their state.
 - **Collaborator-backed checks**: within Professional, the command-injection check's out-of-band payloads, the outbound-request check and the SSRF address filter bypass check require Burp Collaborator. Without Collaborator they produce no out-of-band findings.
 - **SSE proxy port**: the local SSE proxy binds to an ephemeral loopback port. Firewall or network policies that block loopback traffic will break SSE-transport scans.
 - **OAuth callback port**: the OAuth callback listener defaults to an ephemeral port (port 0). If your authorization server requires strict redirect-URI pre-registration, set a fixed callback port in the OAuth section before initiating the flow.

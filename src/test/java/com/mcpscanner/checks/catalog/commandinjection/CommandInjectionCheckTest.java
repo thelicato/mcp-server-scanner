@@ -16,6 +16,7 @@ import com.mcpscanner.checks.api.CheckServices;
 import com.mcpscanner.checks.shared.collaborator.CollaboratorWatch;
 import com.mcpscanner.checks.api.SettlingLateIssues;
 import com.mcpscanner.checks.shared.collaborator.TestWatches;
+import com.mcpscanner.checks.shared.session.OutsideBurpConnections;
 import com.mcpscanner.mcp.BurpNativeJsonRpcFields;
 import com.mcpscanner.testutil.BurpArgumentPoint;
 import com.mcpscanner.logging.McpEventLog;
@@ -329,7 +330,7 @@ class CommandInjectionCheckTest {
         CollaboratorWatch watch = TestWatches.immediate(collaborator::available);
         SettlingLateIssues late = new SettlingLateIssues(watch);
         CommandInjectionCheck check = new CommandInjectionCheck(() -> CANARY, watch, late,
-                BurpNativeJsonRpcFields.ABSENT, eventLog);
+                BurpNativeJsonRpcFields.ABSENT, eventLog, OutsideBurpConnections.validating());
         HttpRequestResponse base = blind.baseline();
 
         assertThat(check.audit(base, blind.argumentField(base), blind.http())).isEmpty();
@@ -483,7 +484,7 @@ class CommandInjectionCheckTest {
         Http rateLimiting = rateLimiting();
         CollaboratorWatch watch = TestWatches.immediate(collaborator::available);
         CommandInjectionCheck check = new CommandInjectionCheck(() -> CANARY, watch, new SettlingLateIssues(watch),
-                BurpNativeJsonRpcFields.ABSENT, eventLog);
+                BurpNativeJsonRpcFields.ABSENT, eventLog, OutsideBurpConnections.validating());
 
         assertThat(check.audit(failed, server.argumentField(base), rateLimiting)).isEmpty();
 
@@ -547,7 +548,7 @@ class CommandInjectionCheckTest {
         CollaboratorWatch watch = TestWatches.immediate(client);
         SettlingLateIssues settling = new SettlingLateIssues(watch);
         return new SettledCheck(new CommandInjectionCheck(() -> CANARY, watch, settling,
-                BurpNativeJsonRpcFields.PRESENT, eventLog), settling);
+                BurpNativeJsonRpcFields.PRESENT, eventLog, OutsideBurpConnections.validating()), settling);
     }
 
     private static Http rateLimiting() {

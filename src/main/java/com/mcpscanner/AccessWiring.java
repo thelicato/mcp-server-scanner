@@ -126,7 +126,7 @@ final class AccessWiring {
     private IdentityBinding sendToBinding(ConnectionWiring connection, SendToConnectionPolicy policy) {
         McpScannerSession session = connection.scannerSession();
         return IdentityBinding.routedWhen(policy::handlesAuthentication, new DirectIdentityBinding(
-                StreamingFallback.outsideBurp().around(connection.burpHttp()),
+                StreamingFallback.outsideBurp(foundation.certificates()).around(connection.burpHttp()),
                 () -> Optional.ofNullable(session.sessionId()), foundation.eventLog()::warn));
     }
 

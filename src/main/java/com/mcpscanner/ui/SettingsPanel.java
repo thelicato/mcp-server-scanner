@@ -49,9 +49,17 @@ public final class SettingsPanel extends JPanel {
                     + "doesn't pass streamed replies to extensions) or waits for a ping answer before replying. "
                     + "Off: requests go directly from the extension and ignore those Burp settings. SSE connections "
                     + "always go directly. Changes apply from the next request.";
+    static final String SKIP_CERTIFICATE_VALIDATION_LABEL = "Disable TLS certificate validation";
+    private static final String SKIP_CERTIFICATE_VALIDATION_EXPLANATION =
+            "On: connections the extension opens itself accept any server certificate, including self-signed, "
+                    + "expired and wrong-host ones. That covers SSE, requests sent while \""
+                    + BurpNetworkingSetting.NAME + "\" is off, OAuth probes and check probes that go outside Burp. "
+                    + "Requests sent through Burp follow Burp's own TLS settings. Use it only against test servers: "
+                    + "anyone on the network path can then read and change the traffic, including credentials. "
+                    + "Changes apply to connections opened after the change.";
     private static final Set<String> KEYWORDS = Set.of("MCP", "Redirect", "Proxy", "POST body", "Repeater",
             "Send to", "Authentication", "Limits", "Discovery", "SSE", "Traversal", "Ping", "TLS", "Network",
-            "Streaming", "Workers", "Concurrency", "Extension scan", "Collect IDs");
+            "Streaming", "Workers", "Concurrency", "Extension scan", "Collect IDs", "Certificate");
     private static final String RESOURCE_LIMITS_EXPLANATION =
             "Safety limits against hostile servers. Raise one if the Logger reports it truncated a scan or "
                     + "discovery. Leave blank to restore the default. Collect IDs requests per user is 0 by "
@@ -77,6 +85,7 @@ public final class SettingsPanel extends JPanel {
     private final JCheckBox sendToAuthenticationCheckbox = new JCheckBox(SEND_TO_AUTHENTICATION_LABEL);
     private final JCheckBox serverPingsCheckbox = new JCheckBox(SERVER_PINGS_LABEL);
     private final JCheckBox burpNetworkingCheckbox = new JCheckBox(BurpNetworkingSetting.NAME);
+    private final JCheckBox skipCertificateValidationCheckbox = new JCheckBox(SKIP_CERTIFICATE_VALIDATION_LABEL);
     private final JButton resetScanWarningsButton = new JButton(RESET_SCAN_WARNINGS);
     private final JLabel scanWarningsStatus = new JLabel(" ");
     private final JButton burpSettingsButton = new JButton("Open Burp Settings");
@@ -111,6 +120,9 @@ public final class SettingsPanel extends JPanel {
         settings.add(checkboxRow(burpNetworkingCheckbox));
         settings.add(explanation(BURP_NETWORKING_EXPLANATION));
         settings.add(Box.createVerticalStrut(16));
+        settings.add(checkboxRow(skipCertificateValidationCheckbox));
+        settings.add(explanation(SKIP_CERTIFICATE_VALIDATION_EXPLANATION));
+        settings.add(Box.createVerticalStrut(16));
         addScanWarnings(settings);
         settings.add(Box.createVerticalStrut(16));
         settings.add(burpSettingsRow);
@@ -126,6 +138,7 @@ public final class SettingsPanel extends JPanel {
         sendToAuthenticationCheckbox.addActionListener(event -> saveSendToAuthentication());
         serverPingsCheckbox.addActionListener(event -> saveServerPings());
         burpNetworkingCheckbox.addActionListener(event -> saveBurpNetworking());
+        skipCertificateValidationCheckbox.addActionListener(event -> saveCertificateValidation());
         resetScanWarningsButton.addActionListener(event -> resetScanWarnings());
         configStore.addSettingsChangeListener(() -> {
             if (!savingToConfig) {
@@ -244,6 +257,11 @@ public final class SettingsPanel extends JPanel {
         whileSaving(() -> configStore.setUseBurpNetworking(burpNetworkingCheckbox.isSelected()));
     }
 
+    private void saveCertificateValidation() {
+        if (updatingFromConfig) return;
+        whileSaving(() -> configStore.setValidateCertificates(!skipCertificateValidationCheckbox.isSelected()));
+    }
+
     private void whileSaving(Runnable save) {
         savingToConfig = true;
         try {
@@ -265,6 +283,7 @@ public final class SettingsPanel extends JPanel {
             sendToAuthenticationCheckbox.setSelected(configStore.handleSendToAuthentication());
             serverPingsCheckbox.setSelected(configStore.answerServerPings());
             burpNetworkingCheckbox.setSelected(configStore.useBurpNetworking());
+            skipCertificateValidationCheckbox.setSelected(!configStore.validateCertificates());
         } finally {
             updatingFromConfig = false;
         }
@@ -304,6 +323,10 @@ public final class SettingsPanel extends JPanel {
 
     JCheckBox burpNetworkingCheckboxForTest() {
         return burpNetworkingCheckbox;
+    }
+
+    JCheckBox skipCertificateValidationCheckboxForTest() {
+        return skipCertificateValidationCheckbox;
     }
 
     String burpNetworkingExplanationForTest() {

@@ -284,6 +284,31 @@ class SettingsPanelTest {
     }
 
     @Test
+    void certificateValidationCheckboxStartsClearedAndTickingItTurnsValidationOff() throws Exception {
+        PersistedObject persisted = mock(PersistedObject.class);
+        AtomicReference<Boolean> saved = new AtomicReference<>();
+        when(persisted.getBoolean("mcp.networking.validate_certificates")).thenAnswer(invocation -> saved.get());
+        doAnswer(invocation -> {
+            saved.set(invocation.getArgument(1));
+            return null;
+        }).when(persisted).setBoolean(org.mockito.ArgumentMatchers.eq("mcp.networking.validate_certificates"),
+                org.mockito.ArgumentMatchers.anyBoolean());
+        ExtensionConfigStore config = new ExtensionConfigStore(persisted, mock(Logging.class));
+        SettingsPanel[] panel = new SettingsPanel[1];
+
+        SwingUtilities.invokeAndWait(() -> {
+            panel[0] = new SettingsPanel(config);
+            assertThat(panel[0].skipCertificateValidationCheckboxForTest().isSelected()).isFalse();
+            assertThat(panel[0].skipCertificateValidationCheckboxForTest().getText())
+                    .isEqualTo(SettingsPanel.SKIP_CERTIFICATE_VALIDATION_LABEL);
+            panel[0].skipCertificateValidationCheckboxForTest().doClick();
+        });
+
+        assertThat(saved).hasValue(false);
+        assertThat(config.validateCertificates()).isFalse();
+    }
+
+    @Test
     void burpNetworkingExplanationNamesClientCertificatesAndThePingTradeOff() {
         SettingsPanel panel = new SettingsPanel(new ExtensionConfigStore(mock(PersistedObject.class), mock(Logging.class)));
 

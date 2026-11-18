@@ -10,6 +10,7 @@ import com.mcpscanner.checks.api.HostAudits;
 import com.mcpscanner.checks.issue.IssueRating;
 import com.mcpscanner.checks.shared.auth.CatalogAccess;
 import com.mcpscanner.checks.shared.probe.SimulatedMcpServer;
+import com.mcpscanner.checks.shared.session.OutsideBurpConnections;
 import com.mcpscanner.mcp.ScannerSentinels;
 import com.mcpscanner.testutil.MontoyaTestFactory;
 import com.mcpscanner.logging.McpEventLog;
@@ -39,7 +40,7 @@ class SiblingRouteAuthParityCheckTest {
     }
 
     private static SiblingRouteAuthParityCheck check(Optional<HttpService> probeService) {
-        return new SiblingRouteAuthParityCheck(McpEventLog.noop(), () -> new BearerTokenAuthStrategy("valid-token"), () -> probeService);
+        return new SiblingRouteAuthParityCheck(McpEventLog.noop(), () -> new BearerTokenAuthStrategy("valid-token"), () -> probeService, OutsideBurpConnections.validating());
     }
 
     private static List<AuditIssue> audit(SimulatedMcpServer server, Optional<HttpService> probeService) {
@@ -189,7 +190,7 @@ class SiblingRouteAuthParityCheckTest {
         HttpRequestResponse base = server.exchange(request(toolsList(), AUTHENTICATED));
 
         assertThat(new SiblingRouteAuthParityCheck(McpEventLog.noop(), () -> new BearerTokenAuthStrategy("valid-token"),
-                Optional::empty, 4).audit(base, server.http())).isEmpty();
+                Optional::empty, 4, OutsideBurpConnections.validating()).audit(base, server.http())).isEmpty();
         assertThat(server.received()).hasSize(1 + 4);
     }
 
@@ -199,7 +200,7 @@ class SiblingRouteAuthParityCheckTest {
         HttpRequestResponse base = server.exchange(request(toolsList(), AUTHENTICATED));
 
         assertThat(new SiblingRouteAuthParityCheck(McpEventLog.noop(), () -> new BearerTokenAuthStrategy("valid-token"),
-                Optional::empty, 5).audit(base, server.http())).isEmpty();
+                Optional::empty, 5, OutsideBurpConnections.validating()).audit(base, server.http())).isEmpty();
         assertThat(server.received()).hasSize(1 + 5);
     }
 
@@ -208,7 +209,7 @@ class SiblingRouteAuthParityCheckTest {
         SimulatedMcpServer server = SimulatedMcpServer.enforcing().withUnguardedPath("/messages");
         HttpRequestResponse base = server.exchange(request(toolsList(), Map.of("Content-Type", "application/json")));
 
-        assertThat(new SiblingRouteAuthParityCheck(McpEventLog.noop(), () -> new com.mcpscanner.auth.NoAuthStrategy(), Optional::empty)
+        assertThat(new SiblingRouteAuthParityCheck(McpEventLog.noop(), () -> new com.mcpscanner.auth.NoAuthStrategy(), Optional::empty, OutsideBurpConnections.validating())
                 .audit(base, server.http())).isEmpty();
         assertThat(server.received()).hasSize(2);
     }

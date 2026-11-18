@@ -59,6 +59,7 @@ Rules a check must follow (most are enforced by tests):
 - Read every untrusted response body through `mcp/BoundedBodyReader` (size cap).
 - Build URL requests only with `http/BareRequests.fromUrl` (`CodeHygieneTest`): Montoya's `httpRequestFromUrl` starts from Burp's browser template and would send its headers to the target.
 - Scanner sentinel headers (`X-Mcp-Scanner-*`, `ScannerSentinels`) route requests through the proxy and must never reach the target; anything forwarded upstream goes through sentinel stripping, or `McpHttpHandler` loops it back to the proxy.
+- Open every TLS connection outside Burp with the trust from `http/CertificateValidation` (catalog checks get it as `OutsideBurpConnections` from `CheckServices`), never a default `HttpClient`, `SSLContext` or `SSLSocketFactory`, so the "Disable TLS certificate validation" setting covers it.
 - Never resend a request that may write. Stale-connection resends are limited to reads and handshakes (`mcp/ResendableRequests`).
 - Never send a `tools/call` to a tool that may write without the user's confirmation: decide read-only only through `mcp/ToolSafety`, and confirm writes through `ui/DestructiveScanGate` (or `ui/MiningWriteConfirmation` when collecting IDs).
 - Never persist a credential (token, secret, credential header value): settings and the identities document are saved without secrets, which live in memory only.

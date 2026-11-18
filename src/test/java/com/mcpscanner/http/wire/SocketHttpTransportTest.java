@@ -1,6 +1,7 @@
 package com.mcpscanner.http.wire;
 
 import burp.api.montoya.http.message.requests.HttpRequest;
+import com.mcpscanner.http.CertificateValidation;
 import com.mcpscanner.testutil.MontoyaTestFactory;
 import com.mcpscanner.testutil.TestPki;
 import org.junit.jupiter.api.BeforeAll;
@@ -43,7 +44,7 @@ class SocketHttpTransportTest {
     @Test
     void sendsAForeignHostHeaderVerbatimOverAConnectionToTheServiceHost() throws Exception {
         try (OneConnectionServer server = OneConnectionServer.replying();
-             WireExchange exchange = new SocketHttpTransport(READ_TIMEOUT)
+             WireExchange exchange = new SocketHttpTransport(READ_TIMEOUT, CertificateValidation.enforced())
                      .exchange(foreignHostRequest("http://127.0.0.1:" + server.port()))) {
 
             assertThat(server.received().head()).contains("\r\nHost: " + FOREIGN_HOST + "\r\n");
@@ -55,7 +56,7 @@ class SocketHttpTransportTest {
     @Test
     void aReplyThatNeverArrivesIsASentFailure() throws Exception {
         try (OneConnectionServer server = OneConnectionServer.silent()) {
-            SocketHttpTransport transport = new SocketHttpTransport(Duration.ofMillis(300));
+            SocketHttpTransport transport = new SocketHttpTransport(Duration.ofMillis(300), CertificateValidation.enforced());
 
             assertThatThrownBy(() -> transport.exchange(foreignHostRequest("http://127.0.0.1:" + server.port())))
                     .isInstanceOf(SocketTimeoutException.class)
@@ -68,7 +69,7 @@ class SocketHttpTransportTest {
     void aRefusedConnectionIsUnsent() throws Exception {
         int closedPort = closedPort();
 
-        assertThatThrownBy(() -> new SocketHttpTransport(READ_TIMEOUT)
+        assertThatThrownBy(() -> new SocketHttpTransport(READ_TIMEOUT, CertificateValidation.enforced())
                 .exchange(foreignHostRequest("http://127.0.0.1:" + closedPort)))
                 .isInstanceOf(UnsentRequestException.class);
     }
@@ -112,7 +113,7 @@ class SocketHttpTransportTest {
     @Test
     void anUntrustedCertificateIsAnUnsentFailure() throws Exception {
         try (OneConnectionServer server = OneConnectionServer.replyingOverTls(serverTls())) {
-            SocketHttpTransport transport = new SocketHttpTransport(READ_TIMEOUT);
+            SocketHttpTransport transport = new SocketHttpTransport(READ_TIMEOUT, CertificateValidation.enforced());
 
             assertThatThrownBy(() -> transport.exchange(foreignHostRequest("https://localhost:" + server.port())))
                     .isInstanceOf(UnsentRequestException.class);

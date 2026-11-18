@@ -5,6 +5,8 @@ import burp.api.montoya.http.HttpService;
 import com.mcpscanner.auth.AuthStrategy;
 import com.mcpscanner.auth.NoAuthStrategy;
 import com.mcpscanner.checks.shared.collaborator.CollaboratorWatch;
+import com.mcpscanner.checks.shared.session.OutsideBurpConnections;
+import com.mcpscanner.http.CertificateValidation;
 import com.mcpscanner.logging.McpEventLog;
 import com.mcpscanner.mcp.BurpNativeJsonRpcFields;
 import com.mcpscanner.mcp.SseProbeStreams;
@@ -23,8 +25,18 @@ public record CheckServices(
         PrincipalListings principalListings,
         Supplier<Optional<SseProbeStreams>> sseProbeStreams,
         LateIssueSink lateIssues,
-        BurpNativeJsonRpcFields burpNativeFields
+        BurpNativeJsonRpcFields burpNativeFields,
+        CertificateValidation certificates
 ) {
+    public CheckServices(McpEventLog eventLog, Supplier<AuthStrategy> authStrategy, CollaboratorWatch collaboratorWatch,
+                         Supplier<Optional<HttpService>> probeService, Supplier<PrincipalRoster> principals,
+                         AccessLedger accessLedger, PrincipalListings principalListings,
+                         Supplier<Optional<SseProbeStreams>> sseProbeStreams, LateIssueSink lateIssues,
+                         BurpNativeJsonRpcFields burpNativeFields) {
+        this(eventLog, authStrategy, collaboratorWatch, probeService, principals, accessLedger, principalListings,
+                sseProbeStreams, lateIssues, burpNativeFields, CertificateValidation.enforced());
+    }
+
     public CheckServices(McpEventLog eventLog, Supplier<AuthStrategy> authStrategy,
                          Supplier<Optional<CollaboratorClient>> collaborator,
                          Supplier<Optional<HttpService>> probeService, Supplier<PrincipalRoster> principals,
@@ -53,6 +65,7 @@ public record CheckServices(
         Objects.requireNonNull(sseProbeStreams, "sseProbeStreams must not be null");
         Objects.requireNonNull(lateIssues, "lateIssues must not be null");
         Objects.requireNonNull(burpNativeFields, "burpNativeFields must not be null");
+        Objects.requireNonNull(certificates, "certificates must not be null");
     }
 
     public static CheckServices standalone() {
@@ -62,6 +75,10 @@ public record CheckServices(
 
     public CheckServices reportingLateIssues(CollaboratorWatch watch, LateIssueSink sink) {
         return new CheckServices(eventLog, authStrategy, watch, probeService, principals, accessLedger,
-                principalListings, sseProbeStreams, sink, burpNativeFields);
+                principalListings, sseProbeStreams, sink, burpNativeFields, certificates);
+    }
+
+    public OutsideBurpConnections outsideBurp() {
+        return new OutsideBurpConnections(certificates);
     }
 }

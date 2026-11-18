@@ -12,6 +12,7 @@ import com.mcpscanner.checks.api.HostAudits;
 import com.mcpscanner.checks.api.HostSettlement;
 import com.mcpscanner.checks.api.HostTrialResult;
 import com.mcpscanner.checks.api.ImplementedKind;
+import com.mcpscanner.checks.shared.session.OutsideBurpConnections;
 import com.mcpscanner.logging.McpEventLog;
 import com.mcpscanner.testutil.FakeMcpServer;
 import com.mcpscanner.testutil.MontoyaTestFactory;
@@ -172,7 +173,7 @@ class CrossClientResponseLeakCheckTest {
     void boundsHowLongEachAttemptWaitsForStalledReplies() {
         try (LeakServers.Server server = LeakServers.stallingTheRace(Duration.ofSeconds(5))) {
             HostAudits check = new HostAudits(new CrossClientResponseLeakCheck(McpEventLog.noop(),
-                    NoAuthStrategy::new, () -> probeService, Duration.ofMillis(200)));
+                    NoAuthStrategy::new, () -> probeService, Duration.ofMillis(200), OutsideBurpConnections.validating()));
             long started = System.nanoTime();
 
             check.audit(LeakServers.echoableToolCall(), server.http);
@@ -624,6 +625,6 @@ class CrossClientResponseLeakCheckTest {
     }
 
     private CrossClientResponseLeakCheck check(McpEventLog eventLog) {
-        return new CrossClientResponseLeakCheck(eventLog, NoAuthStrategy::new, () -> probeService, PROBE_TIMEOUT);
+        return new CrossClientResponseLeakCheck(eventLog, NoAuthStrategy::new, () -> probeService, PROBE_TIMEOUT, OutsideBurpConnections.validating());
     }
 }

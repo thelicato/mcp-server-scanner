@@ -4,6 +4,7 @@ import burp.api.montoya.http.message.HttpRequestResponse;
 import burp.api.montoya.scanner.audit.issues.AuditIssue;
 import burp.api.montoya.scanner.audit.issues.AuditIssueConfidence;
 import burp.api.montoya.scanner.audit.issues.AuditIssueSeverity;
+import com.mcpscanner.checks.shared.session.OutsideBurpConnections;
 import com.mcpscanner.logging.McpEventLog;
 import com.mcpscanner.mcp.BurpNativeJsonRpcFields;
 import com.mcpscanner.testutil.MontoyaTestFactory;
@@ -159,7 +160,7 @@ class SqlInjectionCheckTest {
 
     private List<AuditIssue> audit(SimulatedDatabaseServer server) {
         HttpRequestResponse base = server.baseline();
-        return new SqlInjectionCheck(BurpNativeJsonRpcFields.ABSENT, eventLog)
+        return new SqlInjectionCheck(BurpNativeJsonRpcFields.ABSENT, eventLog, OutsideBurpConnections.validating())
                 .audit(base, server.field(base), server.http());
     }
 

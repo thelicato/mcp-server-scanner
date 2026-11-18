@@ -5,6 +5,7 @@ import com.mcpscanner.auth.NoAuthStrategy;
 import com.mcpscanner.config.ClientIdentity;
 import com.mcpscanner.config.ClientIdentityField;
 import com.mcpscanner.config.ClientIdentityProvider;
+import com.mcpscanner.http.CertificateValidation;
 import com.mcpscanner.logging.McpEventLog;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
@@ -74,7 +75,7 @@ class ClientIdentityHandshakeTest {
             throws IOException {
         server = new McpFixtureServer(profile);
         manager = new McpClientManager(McpEventLog.noop(), () -> identity,
-                new JdkProtocolHttpTransport(McpHttpClients.upstream()));
+                new JdkProtocolHttpTransport(McpHttpClients.upstream(CertificateValidation.enforced())));
         manager.connect(new McpServerConfig(server.endpoint(), transport, new NoAuthStrategy()));
     }
 }

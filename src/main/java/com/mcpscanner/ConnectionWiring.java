@@ -65,7 +65,8 @@ final class ConnectionWiring {
         ConnectionReuse connectionReuse = new ConnectionReuse(new ProxyRouting(scannerEndpoint)::answersLocally);
         Http burpHttp = ConnectionReusingHttp.around(api.http(), connectionReuse);
         SharedUpstreamTransport upstreamTransport = SharedUpstreamTransport.over(burpHttp,
-                foundation.configStore()::useBurpNetworking, foundation.eventLog(), recording.captures());
+                foundation.configStore()::useBurpNetworking, foundation.eventLog(), recording.captures(),
+                foundation.certificates());
         McpClientManager clientManager = clientManager(foundation, upstreamTransport.transport());
         clientManager.scannerSession().observeLegacySseRoutesWith(recording.legacySseRoutes());
         scannerEndpoint.bindTo(clientManager.scannerSession());
@@ -95,7 +96,7 @@ final class ConnectionWiring {
     private static McpClientManager clientManager(ExtensionFoundation foundation,
                                                   ProtocolHttpTransport upstreamTransport) {
         McpClientManager clientManager = new McpClientManager(foundation.eventLog(), foundation.identityProvider(),
-                upstreamTransport);
+                upstreamTransport, foundation.certificates());
         clientManager.applySessionSettings(sessionSettings(foundation.configStore()));
         return clientManager;
     }
@@ -137,7 +138,8 @@ final class ConnectionWiring {
         ExtensionConfigStore configStore = foundation.configStore();
         McpScannerSession scannerSession = clientManager.scannerSession();
         return new SseProxyServer(scannerSession, new ProxySettings(
-                McpHttpClients.upstream(), upstreamTransport, ProxySettings.DEFAULT_RESPONSE_TIMEOUT, foundation.identityProvider(),
+                McpHttpClients.upstream(foundation.certificates()), upstreamTransport,
+                ProxySettings.DEFAULT_RESPONSE_TIMEOUT, foundation.identityProvider(),
                 configStore::redirectMode,
                 () -> configStore.resourceCap(ResourceCap.PROXY_POST_BODY_BYTES),
                 () -> configStore.resourceCap(ResourceCap.SSE_PENDING_RESPONSE_BYTES),
@@ -179,7 +181,7 @@ final class ConnectionWiring {
 
     IsolatedCatalogDiscovery newIsolatedDiscovery() {
         return new IsolatedCatalogDiscovery(foundation.eventLog(), foundation.identityProvider(),
-                upstreamTransport(), sessionSettings(foundation.configStore()));
+                upstreamTransport(), sessionSettings(foundation.configStore()), foundation.certificates());
     }
 
     void resetOnDisconnect(List<Runnable> resets) {

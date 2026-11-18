@@ -7,6 +7,7 @@ import com.mcpscanner.checks.api.CheckLog;
 import com.mcpscanner.checks.api.HostTrial;
 import com.mcpscanner.checks.api.RetryingHostCheck;
 import com.mcpscanner.checks.shared.random.RandomHex;
+import com.mcpscanner.checks.shared.session.OutsideBurpConnections;
 import com.mcpscanner.checks.shared.session.ProbeSessions;
 import com.mcpscanner.logging.McpEventLog;
 
@@ -24,15 +25,18 @@ public final class CrossClientResponseLeakCheck implements RetryingHostCheck {
     private final List<HostTrial> trials;
 
     public CrossClientResponseLeakCheck(McpEventLog eventLog, Supplier<AuthStrategy> authStrategy,
-                                        Supplier<Optional<HttpService>> sseProbeService) {
-        this(eventLog, authStrategy, sseProbeService, RACE_REPLY_TIMEOUT);
+                                        Supplier<Optional<HttpService>> sseProbeService,
+                                        OutsideBurpConnections outsideBurp) {
+        this(eventLog, authStrategy, sseProbeService, RACE_REPLY_TIMEOUT, outsideBurp);
     }
 
     CrossClientResponseLeakCheck(McpEventLog eventLog, Supplier<AuthStrategy> authStrategy,
-                                 Supplier<Optional<HttpService>> sseProbeService, Duration raceReplyTimeout) {
+                                 Supplier<Optional<HttpService>> sseProbeService, Duration raceReplyTimeout,
+                                 OutsideBurpConnections outsideBurp) {
         CheckLog log = new CheckLog(eventLog, CrossClientResponseLeakDescriptor.DESCRIPTOR.id());
         Supplier<String> markers = () -> MARKER_PREFIX + RandomHex.of(MARKER_RANDOM_BYTES);
-        LeakTrial leakTrial = new LeakTrial(new ProbeClients(new ProbeSessions(authStrategy, raceReplyTimeout), log),
+        ProbeSessions sessions = new ProbeSessions(authStrategy, raceReplyTimeout, outsideBurp);
+        LeakTrial leakTrial = new LeakTrial(new ProbeClients(sessions, log),
                 markers, new ConcurrentRound(markers, raceReplyTimeout));
         this.trials = List.of(new LeakHostTrial(log, sseProbeService, leakTrial,
                 new CrossClientResponseLeakIssues(CrossClientResponseLeakDescriptor.DESCRIPTOR)));

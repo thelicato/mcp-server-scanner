@@ -2,6 +2,7 @@ package com.mcpscanner.client;
 
 import com.mcpscanner.auth.BearerTokenAuthStrategy;
 import com.mcpscanner.config.ClientIdentityProvider;
+import com.mcpscanner.http.CertificateValidation;
 import com.mcpscanner.logging.McpEventLog;
 import com.mcpscanner.mcp.McpToolDefinition;
 import com.mcpscanner.testutil.MontoyaTestFactory;
@@ -27,11 +28,11 @@ class IsolatedCatalogDiscoveryTest {
     private static final String BOB = "Bearer bob";
     private static final String BOB_ONLY_TOOL = "bob_only";
 
-    private final JdkProtocolHttpTransport sharedTransport = new JdkProtocolHttpTransport(McpHttpClients.upstream());
+    private final JdkProtocolHttpTransport sharedTransport = new JdkProtocolHttpTransport(McpHttpClients.upstream(CertificateValidation.enforced()));
     private final McpClientManager primary = new McpClientManager(McpEventLog.noop(),
             ClientIdentityProvider.defaults(), sharedTransport);
     private final IsolatedCatalogDiscovery discovery = new IsolatedCatalogDiscovery(McpEventLog.noop(),
-            ClientIdentityProvider.defaults(), sharedTransport, ScannerSessionSettings.defaults());
+            ClientIdentityProvider.defaults(), sharedTransport, ScannerSessionSettings.defaults(), CertificateValidation.enforced());
     private McpFixtureServer server;
 
     @BeforeEach

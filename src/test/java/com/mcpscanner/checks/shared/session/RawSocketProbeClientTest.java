@@ -3,6 +3,7 @@ package com.mcpscanner.checks.shared.session;
 import burp.api.montoya.http.HttpService;
 import burp.api.montoya.http.message.HttpRequestResponse;
 import burp.api.montoya.http.message.requests.HttpRequest;
+import com.mcpscanner.http.CertificateValidation;
 import com.mcpscanner.http.wire.OneConnectionServer;
 import com.mcpscanner.http.wire.SocketHttpTransport;
 import com.mcpscanner.testutil.ClosedPort;
@@ -27,7 +28,7 @@ class RawSocketProbeClientTest {
     private static final String EVENT_STREAM_REPLY = "HTTP/1.1 200 OK\r\nContent-Type: text/event-stream\r\n"
             + "X-Served-By: stream\r\n\r\nevent: message\ndata: " + ANSWER + "\n\n";
 
-    private final RawSocketProbeClient client = new RawSocketProbeClient(Duration.ofMillis(500));
+    private final RawSocketProbeClient client = new RawSocketProbeClient(Duration.ofMillis(500), CertificateValidation.enforced());
 
     @BeforeEach
     void setUp() {
@@ -81,7 +82,7 @@ class RawSocketProbeClientTest {
         ProbeReplyReader failingReader = mock(ProbeReplyReader.class);
         when(failingReader.read(anyInt(), any(), any(), any())).thenThrow(new IllegalStateException("unparsable"));
         RawSocketProbeClient failingClient = new RawSocketProbeClient(
-                new SocketHttpTransport(Duration.ofMillis(500)), failingReader);
+                new SocketHttpTransport(Duration.ofMillis(500), CertificateValidation.enforced()), failingReader);
         try (OneConnectionServer server = OneConnectionServer.replyingWith(EVENT_STREAM_REPLY)) {
             Optional<HttpRequestResponse> exchange = failingClient.send(ping(server.port()));
 

@@ -2,6 +2,7 @@ package com.mcpscanner.checks.shared.stream;
 
 import burp.api.montoya.http.message.HttpHeader;
 import burp.api.montoya.http.message.requests.HttpRequest;
+import com.mcpscanner.http.CertificateValidation;
 import com.mcpscanner.logging.McpEventLog;
 import com.mcpscanner.mcp.HeaderMutation;
 import com.mcpscanner.mcp.ScannerSentinels;
@@ -25,18 +26,18 @@ public final class JdkStreamOpener implements StreamOpener {
     private final UnreachableStreamWarnings warnings;
     private final HttpClient client;
 
-    public JdkStreamOpener(McpEventLog log) {
-        this(StreamLimits.standard(), log);
+    public JdkStreamOpener(McpEventLog log, CertificateValidation certificates) {
+        this(StreamLimits.standard(), log, certificates);
     }
 
-    public JdkStreamOpener(StreamLimits limits) {
-        this(limits, McpEventLog.noop());
+    public JdkStreamOpener(StreamLimits limits, CertificateValidation certificates) {
+        this(limits, McpEventLog.noop(), certificates);
     }
 
-    public JdkStreamOpener(StreamLimits limits, McpEventLog log) {
+    public JdkStreamOpener(StreamLimits limits, McpEventLog log, CertificateValidation certificates) {
         this.limits = limits;
         this.warnings = new UnreachableStreamWarnings(log);
-        this.client = HttpClient.newBuilder()
+        this.client = certificates.httpClient()
                 .version(HttpClient.Version.HTTP_1_1)
                 .connectTimeout(limits.headerTimeout())
                 .followRedirects(HttpClient.Redirect.NEVER)

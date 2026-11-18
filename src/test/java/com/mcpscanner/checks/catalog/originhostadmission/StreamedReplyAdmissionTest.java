@@ -8,6 +8,7 @@ import com.mcpscanner.auth.NoAuthStrategy;
 import com.mcpscanner.checks.api.HostAudits;
 import com.mcpscanner.checks.api.HostSettlement;
 import com.mcpscanner.checks.shared.auth.CredentialHeaders;
+import com.mcpscanner.checks.shared.session.OutsideBurpConnections;
 import com.mcpscanner.checks.shared.session.ProbeSessions;
 import com.mcpscanner.checks.shared.stream.ScriptedEventStreams;
 import com.mcpscanner.logging.McpEventLog;
@@ -237,6 +238,6 @@ class StreamedReplyAdmissionTest {
 
     private OriginHostAdmissionCheck check() {
         return new OriginHostAdmissionCheck(eventLog, new CredentialHeaders(NoAuthStrategy::new), Optional::empty,
-                ScriptedEventStreams.none(), new ProbeSessions(NoAuthStrategy::new));
+                ScriptedEventStreams.none(), new ProbeSessions(NoAuthStrategy::new, OutsideBurpConnections.validating()), OutsideBurpConnections.validating());
     }
 }

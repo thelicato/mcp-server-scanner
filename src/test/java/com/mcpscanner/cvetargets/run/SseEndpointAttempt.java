@@ -2,6 +2,7 @@ package com.mcpscanner.cvetargets.run;
 
 import burp.api.montoya.http.message.requests.HttpRequest;
 import com.mcpscanner.cvetargets.requests.ArmEndpoint;
+import com.mcpscanner.http.CertificateValidation;
 import com.mcpscanner.http.wire.SocketHttpTransport;
 import com.mcpscanner.http.wire.WireExchange;
 import com.mcpscanner.http.wire.WireRequest;
@@ -19,7 +20,7 @@ public final class SseEndpointAttempt implements ReadinessAttempt {
     private static final Duration ATTEMPT_TIMEOUT = Duration.ofSeconds(5);
     private static final String ENDPOINT_EVENT = "event:endpoint";
 
-    private final SocketHttpTransport transport = new SocketHttpTransport(ATTEMPT_TIMEOUT);
+    private final SocketHttpTransport transport = new SocketHttpTransport(ATTEMPT_TIMEOUT, CertificateValidation.enforced());
 
     @Override
     public Optional<String> notReadyBecause(ArmEndpoint endpoint) {

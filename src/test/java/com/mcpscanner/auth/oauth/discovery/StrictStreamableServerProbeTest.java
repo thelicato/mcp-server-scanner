@@ -1,6 +1,7 @@
 package com.mcpscanner.auth.oauth.discovery;
 
 import com.mcpscanner.auth.oauth.safety.SuspiciousDestinationGate;
+import com.mcpscanner.http.CertificateValidation;
 import com.mcpscanner.logging.McpEventLog;
 import com.mcpscanner.testutil.MontoyaTestFactory;
 import com.mcpscanner.testutil.RecordingRealHttp;
@@ -40,7 +41,7 @@ class StrictStreamableServerProbeTest {
         server.start();
         RecordingRealHttp http = new RecordingRealHttp();
         OAuthMetadataDiscoverer discoverer = OAuthMetadataDiscoverer.defaultInstance(http, McpEventLog.noop(),
-                (url, purpose) -> SuspiciousDestinationGate.Decision.allow());
+                (url, purpose) -> SuspiciousDestinationGate.Decision.allow(), CertificateValidation.enforced());
         probe = new AuthRequirementProbe(http, discoverer);
     }
 
