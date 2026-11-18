@@ -13,7 +13,7 @@ public final class AuthorizationCallbackValidatorTest {
         validatesEveryPresentIssuerExactly();
         validatesIssuerBeforeReturningAuthorizationErrors();
         validatesStateBeforeReturningAuthorizationErrors();
-        System.out.println("AuthorizationCallbackValidatorTest: 6 behavior groups passed");
+        System.out.println("AuthorizationCallbackValidatorTest: 6 behaviour groups passed");
     }
 
     private static void acceptsMatchingIssuerAndState() {

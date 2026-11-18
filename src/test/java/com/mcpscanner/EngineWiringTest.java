@@ -143,7 +143,7 @@ class EngineWiringTest {
 
         await().atMost(ofSeconds(10)).until(launched::isFinished);
         assertThat(foundation.eventLog().snapshot())
-                .anySatisfy(entry -> assertThat(entry.message()).contains("cancelled —"));
+                .anySatisfy(entry -> assertThat(entry.message()).contains("cancelled -"));
     }
 
     private RunningScan launchOneRequestFromTheTab() {

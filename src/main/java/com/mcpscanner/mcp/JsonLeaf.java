@@ -1,6 +1,5 @@
 package com.mcpscanner.mcp;
 
-
 import java.util.List;
 
 public record JsonLeaf(List<JsonStep> steps, int startInclusive, int endExclusive, JsonValueKind kind,

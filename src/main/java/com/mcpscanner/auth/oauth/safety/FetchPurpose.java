@@ -7,7 +7,7 @@ import java.net.URI;
  * can render meaningful context in its prompts and event-log lines.
  *
  * @param label         human-readable label such as "Protected Resource Metadata".
- * @param mcpEndpoint   the configured MCP endpoint that scoped this connection — used to
+ * @param mcpEndpoint   the configured MCP endpoint that scoped this connection - used to
  *                      detect cross-origin redirects from the MCP host.
  * @param sourceUrl     the URL that introduced the destination (e.g. the PRM document URL
  *                      that referenced an authorization_servers entry). Nullable when the

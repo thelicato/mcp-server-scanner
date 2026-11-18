@@ -101,7 +101,7 @@ final class ComparisonHarness {
     }
 
     private static final Pattern DECISION = Pattern.compile(
-            "^" + Pattern.quote(CrossIdentityComparison.CHECK_ACCESS_LABEL + " — ") + "(.+?)(?: as (\\S+))?: ([^ ]+)$");
+            "^" + Pattern.quote(CrossIdentityComparison.CHECK_ACCESS_LABEL + " - ") + "(.+?)(?: as (\\S+))?: ([^ ]+)$");
 
     private static List<Decision> decisions(McpEventLog eventLog) {
         return eventLog.snapshot().stream()

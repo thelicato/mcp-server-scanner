@@ -4,7 +4,7 @@ A Burp Suite extension for security-testing [Model Context Protocol](https://mod
 
 Discovers MCP tools, resources, resource templates, and prompts, builds JSON-RPC 2.0 requests with fuzzable insertion points, and runs them through Burp's active and passive scanners.
 
-> **Requires Burp Suite Professional.** Every check is driven by Burp's Scanner (active and passive audits), which is not present in Burp Community Edition. The extension loads in Community but cannot scan — discovery may work, but no audit checks will run. Burp Collaborator (also Professional-only) is additionally required for the out-of-band RCE check.
+> **Requires Burp Suite Professional.** Every check is driven by Burp's Scanner (active and passive audits), which is not present in Burp Community Edition. The extension loads in Community but cannot scan - discovery may work, but no audit checks will run. Burp Collaborator (also Professional-only) is additionally required for the out-of-band RCE check.
 
 ## Features
 
@@ -38,7 +38,7 @@ Each check has a toggle in the **Scan Checks** tab. Severity is the headline rat
 | **MCP OAuth authorization without login or consent** | per host | High / Certain when the code redeems to a token that opens a refused request; Medium / Firm when a code is issued with no login or consent page; Medium / Tentative when the server first created an anonymous session; Information when the endpoint already answers without a token |
 | **MCP OAuth authorization code redeemed more than once** (part of the check above) | per host | Medium / Certain when a second sequential or concurrent redemption returns a working token |
 | **MCP sibling route authentication parity** | per host | Low / Firm when the main route refuses a catalog listing without credentials and a sibling route (`/mcp_message`, `/messages`, `/message`, `/sse`, `/mcp/` and similar) or the advertised legacy SSE message route answers it |
-| **MCP session lifecycle** | per host | High / Firm when probe session IDs are guessable (repeated, increasing, known time-based formats — UUID v1/v6/v7, ULID, KSUID, Snowflake, ObjectId — whose clock and counter fields leave under 64 random bits, or under 64 varying bits after hex/base64 decoding; up to 30 probe sessions when the first eight are borderline) and a bare ID runs a request without credentials; Low / Firm for guessable IDs alone (Tentative when only the live session's ID repeats); Low / Firm when a session still answers ping, or still opens its GET event stream (while a never-issued ID's stream is refused), after a successful DELETE. Runs only when the server issues `Mcp-Session-Id`, or on legacy SSE (guessability only, on probe streams of its own, skipped when the message route carries no session id); uses its own probe sessions and never touches the scanner's |
+| **MCP session lifecycle** | per host | High / Firm when probe session IDs are guessable (repeated, increasing, known time-based formats - UUID v1/v6/v7, ULID, KSUID, Snowflake, ObjectId - whose clock and counter fields leave under 64 random bits, or under 64 varying bits after hex/base64 decoding; up to 30 probe sessions when the first eight are borderline) and a bare ID runs a request without credentials; Low / Firm for guessable IDs alone (Tentative when only the live session's ID repeats); Low / Firm when a session still answers ping, or still opens its GET event stream (while a never-issued ID's stream is refused), after a successful DELETE. Runs only when the server issues `Mcp-Session-Id`, or on legacy SSE (guessability only, on probe streams of its own, skipped when the message route carries no session id); uses its own probe sessions and never touches the scanner's |
 
 ## Build
 
@@ -55,6 +55,7 @@ Requires Java 17.
 In Burp: **Extensions → Installed → Add → Java**, then select the fat JAR above.
 
 Open the **MCP Server Scanner** tab, enter the server endpoint, and connect. Connect, discovery and Scan run as the **primary user**, shown next to the Connect button as **as [User 1 · Detect automatically ▾]**. A new project's User 1 is set to **Detect automatically**: Connect tries without credentials, signs in with OAuth if the server advertises it, and if the server refuses, a strip under the endpoint asks for a bearer token right there and reconnects with it. Credentials are per user and live in the **Users** tab.
+
 Leave **Transport** on **Auto** unless you need to force a specific protocol family. The descriptions beneath the controls explain the supported versions and authentication choices. Protocol dates are negotiated automatically. After connecting, **Server Info → Connection** shows the selected mode, actual transport and protocol version, effective endpoint, and authentication mode, even after scan status changes. Existing saved Streamable HTTP and SSE choices still load.
 
 For OAuth, the **OAuth client** section of the **Client** tab is shared by every user who signs in with OAuth. The issuer is discovered from the MCP server unless you enter one. Choose **Auto** registration when the server advertises a usable method. Use **Pre-registered** when you have a client ID from the authorization server, or **Client ID Metadata Document** when you host a public HTTPS client metadata document. Use **Dynamic registration** only with servers that still expose a registration endpoint. The OAuth callback uses a loopback address; set a fixed callback port when the server requires an exact registered redirect URI. The OAuth client is locked while connected. The rest of the Client tab sets how the extension presents itself in the MCP handshake and in dynamic registration. For a machine-to-machine server, set the primary user's auth to **OAuth client credentials** (or **OAuth enterprise-managed**, when an identity provider plugin is installed) and fill in its grant settings in the Users tab.
@@ -73,7 +74,7 @@ Each user can also have an optional **Private marker:** text only that user shou
 
 Each user also keeps **owned values**: argument names with that user's own ids, such as `documentId → 42`. Tools that take an object id need a real one. A made-up id fails for every user, so an access bug stays hidden. A value is either **entered** (typed in, or owned objects saved by an earlier version) or **collected** from the server's replies by **Collect IDs** in the Access tab, in which case it records the operation and field it came from and whether it is **private** to that user or **shared** with others. Owned values are saved in the Burp project, never with reply text or credentials, and collected ones can be removed with "Clear collected IDs…" for one user or all. For each argument a tool call uses the user's first entered value, else its first private collected value; shared values are never used as owned ids.
 
-After Connect, each compared user lists the server's tools and resources in its own MCP session. The **Access** tab shows what each user lists. After **Check access**, it also shows what each can call. Set **Who should reach it** per item, and mark items **Anyone — same result for everyone** to silence them.
+After Connect, each compared user lists the server's tools and resources in its own MCP session. The **Access** tab shows what each user lists. After **Check access**, it also shows what each can call. Set **Who should reach it** per item, and mark items **Anyone - same result for everyone** to silence them.
 
 Cross-user testing is **Check access**, not a scan check. Check access sends each item as its owner (with the owner's owned values in place of schema defaults, as Scan does), then as every compared user and anonymously, and reports:
 
@@ -110,11 +111,12 @@ uv run server.py
 ```
 
 See [`ARCHITECTURE.md`](./ARCHITECTURE.md) for the architecture overview and [`AGENTS.md`](./AGENTS.md) for contributor and coding-agent instructions.
+
 The MCP protocol, OAuth and connection core libraries the extension is built on live in [`core/`](./core) as Gradle subprojects; `./gradlew test` runs their tests too. The `cve-targets/` directory holds deliberately vulnerable third-party servers used only to test the checks; it is never shipped in the extension JAR (see [`cve-targets/THIRD_PARTY.md`](./cve-targets/THIRD_PARTY.md)).
 
 ## Threat model and scope
 
-Use this extension only on MCP servers you own or have written authorization to test.
+Use this extension only on MCP servers you own or have written authorisation to test.
 
 Scans are intrusive: they send malformed JSON-RPC requests, fuzz tool arguments (which may invoke side-effectful tools on the target server), trigger Burp Collaborator out-of-band interactions, and may briefly stall the target server under load.
 
@@ -127,15 +129,15 @@ This tool is designed for MCP server **operators** auditing their own deployment
 - **SSE proxy port**: the local SSE proxy binds to an ephemeral loopback port. Firewall or network policies that block loopback traffic will break SSE-transport scans.
 - **OAuth callback port**: the OAuth callback listener defaults to an ephemeral port (port 0). If your authorization server requires strict redirect-URI pre-registration, set a fixed callback port in the OAuth section before initiating the flow.
 - **Project file sensitivity**: tool toggles, the user list and owned values (without credentials), the shared OAuth client settings and dynamic-registration client URIs are persisted in the Burp project file. Dynamic-registration management tokens stay in memory only, so **Copy management token** works until the extension unloads; tokens saved by earlier versions are deleted when the project loads. Treat the project file as sensitive and restrict access accordingly.
-- **Check access precision**: an object or tool every user may legitimately read (a global help tool, a team document) can show a possible finding on the Access grid. Set its **Who should reach it** to **Anyone — same result for everyone** in the Access tab. Replaying write tools as another identity needs the same confirmation as Scan.
+- **Check access precision**: an object or tool every user may legitimately read (a global help tool, a team document) can show a possible finding on the Access grid. Set its **Who should reach it** to **Anyone - same result for everyone** in the Access tab. Replaying write tools as another identity needs the same confirmation as Scan.
 - **Auth-bypass check on SSE transport**: the SSE event stream remains authenticated while an operation POST is tested without credentials. An accepted POST therefore does not by itself prove that the server permits a fully unauthenticated session. The auth-bypass check is fully reliable on Streamable HTTP transport.
 
 ## Troubleshooting
 
-**OAuth 401 loops** — usually a clock-skew or audience-mismatch issue. Check the Logger sub-tab for refresh failures and verify that the token audience matches the resource server's expected value. On initialize-based transports, also verify that `Mcp-Session-Id` is round-tripping through the proxy.
+**OAuth 401 loops** - usually a clock-skew or audience-mismatch issue. Check the Logger sub-tab for refresh failures and verify that the token audience matches the resource server's expected value. On initialize-based transports, also verify that `Mcp-Session-Id` is round-tripping through the proxy.
 
-**SSE handshake hangs** — confirm the local proxy port is reachable from Burp's scanner. Check the Logger sub-tab for proxy startup errors or connection failures.
+**SSE handshake hangs** - confirm the local proxy port is reachable from Burp's scanner. Check the Logger sub-tab for proxy startup errors or connection failures.
 
-**`tools/list` fails** — check the Logger sub-tab for the selected protocol version and catalog error. Initialize-based servers may require `Mcp-Session-Id`; modern servers use `server/discover` and do not have a protocol session ID.
+**`tools/list` fails** - check the Logger sub-tab for the selected protocol version and catalog error. Initialize-based servers may require `Mcp-Session-Id`; modern servers use `server/discover` and do not have a protocol session ID.
 
-**JAR loads but no tab appears** — open Burp's **Extender** output panel and look for a stack trace. The most common causes are a Java version mismatch (requires Java 17+) or a conflicting dependency already loaded by another extension.
+**JAR loads but no tab appears** - open Burp's **Extender** output panel and look for a stack trace. The most common causes are a Java version mismatch (requires Java 17+) or a conflicting dependency already loaded by another extension.

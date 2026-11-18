@@ -60,7 +60,6 @@ public class OAuthConfigPanel extends JPanel implements OAuthConnectSupport {
     private final WrappingText registrationRequirementLabel = new WrappingText("").muted();
     private final JButton discoverButton = new JButton("Discover");
 
-
     private final OAuthAuthorizationFlow authorizationFlow;
     private final OAuthDiscoveryPresenter discoveryPresenter;
     private final Runnable signInAttemptStart;
@@ -464,7 +463,7 @@ public class OAuthConfigPanel extends JPanel implements OAuthConnectSupport {
 
         @Override
         public void onDiscoveryFailure() {
-            renderDiscoveryStatus("No OAuth metadata found — enter issuer manually", ThemeColors.error(), Font.PLAIN);
+            renderDiscoveryStatus("No OAuth metadata found - enter issuer manually", ThemeColors.error(), Font.PLAIN);
             refreshDiscoverEnabled();
         }
 

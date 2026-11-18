@@ -68,5 +68,4 @@ public class AsWellKnownProbe implements MetadataProbe {
     private static DiscoveredMetadata toDiscoveredMetadata(AuthorizationServerMetadata metadata) {
         return new DiscoveredMetadata(URI.create(metadata.getIssuer().getValue()), DiscoverySource.AS_WELL_KNOWN, metadata);
     }
-
 }

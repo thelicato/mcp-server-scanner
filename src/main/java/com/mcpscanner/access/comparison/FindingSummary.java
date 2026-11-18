@@ -31,10 +31,10 @@ final class FindingSummary {
 
     private static String strength(Finding finding, Principal markerHolder) {
         if (finding.firm()) {
-            return " (Firm — " + markerHolder.name() + "'s private marker appeared)";
+            return " (Firm - " + markerHolder.name() + "'s private marker appeared)";
         }
         return markerHolder.privateMarker().filter(marker -> !marker.isBlank()).isPresent()
-                ? " (Tentative — " + markerHolder.name() + "'s private marker did not appear)"
-                : " (Tentative — no private marker configured for " + markerHolder.name() + ")";
+                ? " (Tentative - " + markerHolder.name() + "'s private marker did not appear)"
+                : " (Tentative - no private marker configured for " + markerHolder.name() + ")";
     }
 }

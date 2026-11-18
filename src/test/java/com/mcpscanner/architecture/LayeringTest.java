@@ -84,7 +84,7 @@ public class LayeringTest {
                     .and().doNotHaveFullyQualifiedName("com.mcpscanner.McpScannerExtension")
                     .should().dependOnClassesThat().resideInAPackage("com.mcpscanner.ui..")
                     .because("Only the BurpExtension entry point may construct McpScannerTab. No other package "
-                            + "should reach into Swing widgets — UI state changes flow through ui.state reducers.");
+                            + "should reach into Swing widgets - UI state changes flow through ui.state reducers.");
 
     @ArchTest
     static final ArchRule checks_do_not_depend_on_session_state =
@@ -118,7 +118,7 @@ public class LayeringTest {
                             "com.mcpscanner.ui..")
                     .because("scan/ builds Burp insertion points from MCP tool definitions. It legitimately depends "
                             + "on auth.AuthStrategy (interface) to attach credentials to outbound scans, but must not "
-                            + "reach into checks/proxy/ui — those are consumers of scan output.");
+                            + "reach into checks/proxy/ui - those are consumers of scan output.");
 
     @ArchTest
     static final ArchRule engine_depends_only_on_montoya_and_logging =

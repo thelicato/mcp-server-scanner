@@ -70,7 +70,7 @@ class AccessComparisonScenarioTest {
         assertThat(run.ledger().findingsOf("b")).singleElement().satisfies(finding -> {
             assertThat(finding.kind()).isEqualTo(AccessFinding.Kind.POSSIBLE_OBJECT_LEVEL);
             assertThat(finding.summary()).isEqualTo("Object-level: Primary's credentials reached identity-B's object "
-                    + "(Tentative — no private marker configured for identity-B)");
+                    + "(Tentative - no private marker configured for identity-B)");
         });
     }
 
@@ -127,7 +127,6 @@ class AccessComparisonScenarioTest {
 
         assertThat(run.issues()).hasSize(1);
     }
-
 
     @Test
     void onlyToolCallsAndResourceReadsWithAnIdApply() {

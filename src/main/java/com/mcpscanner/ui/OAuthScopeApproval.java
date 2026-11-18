@@ -67,6 +67,6 @@ final class OAuthScopeApproval {
         return "The server requires authorization for these OAuth scopes:\n\n"
                 + scopes.stream().sorted().collect(Collectors.joining("\n"))
                 + "\n\nIssuer: " + issuer + "\nResource: " + resource + "\nClient: " + clientId
-                + "\n\nApprove opening the browser to authorize this scope increase?";
+                + "\n\nApprove opening the browser to authorise this scope increase?";
     }
 }

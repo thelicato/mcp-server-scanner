@@ -143,9 +143,9 @@ final class SelectAllHeader {
 
     private String describe(State state, String gesture) {
         return switch (state) {
-            case ALL -> "All shown " + plural + " ticked — " + gesture + " untick them";
-            case NONE -> "No shown " + plural + " ticked — " + gesture + " tick them all";
-            case PARTIAL -> "Some shown " + plural + " ticked — " + gesture + " tick them all";
+            case ALL -> "All shown " + plural + " ticked - " + gesture + " untick them";
+            case NONE -> "No shown " + plural + " ticked - " + gesture + " tick them all";
+            case PARTIAL -> "Some shown " + plural + " ticked - " + gesture + " tick them all";
         };
     }
 

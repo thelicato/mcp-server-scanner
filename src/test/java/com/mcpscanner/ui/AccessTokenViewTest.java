@@ -19,7 +19,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 class AccessTokenViewTest {
 
-
     private final List<Runnable> background = new ArrayList<>();
     private final List<String> reports = new ArrayList<>();
     private final Clipboard clipboard = new Clipboard("test");
@@ -55,7 +54,6 @@ class AccessTokenViewTest {
         assertThat(view.refreshButton().getToolTipText())
                 .isEqualTo("Get a new access token using the refresh token");
     }
-
 
     @Test
     void anAuthTypeWithoutATokenHidesTheTokenSection() {

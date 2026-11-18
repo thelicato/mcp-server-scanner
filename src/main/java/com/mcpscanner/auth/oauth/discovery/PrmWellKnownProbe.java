@@ -43,5 +43,4 @@ public class PrmWellKnownProbe implements MetadataProbe {
                         .flatMap(body -> resolver.resolveFetchedPrm(
                                 prmUrl, DiscoverySource.PRM_WELL_KNOWN, mcpResource, body)));
     }
-
 }

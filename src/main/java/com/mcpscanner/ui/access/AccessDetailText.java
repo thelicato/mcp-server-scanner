@@ -25,7 +25,7 @@ final class AccessDetailText {
 
     private static String item(AccessRow row) {
         List<String> lines = new ArrayList<>();
-        lines.add(name(row) + " — owned by " + PrincipalLabels.described(row.owner()));
+        lines.add(name(row) + " - owned by " + PrincipalLabels.described(row.owner()));
         lines.add(BULLET + expectation(row) + " Change it in the last column.");
         lines.add(BULLET + summary(row));
         if (row.item().writes()) {
@@ -37,13 +37,13 @@ final class AccessDetailText {
     private static String identity(AccessRow row, Principal principal) {
         AccessCell cell = row.cell(principal.id());
         List<String> lines = new ArrayList<>();
-        lines.add(name(row) + " — " + PrincipalLabels.described(principal));
+        lines.add(name(row) + " - " + PrincipalLabels.described(principal));
         lines.add(BULLET + listing(row, cell, principal));
         if (row.ownedBy(principal)) {
             lines.add(BULLET + principal.name() + " owns this item: its own call is the baseline every other "
                     + "identity is compared with.");
         } else if (cell.sameCredentialsAs().isPresent()) {
-            lines.add(BULLET + "Same credentials as " + cell.sameCredentialsAs().get().name() + " — not compared. Give "
+            lines.add(BULLET + "Same credentials as " + cell.sameCredentialsAs().get().name() + " - not compared. Give "
                     + principal.name() + " another account's credentials on the Users tab to compare it.");
         } else {
             lines.add(BULLET + identityOutcome(row, cell, principal));
@@ -60,7 +60,7 @@ final class AccessDetailText {
         AccessCell cell = row.anonymous();
         String outcome = cell.outcome().map(value -> anonymousOutcome(row, cell, value))
                 .orElse("Not called yet. Check access also replays this " + method(row) + " with no credentials.");
-        return String.join("\n", name(row) + " — Anonymous (no credentials)", BULLET + outcome,
+        return String.join("\n", name(row) + " - Anonymous (no credentials)", BULLET + outcome,
                 BULLET + expectation(row) + verdict(cell));
     }
 
@@ -100,7 +100,7 @@ final class AccessDetailText {
     }
 
     private static String unconfirmedSameResult(AccessRow row, Principal principal) {
-        return "Same result as " + row.owner().name() + " — allowed? " + principal.name() + " is lower privilege "
+        return "Same result as " + row.owner().name() + " - allowed? " + principal.name() + " is lower privilege "
                 + "and the expectation is only inferred. If " + principal.name() + " should not reach it, set Who "
                 + "should reach it (double-click this cell).";
     }

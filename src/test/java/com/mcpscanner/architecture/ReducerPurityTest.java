@@ -33,7 +33,7 @@ public class ReducerPurityTest {
                             "com.mcpscanner.ui",
                             "com.mcpscanner.ui.widgets..")
                     .because("ui/state/ must remain a pure value layer. Its consumers (panels in ui/, widgets in "
-                            + "ui/widgets/) reach in to read state — never the other way around. A dep on a panel "
+                            + "ui/widgets/) reach in to read state - never the other way around. A dep on a panel "
                             + "or widget class would invert the reducer relationship and bring Swing back in "
                             + "through the side door.");
 }

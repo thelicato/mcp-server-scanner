@@ -46,7 +46,7 @@ class CheckAccessRunnerIT {
         AccessCell bobReadsAlicesDocument = row(snapshot, GET_DOCUMENT).cell(BOB.id());
         assertThat(bobReadsAlicesDocument.findings()).extracting(AccessFinding::summary).containsExactlyInAnyOrder(
                 "Object-level: bob received alice's private marker",
-                "Object-level: alice's credentials reached bob's object (Firm — bob's private marker appeared)");
+                "Object-level: alice's credentials reached bob's object (Firm - bob's private marker appeared)");
         assertThat(bobReadsAlicesDocument.reported()).isTrue();
         assertThat(bobReadsAlicesDocument.possible()).isFalse();
         assertThat(bobReadsAlicesDocument.anomaly()).isFalse();

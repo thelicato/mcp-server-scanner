@@ -53,7 +53,6 @@ import com.mcpscanner.scan.request.ScanRequestRenderer;
 import com.mcpscanner.testutil.ImmutableHttpRequest;
 import com.mcpscanner.testutil.InMemoryPersistedObject;
 
-
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -65,7 +64,6 @@ import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executors;
 import java.util.function.Supplier;
-
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.awaitility.Awaitility.await;

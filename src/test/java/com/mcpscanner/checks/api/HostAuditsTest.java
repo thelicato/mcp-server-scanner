@@ -20,7 +20,7 @@ import static org.mockito.Mockito.when;
 
 class HostAuditsTest {
 
-    private static final String PREFIX = "Scan check: retrying — ";
+    private static final String PREFIX = "Scan check: retrying - ";
     private static final String SUBJECT = "a base request without a request";
 
     private final Http http = mock(Http.class);

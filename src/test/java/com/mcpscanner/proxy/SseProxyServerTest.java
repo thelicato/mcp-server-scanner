@@ -709,7 +709,7 @@ class SseProxyServerTest {
             return "";
         }
         String rawQuery = java.net.URI.create(endpoint).getRawQuery();
-        // NanoHTTPD's HTTPSession.getQueryParameterString() never returns null — a request with no
+        // NanoHTTPD's HTTPSession.getQueryParameterString() never returns null - a request with no
         // query yields the empty string. Mirror that here so the mock is faithful to the runtime.
         return rawQuery != null ? rawQuery : "";
     }
@@ -1151,7 +1151,7 @@ class SseProxyServerTest {
     /**
      * Root-path regression: when the configured endpoint has no explicit path (e.g.
      * {@code https://mcp.example.com}), {@link java.net.URI#getRawPath()} returns the empty string
-     * but the rewritten Burp request arrives with URI {@code "/"}. Without empty-path normalization
+     * but the rewritten Burp request arrives with URI {@code "/"}. Without empty-path normalisation
      * the proxy 404s the request even when the upstream really is at the root.
      */
     @Test
@@ -1224,7 +1224,7 @@ class SseProxyServerTest {
 
     /**
      * Path-only routing: a fuzzed/varying query (e.g. {@code /mcp?x=1}) against the {@code /mcp}
-     * endpoint still routes — the path is what gates the match, never the query.
+     * endpoint still routes - the path is what gates the match, never the query.
      */
     @Test
     @SuppressWarnings("unchecked")
@@ -1635,7 +1635,7 @@ class SseProxyServerTest {
     void forwardStreamableHttp_dropsKeepAliveHeaderForbiddenByHttpClientBuilder() throws Exception {
         // Java HttpRequest.Builder throws IllegalArgumentException for keep-alive/te/trailers
         // (see jdk.internal.net.http.common.Utils.DISALLOWED_HEADERS_SET). If a Burp config
-        // forwarded one of these, the proxy would 502 — drop them at the proxy boundary.
+        // forwarded one of these, the proxy would 502 - drop them at the proxy boundary.
         HttpResponse<InputStream> upstreamResponse = mockStreamResponse(200, "application/json",
                 "{\"jsonrpc\":\"2.0\",\"id\":1,\"result\":{}}");
         HttpClient httpClient = mock(HttpClient.class);
@@ -1695,7 +1695,7 @@ class SseProxyServerTest {
             verify(httpClient, times(4)).send(captor.capture(), any(HttpResponse.BodyHandler.class));
             assertIsolatedSessionCleanup(captor.getAllValues().get(3));
             HttpRequest outbound = captor.getAllValues().get(2);
-            // Java HttpClient's HttpRequest builder forbids Host/Content-Length/Connection — if
+            // Java HttpClient's HttpRequest builder forbids Host/Content-Length/Connection - if
             // the proxy attempted to set them the build would throw IllegalArgumentException and
             // no request would be sent.
             assertThat(outbound.headers().firstValue("X-Custom")).contains("keep-me");
@@ -1786,7 +1786,7 @@ class SseProxyServerTest {
         // Regression: RESERVED_FORWARD_HEADERS was missing content-type and accept.
         // forwardStreamableHttp hardcodes both via builder.header(), then applyForwardHeaders
         // re-appended them from the inbound Burp request (which buildHeadersBlock always writes).
-        // HttpRequest.Builder.header() appends, not replaces — strict servers received two
+        // HttpRequest.Builder.header() appends, not replaces - strict servers received two
         // Content-Type headers and responded with HTTP 415. Assert allValues, not firstValue,
         // because firstValue() returns the first occurrence and masks the duplication.
         HttpResponse<InputStream> upstreamResponse = mockStreamResponse(200, "application/json",
@@ -1813,7 +1813,7 @@ class SseProxyServerTest {
             assertIsolatedSessionCleanup(captor.getAllValues().get(3));
             HttpRequest outbound = captor.getAllValues().get(2);
             assertThat(outbound.headers().allValues("Content-Type"))
-                    .as("Content-Type must appear exactly once — duplicate causes HTTP 415 on strict servers")
+                    .as("Content-Type must appear exactly once - duplicate causes HTTP 415 on strict servers")
                     .containsExactly("application/json");
             assertThat(outbound.headers().allValues("Accept"))
                     .as("Accept must appear exactly once")

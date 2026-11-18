@@ -79,8 +79,8 @@ class McpCheckAdapterTest {
         adapterFor(DESCRIPTOR, List.of(mock(AuditIssue.class)), true).doCheck(base, null, http);
 
         assertThat(infos()).hasSize(2);
-        assertThat(infos().get(0)).isEqualTo("Scan check: demo-active — started");
-        assertThat(infos().get(1)).startsWith("Scan check: demo-active — finished in ").endsWith("ms, 0 requests, 1 issue");
+        assertThat(infos().get(0)).isEqualTo("Scan check: demo-active - started");
+        assertThat(infos().get(1)).startsWith("Scan check: demo-active - finished in ").endsWith("ms, 0 requests, 1 issue");
     }
 
     @Test
@@ -101,7 +101,7 @@ class McpCheckAdapterTest {
 
         new RequestCheckAdapter(AdapterFixtures.settingsAllowing(true), eventLog, sendingTwice).doCheck(base, null, http);
 
-        assertThat(infos().get(1)).matches("Scan check: demo-active — finished in \\d+ms, 2 requests, 0 issues");
+        assertThat(infos().get(1)).matches("Scan check: demo-active - finished in \\d+ms, 2 requests, 0 issues");
     }
 
     @Test
@@ -111,7 +111,7 @@ class McpCheckAdapterTest {
         new RequestCheckAdapter(AdapterFixtures.settingsAllowing(true), eventLog, reportingFromAWorker)
                 .doCheck(base, null, http);
 
-        assertThat(infos().get(1)).matches("Scan check: demo-active — finished in \\d+ms, 3 requests, 0 issues");
+        assertThat(infos().get(1)).matches("Scan check: demo-active - finished in \\d+ms, 3 requests, 0 issues");
     }
 
     @Test
@@ -132,7 +132,7 @@ class McpCheckAdapterTest {
         adapter.doCheck(base, null, http);
 
         assertThat(infos()).containsExactly(
-                "Scan check: demo-active — skipped a base request without a request (check disabled)");
+                "Scan check: demo-active - skipped a base request without a request (check disabled)");
     }
 
     @Test
@@ -154,8 +154,8 @@ class McpCheckAdapterTest {
         adapter.invocationsSkipped(1, SkipReason.extensionUnloaded());
 
         assertThat(infos()).containsExactly(
-                "Scan check: demo-active — skipped 3 invocations (scan cancelled)",
-                "Scan check: demo-active — skipped 1 invocation (extension unloaded)");
+                "Scan check: demo-active - skipped 3 invocations (scan cancelled)",
+                "Scan check: demo-active - skipped 1 invocation (extension unloaded)");
     }
 
     @Test

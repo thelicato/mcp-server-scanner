@@ -1,18 +1,15 @@
 # mcp-test-server
 
-An intentionally vulnerable MCP server and OAuth authorization server. The
-[Burp MCP Server Scanner extension](../) uses it as its local test target.
+An intentionally vulnerable MCP server and OAuth authorization server. The [Burp MCP Server Scanner extension](../) uses it as its local test target.
 
 Every vulnerability that a v1 check targets is a separate module with two modes:
 
 - **vulnerable:** the check should fire.
 - **safe:** the fixed behaviour. The check should stay silent.
 
-You can set each vulnerability's mode at startup or change it at runtime, so one
-running server can show a check both firing and staying silent.
+You can set each vulnerability's mode at startup or change it at runtime, so one running server can show a check both firing and staying silent.
 
-> Do not expose this server to an untrusted network. In vulnerable mode it runs shell
-> commands, evaluates code and reads arbitrary files.
+> Do not expose this server to an untrusted network. In vulnerable mode it runs shell commands, evaluates code and reads arbitrary files.
 
 ## Run
 
@@ -39,8 +36,7 @@ The endpoints are:
 
 ## Configuration interface
 
-Settings are read from four layers. Later layers override earlier ones, and
-`vulns` is merged per name across layers.
+Settings are read from four layers. Later layers override earlier ones, and `vulns` is merged per name across layers.
 
 1. A JSON file: `--config FILE` or `MCP_TEST_CONFIG=FILE`
 2. Environment variables: `MCP_TEST_<KEY>`
@@ -50,7 +46,7 @@ Settings are read from four layers. Later layers override earlier ones, and
 | Setting | CLI | Environment | Default |
 |---|---|---|---|
 | Mode of every vuln not named | `--default-mode vulnerable\|safe` | `MCP_TEST_DEFAULT_MODE` | `vulnerable` |
-| Mode of one vuln | `--vuln NAME=MODE` (repeatable) | `MCP_TEST_VULNS=a=safe,b=vulnerable` | — |
+| Mode of one vuln | `--vuln NAME=MODE` (repeatable) | `MCP_TEST_VULNS=a=safe,b=vulnerable` | - |
 | Switch off a request family or transport | `--disable-family FAMILY` (repeatable) | `MCP_TEST_DISABLED_FAMILIES=ping,sse` | none |
 | List page size (forces cursors) | `--page-size N` | `MCP_TEST_PAGE_SIZE` | `3` |
 | `Mcp-Session-Id` policy | `--sessions required\|optional\|off` | `MCP_TEST_SESSIONS` | `required` |
@@ -64,9 +60,7 @@ Settings are read from four layers. Later layers override earlier ones, and
 | Outbound fetch timeout (s) | `--fetch-timeout` | `MCP_TEST_FETCH_TIMEOUT` | `3` |
 | Enabled MCP protocol versions | `--protocol-version V` (repeatable, replaces the default) | `MCP_TEST_PROTOCOL_VERSIONS=2025-06-18,2025-03-26` | all five known versions |
 
-The config file uses the same keys, for example:
-`{"default_mode": "safe", "vulns": {"jwt_alg_none": "vulnerable"}, "disabled_families": ["sse"],
-"protocol_versions": ["2026-07-28"]}`. An unknown protocol version stops the server at startup.
+The config file uses the same keys, for example: `{"default_mode": "safe", "vulns": {"jwt_alg_none": "vulnerable"}, "disabled_families": ["sse"], "protocol_versions": ["2026-07-28"]}`. An unknown protocol version stops the server at startup.
 
 To change modes at runtime without a restart:
 
@@ -78,20 +72,16 @@ curl localhost:8000/_test/vulns              # [{name, mode, summary}, ...]
 
 ### Auth interaction
 
-`unauthenticated_execution` decides only what happens when a request has **no**
-`Authorization` header:
+`unauthenticated_execution` decides only what happens when a request has **no** `Authorization` header:
 
 - **vulnerable:** the request executes.
 - **safe:** the server answers 401 with `WWW-Authenticate: Bearer resource_metadata=…`.
 
-A request that carries a bearer token is always checked by the JWT verifier, and the
-`jwt_*` modules relax that verifier. A JWT check that needs the missing-credential
-control refused should set `unauthenticated_execution=safe`.
+A request that carries a bearer token is always checked by the JWT verifier, and the `jwt_*` modules relax that verifier. A JWT check that needs the missing-credential control refused should set `unauthenticated_execution=safe`.
 
 ## Vulnerability catalogue
 
-The surfaces and the vulnerable and safe behaviour of each module are listed below.
-Each module lives at `src/mcp_test_server/vulns/<family>/<name>.py`.
+The surfaces and the vulnerable and safe behaviour of each module are listed below. Each module lives at `src/mcp_test_server/vulns/<family>/<name>.py`.
 
 ### Unauthenticated execution
 
@@ -125,9 +115,7 @@ Mint one with `POST /_test/mint-token`.
 | `jwt_wrong_issuer` | Any `iss` | Rejected |
 | `jwt_expired` | `exp` in the past or missing | Rejected |
 
-Each weakness relaxes only its own rule; they do not combine on their own. For
-example, a wrong-issuer token signed with a random key is still rejected unless
-`jwt_forged_signature` is also vulnerable.
+Each weakness relaxes only its own rule; they do not combine on their own. For example, a wrong-issuer token signed with a random key is still rejected unless `jwt_forged_signature` is also vulnerable.
 
 ### Origin/Host admission
 
@@ -147,12 +135,10 @@ There are three variants. Each one registers the same four surfaces:
 | Tool | `read_file_<v>` | argument `path` |
 | Header-driven tool | `read_document_<v>` | request header `X-Document-Path` |
 | Prompt | `review_file_<v>` | argument `path` |
-| Resource | `<scheme>://<root>/readme.txt` (encoded: `encoded-file:///readme.txt`) | — |
+| Resource | `<scheme>://<root>/readme.txt` (encoded: `encoded-file:///readme.txt`) | - |
 | Resource template | `<scheme>:///{+path}` | `path` |
 
-For `plain` and `prefix`, a resource URI's path is absolute, as in a real `file://`
-URI. So `file:///etc/passwd` means `/etc/passwd`. For `encoded`, the URI path is
-relative to the root, because the variant rejects a leading `/` by design.
+For `plain` and `prefix`, a resource URI's path is absolute, as in a real `file://` URI. So `file:///etc/passwd` means `/etc/passwd`. For `encoded`, the URI path is relative to the root, because the variant rejects a leading `/` by design.
 
 | Name | `<v>` | `<scheme>` | Vulnerable | Safe |
 |---|---|---|---|---|
@@ -202,8 +188,7 @@ Each module fetches every string value of the right shape from its fields:
 - an `http(s)://` URL, fetched as given
 - a bare `host.tld[:port][/path]`, fetched as `http://…`
 
-Fetches in safe mode never happen. Every attempt is recorded at `GET /_test/fetches`
-as `{source, path, url, time}`.
+Fetches in safe mode never happen. Every attempt is recorded at `GET /_test/fetches` as `{source, path, url, time}`.
 
 | Name | Fields |
 |---|---|
@@ -223,18 +208,15 @@ as `{source, path, url, time}`.
 | `downstream_raw_segment` | Tool `get_invoice` (`invoice_id`) against the in-process billing API `/api/v2/invoices/<id>` | Joins the id raw, then `posixpath.normpath`. `../` reaches the non-error service index at `/api/v2` | Percent-encodes the id as a single segment |
 | `downstream_encoded_dot_segment` | Tool `get_order` (`order_id`) against `/api/v2/orders/<id>` | Percent-encodes the id (as `encodeURIComponent` does), then resolves dot segments, so only a bare `..` reaches the service index | Rejects `.` and `..` as a tool error |
 
-The protected routes `/api/v1/token` and `/api/v1/admin/users` contain the marker
-`downstream-protected-marker-4931`. Known ids are `LIC-1001` and `LIC-1002`.
+The protected routes `/api/v1/token` and `/api/v1/admin/users` contain the marker `downstream-protected-marker-4931`. Known ids are `LIC-1001` and `LIC-1002`.
 
 The billing service index (`billing-service-index`) is the non-error API root the route-escape check's differential tier needs. Known billing ids are `INV-1001` and `ORD-2001`.
 
-Unknown ids return the non-error text `{"error": "not found"}`. That keeps the normal
-and missing controls non-error in both modes.
+Unknown ids return the non-error text `{"error": "not found"}`. That keeps the normal and missing controls non-error in both modes.
 
 ### Cross-identity access control
 
-Three static bearer users are always accepted by the credential gate, beside minted JWTs.
-No flag is needed; like the preconfigured OAuth clients, they are fixture identities.
+Three static bearer users are always accepted by the credential gate, beside minted JWTs. No flag is needed; like the preconfigured OAuth clients, they are fixture identities.
 
 | User | Role | Token (`Authorization: Bearer …`) | Owns |
 |---|---|---|---|
@@ -242,12 +224,7 @@ No flag is needed; like the preconfigured OAuth clients, they are fixture identi
 | `bob` | member | `bob-token` | document `d-bob-0042`, `notes://bob/private.md` (marker `BOB-PRIVATE-91ad`) |
 | `carol` | reader | `carol-token` | nothing |
 
-Any other bearer value is still verified as a JWT, so `mallory-token` gets 401. A request with
-no credentials gets 401 when `unauthenticated_execution=safe` (as under `--default-mode safe`).
-When the gate does admit an anonymous request, the identity tools answer
-`Error: authentication required` (`isError: true`) and the identity resources a JSON-RPC
-`-32600` error. The identity tools and resources are listed only to the three users, so an
-anonymous or JWT caller's listing is unchanged.
+Any other bearer value is still verified as a JWT, so `mallory-token` gets 401. A request with no credentials gets 401 when `unauthenticated_execution=safe` (as under `--default-mode safe`). When the gate does admit an anonymous request, the identity tools answer `Error: authentication required` (`isError: true`) and the identity resources a JSON-RPC `-32600` error. The identity tools and resources are listed only to the three users, so an anonymous or JWT caller's listing is unchanged.
 
 | Name | Surface | Listed to | Vulnerable | Safe |
 |---|---|---|---|---|
@@ -256,15 +233,11 @@ anonymous or JWT caller's listing is unchanged.
 | `cross_identity_role` | Tools `delete_project` (`project_id`) and `list_users` | `delete_project`: alice, bob; `list_users`: alice | Hidden tools still run for lower roles with the owner's result shape (the Obot / MCPHub shape) | `Error: forbidden - role <role> may not call this tool` |
 | `cross_identity_session` | Streamable HTTP `Mcp-Session-Id`, read through tool `whoami` | every user | A session opened by alice runs bob's request in alice's session context: `whoami` with `bob-token` and alice's session id answers `alice` (the MCP Python SDK CVE-2026-52869 shape) | 404 `Unknown session` for a session presented with another principal's credential |
 
-`delete_project` never changes state: it always answers `project <id> scheduled for deletion`.
-`list_users` answers `alice (admin)`, `bob (member)` and `carol (reader)` on separate lines.
-Every result is deterministic, so replays compare equal.
+`delete_project` never changes state: it always answers `project <id> scheduled for deletion`. `list_users` answers `alice (admin)`, `bob (member)` and `carol (reader)` on separate lines. Every result is deterministic, so replays compare equal.
 
-Two negative controls are correct in every mode: tool `search_docs` (`query`) returns the same
-shared result to every user, and `notes://team/handbook.md` is listed to and readable by every user.
+Two negative controls are correct in every mode: tool `search_docs` (`query`) returns the same shared result to every user, and `notes://team/handbook.md` is listed to and readable by every user.
 
-Session binding applies only to Streamable HTTP. Legacy SSE channels and sessionless modern
-(2026-07-28) requests have no session to bind; `whoami` then names the token's user.
+Session binding applies only to Streamable HTTP. Legacy SSE channels and sessionless modern (2026-07-28) requests have no session to bind; `whoami` then names the token's user.
 
 To test a cross-identity check end to end:
 
@@ -292,22 +265,18 @@ The flow endpoints are:
 | `POST /authorize/consent` | Approve or deny |
 | `POST /token` | `authorization_code` and `refresh_token`, with client auth by Basic or form |
 
-With `--consent auto`, `/authorize` redirects with a code straight away. Use it for
-redirect-policy code-delivery tests. With `prompt` (the default), it renders the
-consent page. Use that for reflection tests.
+With `--consent auto`, `/authorize` redirects with a code straight away. Use it for redirect-policy code-delivery tests. With `prompt` (the default), it renders the consent page. Use that for reflection tests.
 
 Two clients are preconfigured:
 
 | Client | Type | Secret | Redirect URIs |
 |---|---|---|---|
-| `public-client` | Public | — | `https://client.example/callback`, `http://127.0.0.1/callback` |
+| `public-client` | Public | - | `https://client.example/callback`, `http://127.0.0.1/callback` |
 | `confidential-client` | `client_secret_basic` | `confidential-secret` | `https://client.example/callback`, `http://127.0.0.1/callback` |
 
 Loopback `http` redirect URIs match any port (RFC 8252).
 
-A `redirect_uri` that is not registered is sorted into one shape, and only that
-shape's module decides whether it is accepted. That way, setting one redirect module
-to safe is never overridden by another:
+A `redirect_uri` that is not registered is sorted into one shape, and only that shape's module decides whether it is accepted. That way, setting one redirect module to safe is never overridden by another:
 
 | Shape | Deciding module |
 |---|---|
@@ -330,17 +299,14 @@ to safe is never overridden by another:
 | `refresh_wrong_client_secret` | Confidential-client refresh succeeds with a wrong secret | 401 |
 | `refresh_scope_expansion` | `scope` wider than the grant is issued | 400 `invalid_scope` |
 
-An unknown `client_id` gives a 400 page that does not reflect any input. That is the
-reflection check's invalid-client control.
+An unknown `client_id` gives a 400 page that does not reflect any input. That is the reflection check's invalid-client control.
 
 ## Request families
 
-Each family can be switched off with `--disable-family`. A disabled method returns
-JSON-RPC `-32601`, and its capability is dropped from `initialize`.
+Each family can be switched off with `--disable-family`. A disabled method returns JSON-RPC `-32601`, and its capability is dropped from `initialize`.
 
 - A disabled notification is still accepted with 202, because a notification has no reply.
-- A disabled transport is not mounted, so it returns 404. The Origin/Host and credential
-  gates run first, so a request they refuse still gets 403 or 401.
+- A disabled transport is not mounted, so it returns 404. The Origin/Host and credential gates run first, so a request they refuse still gets 403 or 401.
 
 | Family | Method / surface |
 |---|---|
@@ -367,32 +333,16 @@ JSON-RPC `-32601`, and its capability is dropped from `initialize`.
 
 Other protocol details:
 
-- **Protocol versions:** the known versions are 2026-07-28 (the stateless "modern" era, SEP-2575)
-  and the handshake-era 2025-11-25, 2025-06-18, 2025-03-26 and 2024-11-05. `--protocol-version`
-  chooses which are enabled, so a client can be tested against each one.
-- **`initialize`:** never negotiates a modern version. It answers the requested version when that
-  is an enabled handshake version, and otherwise the newest enabled handshake version. With no
-  handshake version enabled it returns `-32602` `Unsupported protocol version` with
-  `data: {"supported": [...enabled...]}` and opens no session.
-- **`server/discover`:** with a modern version enabled it returns `supportedVersions` (the enabled
-  modern versions), `capabilities`, `serverInfo`, `instructions`, `ttlMs: 0`,
-  `cacheScope: "private"` and `resultType: "complete"`. Without one it is `-32601`, as on a legacy server.
+- **Protocol versions:** the known versions are 2026-07-28 (the stateless "modern" era, SEP-2575) and the handshake-era 2025-11-25, 2025-06-18, 2025-03-26 and 2024-11-05. `--protocol-version` chooses which are enabled, so a client can be tested against each one.
+- **`initialize`:** never negotiates a modern version. It answers the requested version when that is an enabled handshake version, and otherwise the newest enabled handshake version. With no handshake version enabled it returns `-32602` `Unsupported protocol version` with `data: {"supported": [...enabled...]}` and opens no session.
+- **`server/discover`:** with a modern version enabled it returns `supportedVersions` (the enabled modern versions), `capabilities`, `serverInfo`, `instructions`, `ttlMs: 0`, `cacheScope: "private"` and `resultType: "complete"`. Without one it is `-32601`, as on a legacy server.
 - **`MCP-Protocol-Version` header:** a value that is not an enabled version gives 400.
-- **Modern requests on `/mcp`:** a request (not a notification) whose `params._meta` carries
-  `io.modelcontextprotocol/protocolVersion` is checked as follows. Every refusal is HTTP 400 with a
-  JSON-RPC error.
-  - `_meta` must hold a string `io.modelcontextprotocol/protocolVersion` and an object
-    `io.modelcontextprotocol/clientCapabilities` (`io.modelcontextprotocol/clientInfo` is optional
-    but must be an object); otherwise `-32602` naming the key.
-  - The `_meta` version must be an enabled modern version; otherwise `-32602`
-    `Unsupported protocol version` with the enabled modern versions as `data.supported`.
-  - `MCP-Protocol-Version` must equal the `_meta` version, and `Mcp-Method` must be present and equal
-    the body method; otherwise `-32020` (header mismatch).
-  - For `tools/call`, `resources/read` and `prompts/get`, `Mcp-Name` must be present and equal
-    `params.name` or `params.uri`. A value of the form `=?base64?<b64>?=` is decoded first.
-    Otherwise `-32020`.
-  - A request whose `MCP-Protocol-Version` header is a modern version but which carries no envelope
-    gives `-32602`. `server/discover` and notifications are exempt.
+- **Modern requests on `/mcp`:** a request (not a notification) whose `params._meta` carries `io.modelcontextprotocol/protocolVersion` is checked as follows. Every refusal is HTTP 400 with a JSON-RPC error.
+  - `_meta` must hold a string `io.modelcontextprotocol/protocolVersion` and an object `io.modelcontextprotocol/clientCapabilities` (`io.modelcontextprotocol/clientInfo` is optional but must be an object); otherwise `-32602` naming the key.
+  - The `_meta` version must be an enabled modern version; otherwise `-32602` `Unsupported protocol version` with the enabled modern versions as `data.supported`.
+  - `MCP-Protocol-Version` must equal the `_meta` version, and `Mcp-Method` must be present and equal the body method; otherwise `-32020` (header mismatch).
+  - For `tools/call`, `resources/read` and `prompts/get`, `Mcp-Name` must be present and equal `params.name` or `params.uri`. A value of the form `=?base64?<b64>?=` is decoded first. Otherwise `-32020`.
+  - A request whose `MCP-Protocol-Version` header is a modern version but which carries no envelope gives `-32602`. `server/discover` and notifications are exempt.
   - Modern requests are sessionless: `Mcp-Session-Id` is neither required nor checked, and none is issued.
 - **Legacy SSE** (`/sse` + `/messages`) serves the handshake-era versions only.
 - **Batches:** JSON-RPC batches are answered as batches.
@@ -420,8 +370,7 @@ uv run ruff check .
 uv run mypy src
 ```
 
-To add a vulnerability, add a module under `src/mcp_test_server/vulns/<family>/` with
-a `Vulnerability` subclass that defines:
+To add a vulnerability, add a module under `src/mcp_test_server/vulns/<family>/` with a `Vulnerability` subclass that defines:
 
 - `name`
 - `summary`
@@ -429,8 +378,7 @@ a `Vulnerability` subclass that defines:
 
 The registry discovers it automatically. Nothing else changes.
 
-To relax an existing policy instead, subclass the family base and set `weakness`:
-`JwtVulnerability`, `RedirectVulnerability` or `RefreshVulnerability`.
+To relax an existing policy instead, subclass the family base and set `weakness`: `JwtVulnerability`, `RedirectVulnerability` or `RefreshVulnerability`.
 
 ## HTTPS and mutual TLS (client certificates)
 
@@ -440,13 +388,9 @@ To relax an existing policy instead, subclass the family base and set `weakness`
 | `--tls-key PATH` | PEM server private key (PKCS#8 or traditional). Required with `--tls-cert`. |
 | `--tls-client-ca PATH` | PEM CA certificate. The server then **requires** a client certificate signed by this CA (mTLS) and rejects the TLS connection otherwise. Requires `--tls-cert` and `--tls-key`. |
 
-A key without a certificate, a certificate without a key, or `--tls-client-ca`
-without both is rejected at startup.
+A key without a certificate, a certificate without a key, or `--tls-client-ca` without both is rejected at startup.
 
-Exercises: the extension's Burp-backed Connect transport, which routes
-Streamable HTTP / modern HTTP Connect traffic through Burp so a client
-certificate configured in Burp is presented. Automated proof:
-`MutualTlsTestServerIT` (`MCP_E2E_IT=1 ./gradlew test --tests MutualTlsTestServerIT`).
+Exercises: the extension's Burp-backed Connect transport, which routes Streamable HTTP / modern HTTP Connect traffic through Burp so a client certificate configured in Burp is presented. Automated proof: `MutualTlsTestServerIT` (`MCP_E2E_IT=1 ./gradlew test --tests MutualTlsTestServerIT`).
 
 #### Manual check in Burp
 
@@ -479,16 +423,6 @@ uv run mcp-test-server --host 127.0.0.1 --port 8443 \
   --tls-client-ca /tmp/mtls/ca.pem
 ```
 
-1. In Burp: **Settings → Network → TLS → Client TLS certificates → Add**,
-   destination host `127.0.0.1`, type PKCS#12, file `/tmp/mtls/client.p12`,
-   password `changeit`.
-2. In the extension: make sure **Settings → Use Burp networking (client TLS
-   certificates)** is on (the default; off, the client certificate is not
-   presented). Then endpoint `https://127.0.0.1:8443/mcp`, transport
-   Streamable HTTP, auth none, **Connect**.
-   Expected: connects and lists the test-server's tools.
-3. Remove (or disable) the client certificate in Burp and Connect again.
-   Expected: Connect fails, and Burp's **Event log** shows the TLS error for
-   `127.0.0.1:8443`.
-
-
+1. In Burp: **Settings → Network → TLS → Client TLS certificates → Add**, destination host `127.0.0.1`, type PKCS#12, file `/tmp/mtls/client.p12`, password `changeit`.
+2. In the extension: make sure **Settings → Use Burp networking (client TLS certificates)** is on (the default; off, the client certificate is not presented). Then endpoint `https://127.0.0.1:8443/mcp`, transport Streamable HTTP, auth none, **Connect**. Expected: connects and lists the test-server's tools.
+3. Remove (or disable) the client certificate in Burp and Connect again. Expected: Connect fails, and Burp's **Event log** shows the TLS error for `127.0.0.1:8443`.

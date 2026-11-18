@@ -35,7 +35,7 @@ final class AccessCellText {
     }
 
     static String unconfirmedSameResult(AccessRow row) {
-        return "? same result as " + row.owner().name() + " — allowed? Set Who should reach it";
+        return "? same result as " + row.owner().name() + " - allowed? Set Who should reach it";
     }
 
     static String identity(AccessCell cell, boolean owner) {
@@ -65,8 +65,8 @@ final class AccessCellText {
             case SAME_RESULT -> "✓ same result";
             case DIFFERENT_RESULT -> "✓ different result";
             case REFUSED -> "✗ refused";
-            case SKIPPED_WRITE -> "— skipped (write)";
-            case NOT_RUN -> "— not compared";
+            case SKIPPED_WRITE -> "- skipped (write)";
+            case NOT_RUN -> "- not compared";
             case ERROR -> "! no answer";
         };
     }

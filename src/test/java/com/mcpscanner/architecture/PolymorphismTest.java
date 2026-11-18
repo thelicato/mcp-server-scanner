@@ -24,7 +24,7 @@ public class PolymorphismTest {
                     .should(performInstanceofCheckAgainst(OAUTH_STRATEGY_FQN))
                     .because("AuthStrategy is the polymorphic seam. An `instanceof OAuthAuthCodeStrategy` outside "
                             + "auth/ would betray that some caller is reaching for OAuth-specific behaviour through "
-                            + "a runtime type test instead of adding a method to AuthStrategy — exactly the "
+                            + "a runtime type test instead of adding a method to AuthStrategy - exactly the "
                             + "smell the Wave 3A refactor removed.");
 
     private static ArchCondition<JavaClass> performInstanceofCheckAgainst(String targetFqn) {

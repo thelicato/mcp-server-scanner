@@ -71,5 +71,4 @@ class StaleConnectionBannerTest {
     private void open() throws Exception {
         onEdt(() -> panel = new UsersPanel(harness.services, GrantCredentialForms.NONE, () -> { }));
     }
-
 }

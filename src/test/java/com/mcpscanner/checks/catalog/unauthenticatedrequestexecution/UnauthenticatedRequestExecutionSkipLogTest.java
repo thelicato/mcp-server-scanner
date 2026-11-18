@@ -19,7 +19,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 class UnauthenticatedRequestExecutionSkipLogTest {
 
-    private static final String PREFIX = "Scan check: unauthenticated-request-execution — ";
+    private static final String PREFIX = "Scan check: unauthenticated-request-execution - ";
     private static final Map<String, String> AUTHENTICATED =
             Map.of("Content-Type", "application/json", "Authorization", SimulatedMcpServer.VALID_TOKEN);
     private static final String SUBJECT = "tools/call read_secret at " + request(toolCall(), AUTHENTICATED).url();

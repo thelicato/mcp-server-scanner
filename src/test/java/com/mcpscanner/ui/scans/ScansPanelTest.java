@@ -175,7 +175,7 @@ class ScansPanelTest {
         assertThat(Find.named(card, JPanel.class, NowRunningSection.NAME).isVisible()).isTrue();
         assertThat(Find.all(Find.named(card, JPanel.class, NowRunningSection.LINES), JLabel.class))
                 .extracting(JLabel::getText).containsExactly(
-                        "File traversal — tools/call read_file · params.arguments.path", "Session lifecycle — ping");
+                        "File traversal - tools/call read_file · params.arguments.path", "Session lifecycle - ping");
     }
 
     @Test

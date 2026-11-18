@@ -552,7 +552,7 @@ class SseScanSessionTest {
         // Java HttpRequest.Builder throws IllegalArgumentException for keep-alive/te/trailers
         // (see jdk.internal.net.http.common.Utils.DISALLOWED_HEADERS_SET). If a Burp config
         // forwarded one of these to the SSE message-endpoint POST, the session would surface
-        // as a 502 — drop them at the proxy boundary.
+        // as a 502 - drop them at the proxy boundary.
         String sseStream = SSE_PRELUDE + RESPONSE_EVENT;
         stubHttpClient(mockSseResponse(sseStream), mockPostResponse());
         Map<String, String> scannerHeaders = Map.of(
@@ -828,7 +828,7 @@ class SseScanSessionTest {
                 // Wait until both calls have dispatched their POSTs before pushing responses.
                 await().atMost(ofSeconds(2)).until(() -> session.pendingRequests() >= 2);
 
-                // Push request 2's response FIRST — it must complete before A.
+                // Push request 2's response FIRST - it must complete before A.
                 stream.push("event: message\ndata: {\"jsonrpc\":\"2.0\",\"id\":2,\"result\":{\"ok\":true}}\n\n");
 
                 ProxyResponse responseB = doneWithin(futureB, ofSeconds(2)).get();
@@ -1311,7 +1311,7 @@ class SseScanSessionTest {
     void disconnect_doesNotBlockConcurrentForwarders() throws Exception {
         // The SSE stream stays open (QueueInputStream never sends EOF) so the reader
         // thread blocks on the socket read after the stream is interrupted. This means
-        // disconnect()'s join(1000) would block for up to 1 s — the fix must release
+        // disconnect()'s join(1000) would block for up to 1 s - the fix must release
         // 'this' before that join so concurrent forwardRequest callers are not delayed.
         QueueInputStream stream = new QueueInputStream();
         stream.push(SSE_PRELUDE);
@@ -1322,7 +1322,7 @@ class SseScanSessionTest {
         ExecutorService connectors = Executors.newSingleThreadExecutor();
         try {
             // Warm up: get the session connected by sending a request that won't complete
-            // (no response pushed yet) — we just need the handshake done. But forwardRequest
+            // (no response pushed yet) - we just need the handshake done. But forwardRequest
             // will block waiting for a response. Instead, drive connection via a separate body
             // with an id we'll never push, then let it time out.
             // Easier approach: push a response for the warm-up request.
@@ -1334,7 +1334,7 @@ class SseScanSessionTest {
         }
 
         // Now the session is connected. Start a disconnect on a background thread.
-        // The QueueInputStream reader is blocked in queue.take() — closing the stream
+        // The QueueInputStream reader is blocked in queue.take() - closing the stream
         // causes an IOException which exits the read loop. The join(1000) on the
         // reader thread waits for it, but under the fix this happens OUTSIDE the lock.
         AtomicBoolean disconnectDone = new AtomicBoolean();

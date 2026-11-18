@@ -27,7 +27,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 class OriginHostAdmissionSkipLogTest {
 
-    private static final String PREFIX = "Scan check: origin-host-admission — ";
+    private static final String PREFIX = "Scan check: origin-host-admission - ";
     private static final String SUBJECT = "tools/list at " + LOOPBACK_URL;
     private static final String REQUEST_TEST = "the Origin/Host request test on " + SUBJECT;
     private static final String STREAM_TEST = "the GET event-stream test on " + SUBJECT;

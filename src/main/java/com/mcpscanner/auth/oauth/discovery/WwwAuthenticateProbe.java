@@ -101,5 +101,4 @@ public class WwwAuthenticateProbe implements MetadataProbe {
         return Optional.ofNullable(response.headerValue(WWW_AUTHENTICATE_HEADER))
                 .flatMap(MetadataParsers::parseResourceMetadataFromWwwAuthenticate);
     }
-
 }

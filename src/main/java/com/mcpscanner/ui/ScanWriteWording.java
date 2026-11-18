@@ -11,7 +11,7 @@ record ScanWriteWording(Supplier<String> invoker) implements WriteToolWording {
 
     private static final String MINED_LEAD = " will invoke these tools with attacker-controlled inputs, starting "
             + "from the argument values below. " + MinedWriteLines.MINED_VALUES + " This can modify, create, or "
-            + "delete data on the target — irreversible.";
+            + "delete data on the target - irreversible.";
 
     @Override
     public DestructiveScanConfirmation.Result ask(DestructiveScanPrompt prompt, Component parent,

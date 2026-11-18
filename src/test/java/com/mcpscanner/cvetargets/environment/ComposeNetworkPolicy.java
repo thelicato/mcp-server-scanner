@@ -8,7 +8,6 @@ import java.util.Map;
 
 public final class ComposeNetworkPolicy {
 
-
     public List<String> violations(String resolvedComposeJson) {
         JsonNode config = ComposeConfigJson.parse(resolvedComposeJson);
         List<String> violations = new ArrayList<>();

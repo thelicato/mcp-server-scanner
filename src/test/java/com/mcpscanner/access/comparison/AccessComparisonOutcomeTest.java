@@ -47,7 +47,7 @@ class AccessComparisonOutcomeTest {
         var run = withPeerB().run(FakeServers.objectStore(true), GET_NOTE);
 
         assertThat(run.infoLines()).singleElement().asString()
-                .isEqualTo("Check access — tools/call get_note: outcomes anonymous=REFUSED, "
+                .isEqualTo("Check access - tools/call get_note: outcomes anonymous=REFUSED, "
                         + "identity-B=SAME_RESULT; 0 issue(s)");
     }
 

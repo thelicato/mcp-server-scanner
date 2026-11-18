@@ -12,7 +12,7 @@ final class MiningWriteLines {
 
     private static final String LEAD = "Collecting IDs will call these write tools as %s, with every argument shown below, "
             + "real IDs included. You are asked again before any later call carries an ID not shown yet; refusing "
-            + "stops write calls for the rest of this run. This can modify, create, or delete data on the target — "
+            + "stops write calls for the rest of this run. This can modify, create, or delete data on the target - "
             + "irreversible.";
 
     private MiningWriteLines() {

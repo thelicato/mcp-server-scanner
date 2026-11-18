@@ -118,7 +118,6 @@ class CollaboratorInteractionsTest {
         assertThat(collaborator.pollCount()).isEqualTo(2);
     }
 
-
     @Test
     void createsOneClientAndMintsADistinctPayloadEachTime() {
         AtomicInteger requests = new AtomicInteger();
@@ -182,9 +181,6 @@ class CollaboratorInteractionsTest {
         assertThat(polledFor(interactions, List.of(awaited)).of(FakeCollaborator.payload("stranger"))).isEmpty();
     }
 
-
-
-
     @Test
     void treatsAFailingPollAsNoInteractions() {
         CollaboratorClient failing = mock(CollaboratorClient.class);
@@ -196,8 +192,6 @@ class CollaboratorInteractionsTest {
 
         assertThat(polledFor(interactions, List.of(payload)).of(payload)).isEmpty();
     }
-
-
 
     @Test
     void releasesEveryPayloadOfAProbeThatFailsBeforeItIsAwaited() {

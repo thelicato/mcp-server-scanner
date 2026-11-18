@@ -7,7 +7,7 @@ import java.util.List;
 final class RowFactory {
 
     private static final String TRUNCATED_NAME = "…";
-    private static final String TRUNCATED_DESCRIPTION = "Schema too large to show in full — see Raw.";
+    private static final String TRUNCATED_DESCRIPTION = "Schema too large to show in full - see Raw.";
 
     private RowFactory() {
     }

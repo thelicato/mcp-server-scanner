@@ -15,7 +15,7 @@ public class CycleFreedomTest {
             slices().matching("com.mcpscanner.ui.(*)..")
                     .should().beFreeOfCycles()
                     .because("Inside ui/: state/, widgets/, and the panel layer must form a DAG. The reducer "
-                            + "(ui/state/) emits actions consumed by panels, and widgets are leaf reusables — "
+                            + "(ui/state/) emits actions consumed by panels, and widgets are leaf reusables - "
                             + "if any cycle appeared we would have lost the testability win of separating "
                             + "presentation from state.");
 

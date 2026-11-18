@@ -109,7 +109,7 @@ class RequestCheckAdapterTest {
                 new FailingRequestCheck());
 
         assertThatThrownBy(() -> adapter.doCheck(base, null, http)).isInstanceOf(IllegalStateException.class);
-        assertThat(eventLog.snapshot()).anyMatch(entry -> entry.message().contains("failing — threw"));
+        assertThat(eventLog.snapshot()).anyMatch(entry -> entry.message().contains("failing - threw"));
     }
 
     @Test

@@ -17,7 +17,7 @@ final class RefusalText {
                     + "authentication required|authentication failed|unauthenticated|not authenticated|"
                     + "not authorized|bad credentials|login required|invalid token|invalid api key|missing api key|"
                     + "missing credentials|unauthorized access[^\\r\\n]*)"
-                    + "(?:\\s*(?::|[-–—])\\s*[^\\r\\n]+)?\\s*\\]?\\s*[.!]?\\s*");
+                    + "(?:\\s*(?::|[-\u2013\u2014])\\s*[^\\r\\n]+)?\\s*\\]?\\s*[.!]?\\s*");
     private static final List<String> STATUS_KEYS = List.of("code", "status", "status_code", "http_status");
     private static final List<String> CONTENT_KEYS = List.of("content", "contents", "messages");
 

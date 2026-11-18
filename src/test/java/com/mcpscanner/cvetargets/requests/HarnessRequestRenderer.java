@@ -32,5 +32,4 @@ public final class HarnessRequestRenderer implements McpRequestRenderer {
         }
         return request.withBody(raw.substring(separator + HEADER_BODY_SEPARATOR.length()));
     }
-
 }

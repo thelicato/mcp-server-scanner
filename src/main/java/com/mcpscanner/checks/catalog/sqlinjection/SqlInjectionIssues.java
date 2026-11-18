@@ -14,7 +14,6 @@ import java.util.stream.Collectors;
 
 final class SqlInjectionIssues {
 
-
     static final String ISSUE_NAME = "MCP SQL injection";
 
     private static final String OBSERVATION = "For each technique, rewriting the value with SQL syntax that leaves "

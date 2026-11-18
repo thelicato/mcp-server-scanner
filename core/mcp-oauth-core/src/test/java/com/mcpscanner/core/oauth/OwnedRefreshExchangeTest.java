@@ -25,7 +25,7 @@ public final class OwnedRefreshExchangeTest {
                 "token_type", "Bearer", "scope", "tools:read tools:write"));
         };
         OAuthFlowEngine engine = new OAuthFlowEngine(token,
-            request -> { throw new AssertionError("refresh must not authorize a code"); },
+            request -> { throw new AssertionError("refresh must not authorise a code"); },
             new CredentialStore() {
                 public java.util.Optional<OAuthCredential> load(CredentialBinding binding) {
                     throw new AssertionError("refresh probe must not load credential store");

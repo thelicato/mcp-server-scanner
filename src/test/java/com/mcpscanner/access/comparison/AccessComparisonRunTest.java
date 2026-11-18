@@ -184,7 +184,7 @@ class AccessComparisonRunTest {
         assertThat(target.sent()).noneMatch(request -> "c".equals(request.headerValue(ScannerSentinels.IDENTITY_HEADER)));
         assertThat(eventLog.snapshot()).extracting(McpEventLog.LogEntry::message)
                 .filteredOn(message -> message.contains("same credentials"))
-                .containsExactly("Check access: identity-C has the same credentials as Primary — not compared");
+                .containsExactly("Check access: identity-C has the same credentials as Primary - not compared");
     }
 
     @Test
@@ -205,7 +205,7 @@ class AccessComparisonRunTest {
         assertThat(ledger.outcomes()).doesNotContainKey("b2");
         assertThat(eventLog.snapshot()).extracting(McpEventLog.LogEntry::message)
                 .filteredOn(message -> message.contains("same credentials"))
-                .containsExactly("Check access: identity-B2 has the same credentials as identity-B — not compared");
+                .containsExactly("Check access: identity-B2 has the same credentials as identity-B - not compared");
     }
 
     @Test

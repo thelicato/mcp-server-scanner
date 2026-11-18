@@ -134,7 +134,6 @@ class RequestAndFieldGeneratorIT {
         }
     }
 
-
     @ParameterizedTest(name = "serving {0}")
     @MethodSource("servedVersions")
     void familiesTheServerDoesNotAdvertiseAreNotSent(List<String> served, String negotiated) throws Exception {

@@ -22,8 +22,8 @@ class SiblingRouteSkipLogTest {
     private static final Map<String, String> AUTHENTICATED =
             Map.of("Content-Type", "application/json", "Authorization", SimulatedMcpServer.VALID_TOKEN);
     private static final String SUBJECT = "tools/list at " + request(toolsList(), AUTHENTICATED).url() + " (";
-    private static final String STOPPED = "Scan check: sibling-route-auth-parity — stopped " + SUBJECT;
-    private static final String SKIPPED = "Scan check: sibling-route-auth-parity — skipped " + SUBJECT;
+    private static final String STOPPED = "Scan check: sibling-route-auth-parity - stopped " + SUBJECT;
+    private static final String SKIPPED = "Scan check: sibling-route-auth-parity - skipped " + SUBJECT;
 
     private final McpEventLog eventLog = new McpEventLog(null);
 

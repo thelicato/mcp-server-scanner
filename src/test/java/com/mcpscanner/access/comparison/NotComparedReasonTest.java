@@ -35,7 +35,7 @@ class NotComparedReasonTest {
                 + "parameter \"sql\" is required");
         assertThat(run.ledger().outcomes()).containsEntry("b", AccessOutcome.NOT_RUN);
         assertThat(run.infoLines()).singleElement().asString()
-                .startsWith("Check access — tools/call get_note: not compared: " + reason + "; outcomes ");
+                .startsWith("Check access - tools/call get_note: not compared: " + reason + "; outcomes ");
     }
 
     @Test

@@ -22,7 +22,7 @@ class DestructiveScanConfirmationTest {
     void theLeadTextNamesWhatInvokesTheTools() {
         assertThat(DestructiveScanConfirmation.leadText("The extension's checks"))
                 .isEqualTo("The extension's checks will invoke these tools with attacker-controlled inputs. "
-                        + "This can modify, create, or delete data on the target — irreversible.");
+                        + "This can modify, create, or delete data on the target - irreversible.");
     }
 
     @Test

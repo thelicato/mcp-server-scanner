@@ -136,4 +136,3 @@ class ServerAssembly:
             "allowed_hosts": list(self._settings.allowed_hosts),
             "protocol_versions": list(self._settings.protocol_versions),
         }
-

@@ -18,7 +18,7 @@ final class SameCredentialNotice {
     void notice(CredentialCopy copy) {
         if (noticed.add(copy.copy().id() + "\n" + copy.original().id())) {
             eventLog.info("Check access: " + copy.copy().name() + " has the same credentials as "
-                    + copy.original().name() + " — not compared");
+                    + copy.original().name() + " - not compared");
         }
     }
 }

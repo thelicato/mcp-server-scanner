@@ -51,4 +51,3 @@ public record ConnectAttempt(String endpoint,
         return new ConnectAttempt(endpoint, transport, host, authType, null, hints, mcpResource, null, null, null);
     }
 }
-

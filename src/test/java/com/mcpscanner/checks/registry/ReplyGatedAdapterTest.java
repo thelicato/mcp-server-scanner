@@ -50,7 +50,7 @@ class ReplyGatedAdapterTest {
         assertThat(host.calls).isEmpty();
         assertThat(eventLog.snapshot()).extracting(McpEventLog.LogEntry::message)
                 .allMatch(line -> line.endsWith("(notification gets no reply)"))
-                .anyMatch(line -> line.startsWith("Scan check: i — skipped notifications/cancelled at "))
+                .anyMatch(line -> line.startsWith("Scan check: i - skipped notifications/cancelled at "))
                 .hasSize(3);
     }
 

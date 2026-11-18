@@ -137,7 +137,7 @@ class SseSessionLifecycleTest {
 
         audit();
 
-        assertThat(messages()).contains("Scan check: session-lifecycle — skipped the DELETE test on "
+        assertThat(messages()).contains("Scan check: session-lifecycle - skipped the DELETE test on "
                 + base().request().url() + " (not applicable: a legacy SSE session ends when its stream closes)");
     }
 

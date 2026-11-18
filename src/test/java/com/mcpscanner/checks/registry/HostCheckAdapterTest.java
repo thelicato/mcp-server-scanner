@@ -112,9 +112,9 @@ class HostCheckAdapterTest {
         adapter.doCheck(onHostB, null, http);
 
         assertThat(eventLog.snapshot()).extracting(McpEventLog.LogEntry::message).contains(
-                "Scan check: h — skipped a base request without a request "
+                "Scan check: h - skipped a base request without a request "
                         + "(already audited on this connection: this host was already probed)",
-                "Scan check: h — skipped a base request without a request "
+                "Scan check: h - skipped a base request without a request "
                         + "(not applicable: applies only to recorded requests)");
     }
 

@@ -23,11 +23,11 @@ public final class CheckLog {
     }
 
     public static CheckLog labelled(McpEventLog eventLog, String label) {
-        return new CheckLog(label + " — ", eventLog);
+        return new CheckLog(label + " - ", eventLog);
     }
 
     public static String prefix(String checkId) {
-        return "Scan check: " + checkId + " — ";
+        return "Scan check: " + checkId + " - ";
     }
 
     public void debug(String message) {

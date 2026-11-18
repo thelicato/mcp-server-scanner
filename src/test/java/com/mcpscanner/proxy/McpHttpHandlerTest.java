@@ -307,7 +307,7 @@ class McpHttpHandlerTest {
      * different path. They MUST pass through to Burp's normal HTTP delivery so the MCP OAuth
      * Metadata SSRF check can read the real upstream's response (status + body + WWW-Authenticate).
      * Previously the handler rewrote anything on host+port through the local proxy, which returned
-     * 405 for GET and stripped headers — killing the check's three probes.
+     * 405 for GET and stripped headers - killing the check's three probes.
      */
     @Test
     void wellKnownOauthProtectedResourcePathPassesThroughUntouched() {
@@ -339,7 +339,7 @@ class McpHttpHandlerTest {
      * Burp Scanner's backup-file / path-walking probes (e.g. "/v1/mcp/authv2 (copy)",
      * "/v1/mcp/authv2:twciaf.css") differ in their path component from the MCP endpoint, so under
      * the path-match policy they pass through. Their previous interception was a defence against
-     * upstreams that returned SSE for ALL paths on the host — operators whose servers do that should
+     * upstreams that returned SSE for ALL paths on the host - operators whose servers do that should
      * scope Burp out of those paths via Target scope.
      */
     @Test
@@ -369,7 +369,7 @@ class McpHttpHandlerTest {
     /**
      * Root-path regression: when the configured endpoint has no explicit path (e.g.
      * {@code https://mcp.example.com}), {@link URI#getPath()} returns the empty string but Burp
-     * normalizes the request path to {@code "/"}. Without empty-path normalization the comparison
+     * normalises the request path to {@code "/"}. Without empty-path normalisation the comparison
      * silently fails and every scan bypasses the local SSE proxy, so Burp tries to scan the
      * upstream's streaming response directly and aborts the audit.
      */

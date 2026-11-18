@@ -21,13 +21,13 @@ class DecisionLogTest {
     void skippedLogsTheReasonAndYieldsNothing() {
         assertThat(decisions.notRun("https://h/mcp", SkipReason.prerequisiteMissing("no server"))).isEmpty();
 
-        verify(eventLog).info("Scan check: check-x — skipped https://h/mcp (prerequisite missing: no server)");
+        verify(eventLog).info("Scan check: check-x - skipped https://h/mcp (prerequisite missing: no server)");
     }
 
     @Test
     void notReportedLogsTheDecisionAndYieldsNothing() {
         assertThat(decisions.notReported("same structure")).isEmpty();
 
-        verify(eventLog).info("Scan check: check-x — decision: not reported — same structure");
+        verify(eventLog).info("Scan check: check-x - decision: not reported - same structure");
     }
 }

@@ -228,7 +228,7 @@ public final class ConnectionCoreTest {
             }
             public boolean refreshAvailable() { return true; }
             public void refresh() { throw new AssertionError("Mismatched credential must not refresh"); }
-            public void authorize(java.util.Set<String> scopes) { throw new AssertionError("Mismatched credential must not authorize"); }
+            public void authorize(java.util.Set<String> scopes) { throw new AssertionError("Mismatched credential must not authorise"); }
         };
         var provider = new OAuthCredentialProvider(binding, access,
                 () -> com.mcpscanner.core.oauth.AuthorizationApproval.APPROVED);

@@ -87,7 +87,7 @@ class StreamingRefusalDeliveryTest {
         adapter(Kind.REQUEST, Probe.ON_CHECK_THREAD, List.of(mock(AuditIssue.class), mock(AuditIssue.class)))
                 .doCheck(base, null, failingWith(messagelessRefusal()));
 
-        assertThat(messages()).contains("Scan check: streaming-probe — Burp withheld a streamed reply during "
+        assertThat(messages()).contains("Scan check: streaming-probe - Burp withheld a streamed reply during "
                 + "this run, so its 2 issues were added to the site map directly");
     }
 

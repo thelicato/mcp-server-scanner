@@ -168,5 +168,4 @@ public final class OAuthDiscoveryPresenter {
         }
         return "could not parse '" + endpoint.trim() + "'";
     }
-
 }

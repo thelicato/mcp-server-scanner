@@ -10,7 +10,7 @@ plugins {
 version = '2.1.2'
 
 // Jackson databind + core ship at 2.21.3 in the BOM; jackson-annotations is published as 2.21
-// (no patch suffix) by upstream as of the 2.21 line — these are the matched coordinates.
+// (no patch suffix) by upstream as of the 2.21 line - these are the matched coordinates.
 ext.jacksonVersion = '2.22.4'
 ext.jacksonAnnotationsVersion = '2.22'
 

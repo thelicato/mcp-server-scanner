@@ -41,13 +41,13 @@ public class DeletedTypesTest {
     @ArchTest
     static final ArchRule toggleable_scan_check_must_not_return =
             noClasses().should().haveFullyQualifiedName("com.mcpscanner.checks.registry.ToggleableScanCheck")
-                    .because("Replaced by ManagedActiveCheck — the active scan toggle now lives inline in the "
+                    .because("Replaced by ManagedActiveCheck - the active scan toggle now lives inline in the "
                             + "base class instead of in a wrapping decorator.");
 
     @ArchTest
     static final ArchRule toggleable_passive_scan_check_must_not_return =
             noClasses().should().haveFullyQualifiedName("com.mcpscanner.checks.registry.ToggleablePassiveScanCheck")
-                    .because("Replaced by ManagedPassiveCheck — same reasoning as the active variant.");
+                    .because("Replaced by ManagedPassiveCheck - same reasoning as the active variant.");
 
     @ArchTest
     static final ArchRule no_toggleable_classes_anywhere =
@@ -86,7 +86,7 @@ public class DeletedTypesTest {
             noClasses().should().haveFullyQualifiedName("com.mcpscanner.checks.McpActiveNoAuthExposureCheck")
                     .because("Merged into McpActiveUnauthenticatedToolDiscoveryCheck (itself replaced by the catalog "
                             + "unauthenticated-request-execution check) alongside the former "
-                            + "tool-enum check — the single check branches on whether auth was present rather "
+                            + "tool-enum check - the single check branches on whether auth was present rather "
                             + "than splitting the same detection across two inverse-guarded checks.");
 
     @ArchTest

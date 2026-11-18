@@ -12,7 +12,6 @@ import java.util.function.Predicate;
 
 public final class ProbeCounter implements ExchangeCounter {
 
-
     private final Predicate<HttpRequestResponse> reachedTarget;
     private final AtomicInteger sent = new AtomicInteger();
     private final AtomicInteger reached = new AtomicInteger();

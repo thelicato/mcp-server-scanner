@@ -69,7 +69,7 @@ final class OAuthRefreshGrantIssues {
                         + "did not include. A refresh token can therefore be used to escalate the privileges the "
                         + "resource owner consented to."
                         : "The authorization server granted a scope on a refresh_token grant that the extension did "
-                        + "not request when it was authorized. The server never declared the original grant's scope, "
+                        + "not request when it was authorised. The server never declared the original grant's scope, "
                         + "so it may have added this scope by default from the start; if it did not, a refresh "
                         + "token can be used to escalate the privileges the resource owner consented to.")
                 .findings(items)

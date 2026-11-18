@@ -30,7 +30,7 @@ import java.util.Locale;
 
 /**
  * Test-only {@link Http} double that writes the request line + ALL headers verbatim onto a raw TCP
- * socket — including an attacker-controlled {@code Host} header that a {@link java.net.http.HttpClient}
+ * socket - including an attacker-controlled {@code Host} header that a {@link java.net.http.HttpClient}
  * would silently strip and manage itself. This is what {@link RecordingRealHttp} cannot do and why
  * the {@code HOST_OVERRIDE} branch of {@link com.mcpscanner.checks.McpActiveDnsRebindingCheck} could
  * not be covered end-to-end before.
@@ -67,9 +67,9 @@ public class RawSocketHttp implements Http {
     }
 
     /**
-     * Builds the raw HTTP/1.1 request bytes. The {@code Host} header — and every other header — is
+     * Builds the raw HTTP/1.1 request bytes. The {@code Host} header - and every other header - is
      * written exactly as the caller set it, so a spoofed {@code Host: attacker.example} reaches the
-     * server on the wire. {@code Content-Length} and {@code Connection: close} are normalized so the
+     * server on the wire. {@code Content-Length} and {@code Connection: close} are normalised so the
      * server frames the body correctly and closes after replying.
      */
     private byte[] serializeRequest(HttpRequest burpRequest) {
@@ -136,7 +136,7 @@ public class RawSocketHttp implements Http {
     }
 
     /**
-     * Splits the raw HTTP response into status line / headers / body, then — mirroring the SSE proxy —
+     * Splits the raw HTTP response into status line / headers / body, then - mirroring the SSE proxy -
      * lifts the JSON-RPC payload out of an {@code event: message} frame when the body is
      * {@code text/event-stream}. The rebuilt response carries a plain {@code Content-Type:
      * application/json} so {@link com.mcpscanner.mcp.McpRequestDetector} can parse it.

@@ -40,7 +40,7 @@ import static org.mockito.Mockito.verify;
 
 class OAuthRefreshGrantCheckTest {
 
-    private static final String PREFIX = "Scan check: oauth-refresh-grant — ";
+    private static final String PREFIX = "Scan check: oauth-refresh-grant - ";
 
     private final McpEventLog eventLog = mock(McpEventLog.class);
     private ScriptedOAuthMcpServer server;

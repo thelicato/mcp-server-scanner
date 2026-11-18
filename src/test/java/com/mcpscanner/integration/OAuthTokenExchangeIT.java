@@ -27,8 +27,8 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 /**
  * End-to-end integration test that proves Nimbus's OAuth HTTP (metadata resolve, DCR,
- * token exchange, refresh) genuinely travels through Burp's {@code api.http()} — here a
- * real-sending {@link RecordingRealHttp} — against a live {@code mcp-test-server --default-mode safe}.
+ * token exchange, refresh) genuinely travels through Burp's {@code api.http()} - here a
+ * real-sending {@link RecordingRealHttp} - against a live {@code mcp-test-server --default-mode safe}.
  *
  * <p>Gate with {@code MCP_OAUTH_IT=1}.
  */
@@ -77,7 +77,6 @@ class OAuthTokenExchangeIT {
         }
     }
 
-
     private OAuthAuthorizationFlow flowThrough(RecordingRealHttp http) {
         return new OAuthAuthorizationFlow(
                 CallbackListenerFactory.defaultFactory(),
@@ -113,7 +112,7 @@ class OAuthTokenExchangeIT {
                 }
             } catch (Exception ignored) {
                 // If the redirect dance fails, the flow times out waiting for the callback
-                // and the test fails with a clear OAuth timeout — no need to rethrow here.
+                // and the test fails with a clear OAuth timeout - no need to rethrow here.
             }
         }).start();
     }

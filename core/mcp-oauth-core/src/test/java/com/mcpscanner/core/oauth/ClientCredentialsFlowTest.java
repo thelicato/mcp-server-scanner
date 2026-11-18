@@ -217,7 +217,7 @@ public final class ClientCredentialsFlowTest {
         try { action.run(); throw new AssertionError("Expected failure " + reason); }
         catch (OAuthFlowException failure) {
             check(failure.reason() == reason, "Typed failure");
-            check(!failure.toString().contains("secret") && failure.getCause() == null, "Sanitized failure");
+            check(!failure.toString().contains("secret") && failure.getCause() == null, "Sanitised failure");
         }
     }
     private static final class MemoryStore implements CredentialStore {

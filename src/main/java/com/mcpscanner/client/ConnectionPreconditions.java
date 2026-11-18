@@ -30,7 +30,7 @@ final class ConnectionPreconditions {
         eventLog.error("SSE transport unavailable: the local SSE proxy failed to start. "
                 + "Use the Streamable HTTP transport, which is unaffected.");
         throw new IllegalStateException(
-                "SSE proxy unavailable — the local SSE proxy failed to start, so the SSE transport "
+                "SSE proxy unavailable - the local SSE proxy failed to start, so the SSE transport "
                         + "cannot be used. Streamable HTTP still works.");
     }
 
@@ -49,7 +49,7 @@ final class ConnectionPreconditions {
         }
         throw new IllegalStateException(
                 "Refusing to send authentication credentials over cleartext http:// to " + uri.getHost()
-                        + " — use https:// or connect to a loopback host");
+                        + " - use https:// or connect to a loopback host");
     }
 
     private static boolean isLoopback(String host) {

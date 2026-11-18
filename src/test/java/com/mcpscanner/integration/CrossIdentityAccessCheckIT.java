@@ -288,7 +288,6 @@ class CrossIdentityAccessCheckIT {
         }
     }
 
-
     private static HttpRequestResponse base(Http http, String endpoint, Map<String, String> headers, String body) {
         HttpRequest request = HttpRequest.httpRequestFromUrl(endpoint).withMethod("POST")
                 .withHeader("Content-Type", "application/json")

@@ -199,7 +199,7 @@ class WwwAuthenticateProbeTest {
 
     @Test
     void probeRefusesResourceMetadataWithJavascriptScheme() {
-        // Hard-block classification — denied by ANY gate, even alwaysAllow.
+        // Hard-block classification - denied by ANY gate, even alwaysAllow.
         stubResponse(401, "Bearer resource_metadata=\"javascript:alert(1)\"");
 
         assertThat(probe.probe(MCP_RESOURCE)).isEmpty();

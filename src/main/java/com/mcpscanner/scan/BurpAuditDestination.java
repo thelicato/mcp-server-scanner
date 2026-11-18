@@ -35,7 +35,7 @@ final class BurpAuditDestination implements ScanDestination {
         auditStarting.run();
         Audit audit = scanner.startAudit(
                 AuditConfiguration.auditConfiguration(BuiltInAuditConfiguration.LEGACY_ACTIVE_AUDIT_CHECKS));
-        eventLog.info("Audit started — " + requestCount(requests.size()));
+        eventLog.info("Audit started - " + requestCount(requests.size()));
         addAllOrDelete(audit, requests);
         warnIfPaused();
         return new BurpAuditRun(audit);

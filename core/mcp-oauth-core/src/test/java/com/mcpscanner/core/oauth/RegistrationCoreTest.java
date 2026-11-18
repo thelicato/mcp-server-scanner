@@ -18,7 +18,7 @@ public final class RegistrationCoreTest {
         validatesRegisteredClient();
         validatesCimdLocation();
         validatesCimdDocument();
-        System.out.println("RegistrationCoreTest: 7 behavior groups passed");
+        System.out.println("RegistrationCoreTest: 7 behaviour groups passed");
     }
 
     private static void selectsRegisteredCredentialsFirst() {
@@ -106,7 +106,6 @@ public final class RegistrationCoreTest {
             invalid.put("token_endpoint_auth_method", method);
             expect(RegistrationException.Reason.INVALID_CIMD_DOCUMENT, () -> new CimdDocumentValidator().validate(CIMD, invalid, CALLBACK));
         }
-
     }
 
     private static void expect(RegistrationException.Reason reason, Runnable action) {

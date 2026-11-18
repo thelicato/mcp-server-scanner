@@ -86,7 +86,6 @@ class McpScannerExtensionTest {
         verify(scanner).registerInsertionPointProvider(any(McpInsertionPointProvider.class));
     }
 
-
     @Test
     void registersAllActiveScanChecks() {
         sut.initialize(api);

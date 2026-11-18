@@ -34,7 +34,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 class SessionLifecycleCheckTest {
 
     private static final String ENDPOINT = "http://target.test/mcp";
-    private static final String PREFIX = "Scan check: session-lifecycle — ";
+    private static final String PREFIX = "Scan check: session-lifecycle - ";
     private static final String BASE_SUBJECT = "tools/list at " + ENDPOINT;
 
     private final FakeSessionServer server = new FakeSessionServer();

@@ -20,7 +20,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 class StreamedToolCallScanWiringTest {
 
     private static final Pattern CHECK_FINISHED =
-            Pattern.compile("Scan check: (\\S+) — finished in \\d+ms, (\\d+) requests?");
+            Pattern.compile("Scan check: (\\S+) - finished in \\d+ms, (\\d+) requests?");
 
     @BeforeEach
     void installMontoya() {

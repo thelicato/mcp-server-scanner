@@ -48,7 +48,7 @@ class RetryAfterInvocationTest {
         assertThat(check.statuses).containsExactly(200);
         assertThat(http.sent()).isEqualTo(2);
         assertThat(eventLog.snapshot()).extracting(McpEventLog.LogEntry::message)
-                .anyMatch(line -> line.matches("Scan check: sender — finished in \\d+ms, 2 requests, 0 issues"));
+                .anyMatch(line -> line.matches("Scan check: sender - finished in \\d+ms, 2 requests, 0 issues"));
     }
 
     @Test

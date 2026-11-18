@@ -41,7 +41,7 @@ class CrossClientRetryAfterTest {
         assertThat(afterFirst).isEqualTo(2 + LeakTrial.CLIENTS);
         assertThat(server.requestsSeen()).isEqualTo(afterFirst);
         assertThat(eventLog.snapshot()).extracting(McpEventLog.LogEntry::message)
-                .contains("Scan check: cross-client-response-leak — HTTP 429 from target.test: "
+                .contains("Scan check: cross-client-response-leak - HTTP 429 from target.test: "
                         + "not waiting on a concurrent probe")
                 .anyMatch(line -> line.contains("(rate limited: the server answered HTTP 429)"));
     }

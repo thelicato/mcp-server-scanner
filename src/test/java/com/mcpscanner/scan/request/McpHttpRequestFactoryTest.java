@@ -108,7 +108,6 @@ class McpHttpRequestFactoryTest {
         assertThat(factory.raw(ENDPOINT, call, Map.of())).doesNotContain("Mcp-Method", "Mcp-Name");
     }
 
-
     @Test
     void sendsTheParamHeadersAToolDeclaresFromTheArgumentsInTheBody() throws Exception {
         String raw = paramHeaderFactory(MODERN_FRAMER).raw(ENDPOINT, tenantCall(" fuzzedé"), ROUTING_SESSION);

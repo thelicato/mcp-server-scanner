@@ -44,7 +44,7 @@ class PeerReplayTest {
         assertThat(run.ledger().findingsOf("b")).singleElement().satisfies(finding -> {
             assertThat(finding.kind()).isEqualTo(AccessFinding.Kind.POSSIBLE_OBJECT_LEVEL);
             assertThat(finding.summary()).isEqualTo("Object-level: identity-B received Primary's result for the "
-                    + "same arguments (Tentative — no private marker configured for Primary)");
+                    + "same arguments (Tentative - no private marker configured for Primary)");
         });
     }
 

@@ -114,7 +114,7 @@ class McpScannerExtensionWiringTest {
         ((JMenuItem) registeredContextMenu().provideMenuItems(eventSelecting(unansweredRequest())).get(0))
                 .doClick();
 
-        verify(api.logging(), timeout(5_000)).logToOutput(startsWith("Extension scan started — 1 request, "));
+        verify(api.logging(), timeout(5_000)).logToOutput(startsWith("Extension scan started - 1 request, "));
     }
 
     private void initializeWithSavedConnection(TransportType transport) {

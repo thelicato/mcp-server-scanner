@@ -297,7 +297,7 @@ class McpScanEngineTest {
 
         finish(engine.scan(IntStream.range(0, requests).mapToObj(index -> answeredBase(URL)).toList(), LABEL));
 
-        assertLogged(McpEventLog.Level.INFO, "Extension scan started — " + counts);
+        assertLogged(McpEventLog.Level.INFO, "Extension scan started - " + counts);
         assertLogged(McpEventLog.Level.INFO, "Extension scan finished");
     }
 

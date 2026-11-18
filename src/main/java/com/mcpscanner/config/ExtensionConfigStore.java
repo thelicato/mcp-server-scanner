@@ -345,7 +345,7 @@ public final class ExtensionConfigStore {
         try {
             store.setString(KEY_OAUTH_SCOPES, McpObjectMapper.INSTANCE.writeValueAsString(scopes));
         } catch (JsonProcessingException e) {
-            throw new IllegalStateException("Failed to serialize scopes", e);
+            throw new IllegalStateException("Failed to serialise scopes", e);
         }
     }
 

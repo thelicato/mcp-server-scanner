@@ -51,7 +51,7 @@ class StreamedAuditTest {
 
         assertThat(check.calls).singleElement().extracting(RecordingChecks.Call::base).isSameAs(streamedBase);
         verify(http).sendRequest(org.mockito.ArgumentMatchers.any(HttpRequest.class));
-        assertThat(infos()).contains("Scan check: streamed — started");
+        assertThat(infos()).contains("Scan check: streamed - started");
         assertThat(infos()).anyMatch(line -> line.contains("without its reply"));
     }
 
@@ -78,7 +78,7 @@ class StreamedAuditTest {
         adapter.doCheck(streamedBase, point, http);
         adapter.doCheck(streamedBase, point, http);
 
-        assertThat(infos()).containsOnlyOnce("Scan check: streamed — auditing tools/call ping_host at "
+        assertThat(infos()).containsOnlyOnce("Scan check: streamed - auditing tools/call ping_host at "
                 + streamedBase.request().url() + " without its reply (Burp gave the extension no reply: it withholds streamed replies,"
                 + " and a timeout or dropped connection looks the same)");
     }
@@ -93,7 +93,7 @@ class StreamedAuditTest {
                 kind.check().requiringReply());
 
         assertThatThrownBy(() -> adapter.doCheck(unreadable, point, http)).isSameAs(withheld);
-        assertThat(errors()).containsExactly("Scan check: streamed — threw IllegalStateException: request withheld");
+        assertThat(errors()).containsExactly("Scan check: streamed - threw IllegalStateException: request withheld");
     }
 
     @ParameterizedTest
@@ -105,7 +105,7 @@ class StreamedAuditTest {
         McpCheckAdapter<?> adapter = kind.adapt(settings, eventLog, kind.check());
 
         assertThatThrownBy(() -> adapter.doCheck(streamedBase, point, http)).isSameAs(unreadable);
-        assertThat(errors()).containsExactly("Scan check: streamed — threw IllegalStateException: settings unreadable");
+        assertThat(errors()).containsExactly("Scan check: streamed - threw IllegalStateException: settings unreadable");
     }
 
     private List<String> infos() {

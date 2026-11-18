@@ -34,8 +34,8 @@ final class ExpectationText {
 
     private static String phrase(AccessExpectation expectation, String owner) {
         return switch (expectation) {
-            case SHARED_BY_DESIGN -> "Anyone — same result for everyone";
-            case ANY_SIGNED_IN -> "Anyone — but only their own data";
+            case SHARED_BY_DESIGN -> "Anyone - same result for everyone";
+            case ANY_SIGNED_IN -> "Anyone - but only their own data";
             case NOT_LOWER -> owner + "'s level or above";
             case HIGHER_ONLY -> "Only users above " + owner + "'s level";
             case OWNER_ONLY -> "Only " + owner;

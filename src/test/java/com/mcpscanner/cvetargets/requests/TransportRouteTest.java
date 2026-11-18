@@ -25,7 +25,6 @@ class TransportRouteTest {
         assertThat(TransportRoute.DIRECT.reachedTarget(answered(429))).isFalse();
     }
 
-
     private static HttpRequestResponse answered(int status) {
         HttpResponse response = mock(HttpResponse.class);
         when(response.statusCode()).thenReturn((short) status);

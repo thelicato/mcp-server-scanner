@@ -11,7 +11,7 @@ final class CheckAccessWriteWording implements WriteToolWording {
     private static final String REPLAY = "Check access will replay the owner's own calls to these tools as every "
             + "compared user and Anonymous";
     private static final String EFFECT = "Each replay repeats the call's effect: it can modify, create, or delete "
-            + "data on the target — irreversible.";
+            + "data on the target - irreversible.";
 
     @Override
     public DestructiveScanConfirmation.Result ask(DestructiveScanPrompt prompt, Component parent,

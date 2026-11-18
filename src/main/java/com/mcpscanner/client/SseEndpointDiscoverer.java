@@ -193,5 +193,4 @@ public final class SseEndpointDiscoverer {
         } catch (IOException ignored) {
         }
     }
-
 }

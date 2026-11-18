@@ -186,7 +186,7 @@ public final class EnterpriseManagedFlowTest {
         try { action.run(); throw new AssertionError("Expected " + reason); }
         catch (OAuthFlowException failure) {
             check(failure.reason() == reason, "Expected typed " + reason + ", got " + failure.reason());
-            check(!failure.toString().contains("secret") && failure.getCause() == null, "Sanitized failure");
+            check(!failure.toString().contains("secret") && failure.getCause() == null, "Sanitised failure");
         }
     }
 

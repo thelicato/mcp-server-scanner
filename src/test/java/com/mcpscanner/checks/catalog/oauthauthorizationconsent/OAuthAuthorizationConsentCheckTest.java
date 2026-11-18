@@ -367,7 +367,7 @@ class OAuthAuthorizationConsentCheckTest {
     @Nested
     class SkipLogging {
 
-        private static final String PREFIX = "Scan check: oauth-authorization-consent — ";
+        private static final String PREFIX = "Scan check: oauth-authorization-consent - ";
         private static final String METADATA = ORIGIN + "/.well-known/oauth-authorization-server";
 
         @Test

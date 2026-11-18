@@ -67,7 +67,7 @@ class HostReachabilityTest {
     @ValueSource(strings = {"fc00::1", "fd12:3456:789a::1", "FD00::1"})
     void recognisesIpv6UniqueLocalAddress(String host) {
         // RFC 4193: fc00::/7 (so fc00::/8 unassigned + fd00::/8 locally assigned)
-        // is the IPv6 Unique Local Address space — the IPv6 equivalent of RFC1918.
+        // is the IPv6 Unique Local Address space - the IPv6 equivalent of RFC1918.
         assertThat(HostReachability.isLocallyReachable(host)).isTrue();
     }
 
@@ -83,7 +83,7 @@ class HostReachabilityTest {
 
     @Test
     void treatsWildcardZeroAddressAsNotLocallyReachable() {
-        // 0.0.0.0 is a wildcard bind, not a loopback — treat as public.
+        // 0.0.0.0 is a wildcard bind, not a loopback - treat as public.
         assertThat(HostReachability.isLocallyReachable("0.0.0.0")).isFalse();
     }
 

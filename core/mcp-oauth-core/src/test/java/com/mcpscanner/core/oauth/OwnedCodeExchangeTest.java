@@ -47,7 +47,7 @@ public final class OwnedCodeExchangeTest {
                 new Arm(PkceChallenge.OMIT, VerifierSubmission.OMIT))) {
             OwnedCodeExchangeResult result = engine.exchangeOwnedCode(configuration(), arm.challenge(), arm.verifier());
             require(result.status() == 200 && result.validTokenResponse() && !result.protectedOperationVerified(),
-                "valid token response is recognized without asserting a protected effect");
+                "valid token response is recognised without asserting a protected effect");
             require(!result.toString().contains("private-access"), "result redacts token values");
         }
         require(authorizations.size() == 4 && exchanges.size() == 4, "one fresh code per arm");
@@ -156,7 +156,7 @@ public final class OwnedCodeExchangeTest {
                 "only a complete structured OAuth denial is classified");
             require(!result.toString().contains("private-code") && !result.toString().contains("private-secret")
                 && !result.toString().contains("private-access"),
-                "result omits unrecognized fields and error descriptions");
+                "result omits unrecognised fields and error descriptions");
         }
     }
 

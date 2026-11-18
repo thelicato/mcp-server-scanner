@@ -20,7 +20,6 @@ class StatusClusterTest {
         assertThat(cluster.busyIndicatorVisible()).isFalse();
     }
 
-
     @Test
     void disconnectedShowsGrayDotAndDisconnectedText() {
         StatusCluster cluster = new StatusCluster();

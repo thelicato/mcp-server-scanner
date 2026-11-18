@@ -278,8 +278,6 @@ class McpFieldGeneratorTest {
         assertThat(withoutHeaders.fieldsOf(discover)).isEmpty();
     }
 
-
-
     @Test
     void otherFieldsLeaveMcpNameAlone() {
         AuditInsertionPoint url = withoutHeaders.fieldsOf(request(TOOL_CALL, mcpHeaders())).stream()
@@ -287,7 +285,6 @@ class McpFieldGeneratorTest {
 
         assertThat(url.buildHttpRequestWithPayload(ByteArray.byteArray("x")).headerValue("Mcp-Name")).isEqualTo("fetch");
     }
-
 
     private static List<String> names(List<AuditInsertionPoint> fields) {
         return fields.stream().map(AuditInsertionPoint::name).toList();

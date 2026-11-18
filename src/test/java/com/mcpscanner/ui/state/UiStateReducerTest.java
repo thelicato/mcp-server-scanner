@@ -23,7 +23,6 @@ class UiStateReducerTest {
     private static final ConnectedIdentity CONNECTED_AS = new ConnectedIdentity(
             new CredentialFingerprint("user-1", "digest"), "User 1", IdentityAuthKind.NONE, true);
 
-
     private final UiStateReducer reducer = new UiStateReducer();
 
     @Test

@@ -79,7 +79,7 @@ public final class OAuthAuthCodeStrategy implements AuthStrategy, RefreshGrantSt
     }
 
     private static OAuthException refreshFailed() {
-        return new OAuthException("OAuth refresh failed; reconnect to re-authorize");
+        return new OAuthException("OAuth refresh failed; reconnect to re-authorise");
     }
 
     private final class RefreshingCredentialProvider implements com.mcpscanner.core.connection.CredentialProvider {
@@ -299,7 +299,7 @@ public final class OAuthAuthCodeStrategy implements AuthStrategy, RefreshGrantSt
 
     private void performTokenRefresh() {
         if (sharedSession.currentTokens().refreshToken() == null) {
-            throw new OAuthException("No refresh token available; reconnect to re-authorize");
+            throw new OAuthException("No refresh token available; reconnect to re-authorise");
         }
         sharedSession.refresh();
     }
@@ -337,5 +337,4 @@ public final class OAuthAuthCodeStrategy implements AuthStrategy, RefreshGrantSt
     private static List<String> sorted(java.util.Set<String> scopes) {
         return scopes.stream().sorted().toList();
     }
-
 }

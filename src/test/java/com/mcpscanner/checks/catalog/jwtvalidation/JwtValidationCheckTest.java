@@ -236,7 +236,7 @@ class JwtValidationCheckTest {
     @Nested
     class SkipLogging {
 
-        private static final String PREFIX = "Scan check: jwt-validation — ";
+        private static final String PREFIX = "Scan check: jwt-validation - ";
 
         private String subject;
 

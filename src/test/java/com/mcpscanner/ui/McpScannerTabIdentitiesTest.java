@@ -306,5 +306,4 @@ class McpScannerTabIdentitiesTest {
         verify(fixture.clientManager, atLeastOnce()).connect(configs.capture());
         return configs.getValue();
     }
-
 }

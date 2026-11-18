@@ -44,7 +44,7 @@ class BenignCatalog:
                                       mime_type="application/json"))
         catalog.add_template(ResourceTemplate("users://{user_id}/profile", "user_profile", "User profile by id",
                                               _user_profile, completions={"user_id": sorted(USERS)}))
-        catalog.add_prompt(Prompt("summarize", "Summarize text", [PromptArgument("text", "Text to summarize")],
+        catalog.add_prompt(Prompt("summarize", "Summarise text", [PromptArgument("text", "Text to summarise")],
                                   _summarize))
         catalog.add_prompt(Prompt("code_review", "Review code",
                                   [PromptArgument("language", "Language"), PromptArgument("code", "Code")],
@@ -86,7 +86,7 @@ async def _user_profile(uri: str, variables: dict[str, str], context: CallContex
 
 
 async def _summarize(arguments: dict[str, str], context: CallContext) -> JsonObject:
-    return prompt_messages("Summary request", f"Summarize:\n{arguments['text']}")
+    return prompt_messages("Summary request", f"Summarise:\n{arguments['text']}")
 
 
 async def _code_review(arguments: dict[str, str], context: CallContext) -> JsonObject:

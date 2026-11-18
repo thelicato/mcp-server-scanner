@@ -35,7 +35,7 @@ public final class DestructiveScanConfirmation {
     private static final String COLLECT_TITLE = "Allow write calls while collecting IDs?";
     private static final String REPLAY_TITLE = "Replay write tools as other users?";
     private static final String LEAD_TEXT_AFTER_INVOKER = " will invoke these tools with attacker-controlled inputs. "
-            + "This can modify, create, or delete data on the target — irreversible.";
+            + "This can modify, create, or delete data on the target - irreversible.";
     private static final String SPEC_CAVEAT =
             "Tool annotations are advisory; the server may have understated risk.";
     private static final int LIST_VISIBLE_ROWS = 6;

@@ -307,7 +307,7 @@ public final class OAuthFlowEngineTest {
                 browser, new MemoryStore(), Clock.fixed(NOW, ZoneOffset.UTC));
         expectFailure(OAuthFlowException.Reason.INVALID_CALLBACK, () -> engine.authenticate(config));
         var differentIssuer = new CredentialBinding(URI.create("https://ISSUER.example"), config.resource(), config.client().clientId(), config.scopes());
-        check(!differentIssuer.equals(config.binding()), "Credential issuer identity is exact without URI normalization");
+        check(!differentIssuer.equals(config.binding()), "Credential issuer identity is exact without URI normalisation");
     }
 
     private static void preservesGrantedScopesWhenRefreshResponseOmitsScope() {

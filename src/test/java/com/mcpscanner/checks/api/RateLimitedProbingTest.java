@@ -47,7 +47,7 @@ class RateLimitedProbingTest {
         verify(http, times(1)).sendRequest(any(HttpRequest.class));
         assertThat(replies.subList(1, replies.size())).allSatisfy(reply -> assertThat(reply.response()).isNull());
         assertThat(eventLog.snapshot()).extracting(McpEventLog.LogEntry::message).containsExactly(
-                "Scan check: demo — stopped field q (rate limited: the server answered HTTP 429)");
+                "Scan check: demo - stopped field q (rate limited: the server answered HTTP 429)");
     }
 
     @Test

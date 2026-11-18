@@ -20,28 +20,28 @@ class CheckLogTest {
 
     @Test
     void prefixesEveryMessageWithTheCheckId() {
-        assertThat(CheckLog.prefix("demo-check")).isEqualTo("Scan check: demo-check — ");
+        assertThat(CheckLog.prefix("demo-check")).isEqualTo("Scan check: demo-check - ");
     }
 
     @Test
     void infoMessagesCarryThePrefix() {
         log.info("skipped http://host/mcp");
 
-        verify(eventLog).info("Scan check: demo-check — skipped http://host/mcp");
+        verify(eventLog).info("Scan check: demo-check - skipped http://host/mcp");
     }
 
     @Test
     void warningsCarryThePrefix() {
         log.warn("could not restore the session");
 
-        verify(eventLog).warn("Scan check: demo-check — could not restore the session");
+        verify(eventLog).warn("Scan check: demo-check - could not restore the session");
     }
 
     @Test
     void aSkipNamesTheSubjectAndTheReason() {
         log.notRun("tools/call echo at http://host/mcp", SkipReason.prerequisiteMissing("no Mcp-Session-Id"));
 
-        verify(eventLog).info("Scan check: demo-check — skipped tools/call echo at http://host/mcp "
+        verify(eventLog).info("Scan check: demo-check - skipped tools/call echo at http://host/mcp "
                 + "(prerequisite missing: no Mcp-Session-Id)");
     }
 
@@ -49,7 +49,7 @@ class CheckLogTest {
     void anInterruptionIsAStop() {
         log.notRun("field q", SkipReason.rateLimited());
 
-        verify(eventLog).info("Scan check: demo-check — stopped field q (rate limited: the server answered HTTP 429)");
+        verify(eventLog).info("Scan check: demo-check - stopped field q (rate limited: the server answered HTTP 429)");
     }
 
     @Test
@@ -62,8 +62,8 @@ class CheckLogTest {
             return null;
         });
 
-        verify(eventLog).info("Scan check: demo-check — stopped field a (rate limited: the server answered HTTP 429)");
-        verify(eventLog).debug("Scan check: demo-check — stopped field b (rate limited: the server answered HTTP 429)");
+        verify(eventLog).info("Scan check: demo-check - stopped field a (rate limited: the server answered HTTP 429)");
+        verify(eventLog).debug("Scan check: demo-check - stopped field b (rate limited: the server answered HTTP 429)");
     }
 
     @Test
@@ -76,7 +76,7 @@ class CheckLogTest {
         }
 
         verify(eventLog, times(2)).info(
-                "Scan check: demo-check — stopped field a (rate limited: the server answered HTTP 429)");
+                "Scan check: demo-check - stopped field a (rate limited: the server answered HTTP 429)");
     }
 
     @Test
@@ -84,7 +84,7 @@ class CheckLogTest {
         log.notRunOncePerLoad("field a", SkipReason.prerequisiteMissing("no Collaborator"));
         log.notRunOncePerLoad("field b", SkipReason.prerequisiteMissing("no Collaborator"));
 
-        verify(eventLog).info("Scan check: demo-check — skipped field a (prerequisite missing: no Collaborator)");
-        verify(eventLog, never()).info("Scan check: demo-check — skipped field b (prerequisite missing: no Collaborator)");
+        verify(eventLog).info("Scan check: demo-check - skipped field a (prerequisite missing: no Collaborator)");
+        verify(eventLog, never()).info("Scan check: demo-check - skipped field b (prerequisite missing: no Collaborator)");
     }
 }

@@ -84,7 +84,7 @@ public final class McpReplyCodecTest {
             if (json.getBytes(java.nio.charset.StandardCharsets.UTF_8).length > 4096 * 12 + 2)
                 throw new AssertionError("ID exceeded the maximum escaped scalar size");
             if (!id.equals(com.mcpscanner.core.protocol.McpRequestId.parse(json)))
-                throw new AssertionError("Maximum length Unicode ID changed after serialization");
+                throw new AssertionError("Maximum length Unicode ID changed after serialisation");
             for (String version : java.util.List.of("2026-07-28", "2025-03-26", "2025-06-18", "2025-11-25", "2024-11-05")) {
                 var session = new McpFlow.Session(version, null, version.equals("2024-11-05") ? "/message" : null, "test", "1");
                 var request = (java.util.Map<?, ?>) com.mcpscanner.core.protocol.JsonDocuments.parse(

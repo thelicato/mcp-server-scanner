@@ -74,7 +74,7 @@ public class OAuthUrlValidator {
      * </ul>
      *
      * @param uri        the destination URL to classify.
-     * @param resolver   pluggable host resolver — injectable so callers can avoid real DNS.
+     * @param resolver   pluggable host resolver - injectable so callers can avoid real DNS.
      * @param mcpOrigin  the configured MCP endpoint origin used to detect cross-origin
      *                   destinations. Pass {@code null} to skip the cross-origin check.
      */

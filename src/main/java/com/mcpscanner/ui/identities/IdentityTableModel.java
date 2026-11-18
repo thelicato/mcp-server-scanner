@@ -18,7 +18,7 @@ final class IdentityTableModel extends AbstractTableModel {
     static final int STATUS = 4;
     static final int COLUMN_COUNT = 5;
     static final String ALWAYS_INCLUDED = "Always included";
-    static final String NO_ACCESS_LEVEL = "—";
+    static final String NO_ACCESS_LEVEL = "-";
     private static final String[] COLUMNS = {"Compare", "Name", "Access", "Auth", "Status"};
 
     private final IdentityUiServices services;

@@ -144,7 +144,7 @@ public final class HttpSessionTest {
         var session = fixture.open();
         try {
             session.send(session.session().operation("tools/call", "{}", 9));
-            throw new AssertionError("Denied scopes must stop reinitialization");
+            throw new AssertionError("Denied scopes must stop reinitialisation");
         } catch (ConnectionAuthException expected) {
             equal(RecoveryResult.DENIED, expected.result());
             equal("Connection authentication requires attention: DENIED", expected.getMessage());
@@ -164,7 +164,7 @@ public final class HttpSessionTest {
         var session = fixture.open();
         try {
             session.send(session.session().operation("tools/call", "{}", 9));
-            throw new AssertionError("Repeated auth challenge must stop reinitialization");
+            throw new AssertionError("Repeated auth challenge must stop reinitialisation");
         } catch (ConnectionAuthException expected) {
             equal(RecoveryResult.STOP, expected.result());
             equal("Connection authentication requires attention: STOP", expected.getMessage());
@@ -203,7 +203,7 @@ public final class HttpSessionTest {
         var session = fixture.connection.anonymous().openHttpSession(fixture::send, "fixture", "1");
         try {
             session.send(session.session().operation("tools/call", "{}", 9));
-            throw new AssertionError("Anonymous challenge must stop reinitialization");
+            throw new AssertionError("Anonymous challenge must stop reinitialisation");
         } catch (ConnectionAuthException expected) {
             equal(RecoveryResult.STOP, expected.result());
         }

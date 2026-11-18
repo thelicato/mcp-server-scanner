@@ -10,7 +10,6 @@ import java.util.function.Consumer;
 
 final class ProbeTraffic implements Consumer<HttpRequestResponse> {
 
-
     private final List<HttpRequestResponse> exchanges = new ArrayList<>();
 
     @Override

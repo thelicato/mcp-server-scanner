@@ -17,7 +17,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 class SessionBindingSkipLoggingTest {
 
-    private static final String PREFIX = "Scan check: session-binding — ";
+    private static final String PREFIX = "Scan check: session-binding - ";
     private static final String RECORD_AT = "tools/call read_session_record at https://example.test:443/mcp";
     private static final HttpRequest SESSION_RECORD =
             toolCall("read_session_record", "{}", "A").withAddedHeader("Mcp-Session-Id", "sess-A");

@@ -84,7 +84,7 @@ public final class McpScanEngine {
         List<RegisteredCheck> scanned = List.copyOf(checks);
         ScanRun run = new ScanRun(scan, instrumentation.instrument(http, scan.id(), scan::requestSent, scan::cancelled));
         running.add(scan);
-        log.kept("started — " + count(requests.size(), "request") + ", " + count(scanned.size(), "check"));
+        log.kept("started - " + count(requests.size(), "request") + ", " + count(scanned.size(), "check"));
         allOf(requests.stream().map(request -> scanBase(run, request, scanned)))
                 .whenComplete((ignored, failure) -> finish(scan));
         return scan;
@@ -163,7 +163,7 @@ public final class McpScanEngine {
     }
 
     private void logFinish(ScanProgress progress) {
-        log.kept((progress.cancelled() ? "cancelled" : "finished") + " — " + progress.completed() + " of "
+        log.kept((progress.cancelled() ? "cancelled" : "finished") + " - " + progress.completed() + " of "
                 + count(progress.planned(), "invocation") + " run, " + progress.skipped() + " skipped, "
                 + count(progress.issuesReported(), "issue") + " reported");
         if (progress.watchedPayloads() > 0) {

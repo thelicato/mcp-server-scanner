@@ -29,7 +29,7 @@ class DownstreamRouteEscape(Vulnerability):
             "properties": {"license_id": {"type": "string", "default": "LIC-1001"}},
             "required": ["license_id"],
         }
-        surface.catalog.add_tool(Tool("get_license", "Look up a license in the licensing service", schema,
+        surface.catalog.add_tool(Tool("get_license", "Look up a licence in the licensing service", schema,
                                       self._call))
         surface.routes.append(Route(DOWNSTREAM_PREFIX + "/{path:path}", self._serve_http))
 

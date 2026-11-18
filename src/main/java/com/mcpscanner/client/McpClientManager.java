@@ -146,7 +146,6 @@ public class McpClientManager {
         return count + " " + singular + (count == 1 ? "" : "s");
     }
 
-
     public CompletionOutcome complete(CompletionRequest request) {
         if (!connected) {
             return new CompletionOutcome.Failed(NOT_CONNECTED);
@@ -174,7 +173,6 @@ public class McpClientManager {
             notifyDisconnect();
         }
     }
-
 
     public void addConnectionLostListener(Runnable listener) {
         connectionLostListeners.add(Objects.requireNonNull(listener, "listener"));

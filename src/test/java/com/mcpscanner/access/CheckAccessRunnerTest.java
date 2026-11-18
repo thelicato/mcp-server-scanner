@@ -418,7 +418,7 @@ class CheckAccessRunnerTest {
         assertThat(check.compared).hasSize(2);
         assertThat(http.sent).hasSize(3);
         assertThat(eventLog.snapshot()).extracting(McpEventLog.LogEntry::message)
-                .contains("Check access — HTTP 429 from mcp.test: waiting 0 s as Retry-After asks, then resending");
+                .contains("Check access - HTTP 429 from mcp.test: waiting 0 s as Retry-After asks, then resending");
     }
 
     @Test
@@ -586,6 +586,4 @@ class CheckAccessRunnerTest {
             finished.complete(summary);
         }
     }
-
-
 }

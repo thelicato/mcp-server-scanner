@@ -48,7 +48,7 @@ public class CheckDisciplineTest {
                     .should(declareConstructorWithSettingsFirst())
                     .because("McpCheckAdapter requires a ScanCheckSettings "
                             + "to honour the per-check UI toggle. Subclasses pass it through their first "
-                            + "constructor parameter — a different shape (no-arg constructor, or settings "
+                            + "constructor parameter - a different shape (no-arg constructor, or settings "
                             + "later in the list) silently disables the toggle plumbing.");
 
     private static ArchCondition<JavaClass> declareConstructorWithSettingsFirst() {

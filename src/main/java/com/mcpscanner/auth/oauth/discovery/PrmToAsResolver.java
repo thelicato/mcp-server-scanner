@@ -121,5 +121,4 @@ public class PrmToAsResolver {
     private void warn(String message) {
         eventLog.warn(message);
     }
-
 }

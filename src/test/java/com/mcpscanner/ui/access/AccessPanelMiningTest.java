@@ -202,7 +202,7 @@ class AccessPanelMiningTest {
             values().table().setRowSelectionInterval(0, 0);
             values().editButton().doClick();
         });
-        await().until(() -> rows().equals(List.of(List.of("typed-2", "doc_id", "—", "—", "Entered"))));
+        await().until(() -> rows().equals(List.of(List.of("typed-2", "doc_id", "-", "-", "Entered"))));
 
         run(() -> {
             values().table().setRowSelectionInterval(0, 0);

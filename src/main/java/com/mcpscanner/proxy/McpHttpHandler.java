@@ -27,9 +27,9 @@ import java.util.Optional;
  * <p>Match on host + port + path component of the configured MCP endpoint. Only the path is
  * compared; query string and method are ignored so backup-file probes (e.g. {@code ?qwe9fx.css},
  * {@code OPTIONS} preflights) against the same path still flow through the proxy's gate. Anything
- * on a DIFFERENT path on the same host — including OAuth well-known metadata probes
+ * on a DIFFERENT path on the same host - including OAuth well-known metadata probes
  * ({@code /.well-known/oauth-protected-resource}, {@code /.well-known/oauth-authorization-server})
- * issued by our own checks — passes through to Burp's normal HTTP delivery so it reaches the real
+ * issued by our own checks - passes through to Burp's normal HTTP delivery so it reaches the real
  * upstream with full request and response headers preserved.
  *
  * @implNote Do not refactor this into a synchronous intercept-and-respond

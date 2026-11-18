@@ -269,7 +269,7 @@ class AccessPanelTest {
         run(() -> fixture.panel().refresh());
         int search = row(table, "search");
 
-        assertThat(text(table, search, 3)).contains("? same result as Primary — allowed? Set Who should reach it");
+        assertThat(text(table, search, 3)).contains("? same result as Primary - allowed? Set Who should reach it");
         assertThat(onEdt(() -> view.openExpectationFrom(search, 2))).isFalse();
         assertThat(onEdt(() -> view.openExpectationFrom(search, 3))).isTrue();
         assertThat(onEdt(table::getEditingColumn)).isEqualTo(5);
@@ -284,7 +284,7 @@ class AccessPanelTest {
 
         assertThat(fixture.fixtures.expectations().stored(toolKey("list_users")))
                 .contains(AccessExpectation.SHARED_BY_DESIGN);
-        assertThat(text(table, row(table, "list_users"), 5)).isEqualTo("Anyone — same result for everyone");
+        assertThat(text(table, row(table, "list_users"), 5)).isEqualTo("Anyone - same result for everyone");
     }
 
     @Test
@@ -319,7 +319,7 @@ class AccessPanelTest {
 
         run(() -> table.changeSelection(row(table, "delete_project"), 3, false, false));
 
-        assertThat(view.detail().area().getText()).contains("delete_project — carol (Lower privilege)")
+        assertThat(view.detail().area().getText()).contains("delete_project - carol (Lower privilege)")
                 .contains("Not in carol's own tools/list.")
                 .contains("returned the same result as Primary")
                 .contains("Primary's level or above").contains("Breaks the expectation");
@@ -384,7 +384,7 @@ class AccessPanelTest {
 
         JPopupMenu popup = onEdt(() -> menu.menuFor(fixture.matrix.snapshot(), listUsers, Optional.of(BOB)));
         List<String> labels = items(popup).stream().map(JMenuItem::getText).toList();
-        assertThat(labels).containsExactly("Set to “Anyone — same result for everyone”", "Send Primary / bob pair to Repeater",
+        assertThat(labels).containsExactly("Set to “Anyone - same result for everyone”", "Send Primary / bob pair to Repeater",
                 "Check this item");
 
         run(() -> items(popup).get(1).doClick());

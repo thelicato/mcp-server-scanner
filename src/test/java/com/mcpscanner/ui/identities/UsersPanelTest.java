@@ -47,7 +47,7 @@ class UsersPanelTest {
                 .mapToObj(column -> String.valueOf(panel.table().getColumnModel().getColumn(column).getHeaderValue()))
                 .toList())).containsExactly("Compare", "Name", "Access", "Auth", "Status");
         assertThat(column(IdentityTableModel.NAME)).containsExactly("bob", "carol", "Anonymous");
-        assertThat(column(IdentityTableModel.ACCESS)).containsExactly("Same (peer)", "Less access", "—");
+        assertThat(column(IdentityTableModel.ACCESS)).containsExactly("Same (peer)", "Less access", "-");
         assertThat(column(IdentityTableModel.COMPARE)).containsExactly(true, true, true);
         assertThat(fromEdt(() -> panel.table().getModel().isCellEditable(0, IdentityTableModel.COMPARE))).isTrue();
         assertThat(fromEdt(() -> panel.table().getModel().isCellEditable(2, IdentityTableModel.COMPARE))).isFalse();
@@ -638,7 +638,6 @@ class UsersPanelTest {
                 .filter(item -> item.getText().startsWith(prefix)).findFirst()
                 .orElseThrow(() -> new AssertionError("No menu item starting " + prefix));
     }
-
 
     private List<Object> column(int column) throws Exception {
         return fromEdt(() -> IntStream.range(0, panel.table().getRowCount())

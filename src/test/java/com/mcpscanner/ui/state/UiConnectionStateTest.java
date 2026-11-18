@@ -20,7 +20,6 @@ class UiConnectionStateTest {
     private static final ConnectedIdentity CONNECTED_AS = new ConnectedIdentity(
             new CredentialFingerprint("user-1", "digest"), "User 1", IdentityAuthKind.NONE, true);
 
-
     @Test
     void disconnectedStatusReportsDisconnected() {
         ConnectionStatus status = UiConnectionState.disconnected().status();

@@ -118,7 +118,7 @@ public final class DefaultSuspiciousDestinationGate implements SuspiciousDestina
             return confirmer.confirm(reason);
         } catch (RuntimeException ex) {
             warn("SuspiciousDestinationConfirmer threw " + ex.getClass().getSimpleName()
-                    + ": " + ex.getMessage() + " — treating as deny");
+                    + ": " + ex.getMessage() + " - treating as deny");
             return false;
         }
     }
@@ -178,7 +178,7 @@ public final class DefaultSuspiciousDestinationGate implements SuspiciousDestina
             return;
         }
         if (decision.isAllowed() && decision.reason() == null) {
-            return; // clean URL — no need to spam the log.
+            return; // clean URL - no need to spam the log.
         }
         String prefix = decision.isAllowed()
                 ? "OAuth destination approved by user"
@@ -187,7 +187,7 @@ public final class DefaultSuspiciousDestinationGate implements SuspiciousDestina
         String classification = reason != null
                 ? String.join(", ", reason.classifications())
                 : "<unknown>";
-        eventLog.warn(prefix + " — " + purpose.label() + " → " + url
+        eventLog.warn(prefix + " - " + purpose.label() + " → " + url
                 + " [" + classification + "]");
     }
 

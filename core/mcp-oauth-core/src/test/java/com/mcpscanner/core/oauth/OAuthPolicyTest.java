@@ -214,7 +214,7 @@ public final class OAuthPolicyTest {
         require(pending.action() == OAuthChallengeDecision.Action.APPROVAL_REQUIRED, "Scope upgrades require approval");
         require(pending.scopes().equals(Set.of("read", "write")), "Previously requested scopes preserved");
         var denied = policy.decide(403, challenge, binding, state, true, true, AuthorizationApproval.DENIED);
-        require(denied.action() == OAuthChallengeDecision.Action.DENIED, "Approval denial never authorizes");
+        require(denied.action() == OAuthChallengeDecision.Action.DENIED, "Approval denial never authorises");
         var approved = policy.decide(403, challenge, binding, state, true, true, AuthorizationApproval.APPROVED);
         require(approved.action() == OAuthChallengeDecision.Action.AUTHORIZE && approved.nextState().attempts() == 1, "Approved step-up consumes one retry");
         require(policy.decide(403, challenge, binding, approved.nextState(), true, true, AuthorizationApproval.APPROVED).action()
@@ -343,7 +343,7 @@ public final class OAuthPolicyTest {
         try { action.run(); }
         catch (OAuthPolicyException failure) {
             require(failure.reason() == reason, "Expected typed failure " + reason);
-            require(failure.getCause() == null && !failure.getMessage().contains("server-secret"), "Failure is sanitized");
+            require(failure.getCause() == null && !failure.getMessage().contains("server-secret"), "Failure is sanitised");
             return;
         }
         throw new AssertionError("Expected " + reason);

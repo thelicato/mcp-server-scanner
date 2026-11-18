@@ -70,7 +70,7 @@ final class ScanText {
     }
 
     String nowRunning(RunningInvocation invocation) {
-        String subject = invocation.check() + " — " + invocation.request();
+        String subject = invocation.check() + " - " + invocation.request();
         return invocation.field().map(field -> subject + SEPARATOR + field).orElse(subject);
     }
 

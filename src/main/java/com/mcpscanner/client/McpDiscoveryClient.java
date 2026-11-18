@@ -158,7 +158,7 @@ public class McpDiscoveryClient {
         try {
             return McpObjectMapper.INSTANCE.writeValueAsBytes(result).length;
         } catch (JsonProcessingException unserializable) {
-            throw new IllegalStateException("Catalog page is not serializable", unserializable);
+            throw new IllegalStateException("Catalog page is not serialisable", unserializable);
         }
     }
 

@@ -57,5 +57,4 @@ public final class ProtectedResourceLocator {
                 .findFirst()
                 .map(server -> new ProtectedResource(document.webUri("resource"), server, scope));
     }
-
 }

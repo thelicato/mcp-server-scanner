@@ -23,7 +23,7 @@ import static org.mockito.Mockito.verify;
 
 class OAuthRedirectPolicyCheckTest {
 
-    private static final String PREFIX = "Scan check: oauth-redirect-policy — ";
+    private static final String PREFIX = "Scan check: oauth-redirect-policy - ";
     private static final String MCP = "https://mcp.example.com/mcp";
     private static final String PRM = "https://mcp.example.com/.well-known/oauth-protected-resource/mcp";
     private static final String AS_METADATA = "https://auth.example.com/.well-known/oauth-authorization-server";

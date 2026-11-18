@@ -70,7 +70,7 @@ final class McpCheckItSupport {
      *
      * <p>{@link #findFreePort()} closes its probe {@link ServerSocket} before
      * {@code uv run} relaunches uvicorn on that port, so there is a TOCTOU window in
-     * which another process can claim the port — uvicorn then fails to bind (or another
+     * which another process can claim the port - uvicorn then fails to bind (or another
      * responder answers readiness probes) and the server never serves MCP traffic. Booting
      * is slowest under {@code --auth oauth} (the DCR fixtures), which widens the window.
      * Re-picking the port and relaunching a bounded number of times eliminates the flake
@@ -335,7 +335,7 @@ final class McpCheckItSupport {
             if (!process.isAlive()) {
                 throw new IllegalStateException(
                         "test-server process exited before becoming ready (exit="
-                                + process.exitValue() + ") — likely a port bind race");
+                                + process.exitValue() + ") - likely a port bind race");
             }
             try {
                 HttpResponse<Void> response = client.send(probe, HttpResponse.BodyHandlers.discarding());

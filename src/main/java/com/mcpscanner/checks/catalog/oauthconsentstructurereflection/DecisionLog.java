@@ -24,7 +24,7 @@ final class DecisionLog {
     }
 
     <T> Optional<T> notReported(String reason) {
-        log.info("decision: not reported — " + reason);
+        log.info("decision: not reported - " + reason);
         return Optional.empty();
     }
 

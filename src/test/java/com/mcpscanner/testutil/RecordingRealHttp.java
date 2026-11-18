@@ -29,10 +29,10 @@ import java.util.List;
  *
  * <p>It consolidates two formerly-duplicated doubles:
  * <ul>
- *   <li>the integration {@code RealHttp} — session-tracking + header normalization (strip
+ *   <li>the integration {@code RealHttp} - session-tracking + header normalisation (strip
  *       {@code Content-Length}/{@code Host}, inject default {@code Accept}/{@code Content-Type},
  *       lower-cased {@code Mcp-Session-Id} tracking, Title-Cased response header names); and</li>
- *   <li>the OAuth unit-test {@code RecordingHttp} — recording each sent request so tests can assert
+ *   <li>the OAuth unit-test {@code RecordingHttp} - recording each sent request so tests can assert
  *       which URLs/methods were routed through Burp ({@link #sentUrls} +
  *       {@link #sentMethodsByUrlSuffix(String)}).</li>
  * </ul>
@@ -93,7 +93,7 @@ public class RecordingRealHttp implements Http {
             java.net.http.HttpResponse<byte[]> javaResponse =
                     httpClient.send(javaRequest, BodyHandlers.ofByteArray());
             // Track the session ID from responses so subsequent requests (including
-            // auth-stripped probes) can use it — simulates the SSE proxy's role.
+            // auth-stripped probes) can use it - simulates the SSE proxy's role.
             javaResponse.headers().firstValue("mcp-session-id").ifPresent(id -> activeSessionId = id);
             HttpResponse burpResponse = toBurpResponse(javaResponse);
             return HttpRequestResponse.httpRequestResponse(burpRequest, burpResponse);
@@ -183,7 +183,7 @@ public class RecordingRealHttp implements Http {
             if (name.equalsIgnoreCase("Host") || name.startsWith(":")) {
                 continue;
             }
-            // Skip Content-Length — Java HttpClient sets this from the body
+            // Skip Content-Length - Java HttpClient sets this from the body
             if (name.equalsIgnoreCase("Content-Length")) {
                 continue;
             }
@@ -264,7 +264,7 @@ public class RecordingRealHttp implements Http {
     private static HttpResponse toBurpResponse(java.net.http.HttpResponse<byte[]> javaResponse) {
         StringBuilder raw = new StringBuilder();
         raw.append("HTTP/1.1 ").append(javaResponse.statusCode()).append(" \r\n");
-        // Normalize header names to Title-Case so MontoyaTestFactory's case-sensitive
+        // Normalise header names to Title-Case so MontoyaTestFactory's case-sensitive
         // mock lookup (e.g. headerValue("Content-Type")) works correctly.
         javaResponse.headers().map().forEach((name, values) -> {
             String titleName = toTitleCase(name);

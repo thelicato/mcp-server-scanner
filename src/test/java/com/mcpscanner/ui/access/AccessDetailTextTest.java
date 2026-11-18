@@ -28,7 +28,7 @@ class AccessDetailTextTest {
     private static final AccessFinding OBJECT_LEVEL = new AccessFinding(AccessFinding.Kind.OBJECT_LEVEL,
             "Object-level: bob received Primary's private marker");
     private static final AccessFinding POSSIBLE = new AccessFinding(AccessFinding.Kind.POSSIBLE_OBJECT_LEVEL,
-            "Object-level: bob received Primary's result for the same arguments (Tentative — no private marker "
+            "Object-level: bob received Primary's result for the same arguments (Tentative - no private marker "
                     + "configured for Primary)");
 
     @BeforeEach
@@ -67,7 +67,7 @@ class AccessDetailTextTest {
         matrix.record(toolKey("search"), BOB.id(), AccessOutcome.SAME_RESULT);
         matrix.recordFinding(toolKey("search"), BOB.id(), POSSIBLE);
 
-        assertThat(identityDetail(matrix, BOB)).contains("Possible — " + POSSIBLE.summary()
+        assertThat(identityDetail(matrix, BOB)).contains("Possible - " + POSSIBLE.summary()
                 + ". Not reported in Burp's site map: set a private marker for Primary on the Users tab to "
                 + "confirm.");
         assertThat(AccessCellText.identity(row(matrix).cell(BOB.id()), false)).endsWith(" · ? possible leak");
@@ -101,7 +101,7 @@ class AccessDetailTextTest {
         AccessMatrix matrix = everyoneListsSearch(sameAccount);
 
         assertThat(identityDetail(matrix, sameAccount))
-                .contains("Same credentials as Primary — not compared. Give User another account's credentials "
+                .contains("Same credentials as Primary - not compared. Give User another account's credentials "
                         + "on the Users tab to compare it.")
                 .doesNotContain("Expected:");
         assertThat(AccessCellText.identity(row(matrix).cell(sameAccount.id()), false))
@@ -118,7 +118,7 @@ class AccessDetailTextTest {
                 .lists(bobAgain, List.of(readOnlyTool("search")), List.of()).matrix();
 
         assertThat(identityDetail(matrix, bobAgain))
-                .contains("Same credentials as " + BOB.name() + " — not compared. Give Bob again another account's "
+                .contains("Same credentials as " + BOB.name() + " - not compared. Give Bob again another account's "
                         + "credentials on the Users tab to compare it.");
         assertThat(AccessCellText.identity(row(matrix).cell(bobAgain.id()), false))
                 .isEqualTo("● listed · = same credentials as " + BOB.name());
@@ -146,8 +146,8 @@ class AccessDetailTextTest {
         assertThat(AccessDetailText.describe(row(matrix), new AccessColumn.Anonymous())).contains(
                 "Not compared without credentials: Primary's own call returned isError: sql parameter cannot be "
                         + "empty.");
-        assertThat(AccessCellRenderer.tooltip("— not compared", Optional.of(row(matrix).cell(BOB.id()))))
-                .isEqualTo("— not compared: Primary's own call returned isError: sql parameter cannot be empty");
+        assertThat(AccessCellRenderer.tooltip("- not compared", Optional.of(row(matrix).cell(BOB.id()))))
+                .isEqualTo("- not compared: Primary's own call returned isError: sql parameter cannot be empty");
     }
 
     @Test
@@ -179,8 +179,8 @@ class AccessDetailTextTest {
 
         assertThat(row.inferred()).isTrue();
         assertThat(AccessCellText.identity(row, CAROL))
-                .contains("? same result as Primary — allowed? Set Who should reach it");
-        assertThat(identityDetail(matrix, CAROL)).contains("Same result as Primary — allowed? carol is lower "
+                .contains("? same result as Primary - allowed? Set Who should reach it");
+        assertThat(identityDetail(matrix, CAROL)).contains("Same result as Primary - allowed? carol is lower "
                 + "privilege and the expectation is only inferred.");
     }
 

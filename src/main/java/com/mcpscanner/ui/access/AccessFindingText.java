@@ -43,7 +43,7 @@ final class AccessFindingText {
         if (finding.reported()) {
             return finding.summary() + REPORTED;
         }
-        return "Possible — " + finding.summary() + ". Not reported in Burp's site map: set " + privateMarkerFor(row)
+        return "Possible - " + finding.summary() + ". Not reported in Burp's site map: set " + privateMarkerFor(row)
                 + " to confirm.";
     }
 

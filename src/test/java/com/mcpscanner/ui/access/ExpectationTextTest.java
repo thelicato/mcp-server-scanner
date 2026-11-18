@@ -13,9 +13,9 @@ class ExpectationTextTest {
     @Test
     void labelsSayWhoMayCallItWithTheOwnersName() {
         assertThat(ExpectationText.label(AccessExpectation.SHARED_BY_DESIGN, "admin"))
-                .isEqualTo("Anyone — same result for everyone");
+                .isEqualTo("Anyone - same result for everyone");
         assertThat(ExpectationText.label(AccessExpectation.ANY_SIGNED_IN, "admin"))
-                .isEqualTo("Anyone — but only their own data");
+                .isEqualTo("Anyone - but only their own data");
         assertThat(ExpectationText.label(AccessExpectation.NOT_LOWER, "admin")).isEqualTo("admin's level or above");
         assertThat(ExpectationText.label(AccessExpectation.HIGHER_ONLY, "admin"))
                 .isEqualTo("Only users above admin's level");

@@ -201,7 +201,6 @@ class HttpIdentitySessionTest {
         }
     }
 
-
     @ParameterizedTest
     @org.junit.jupiter.params.provider.CsvSource({"false,Authorization,Bearer B", "true,Cookie,user=B"})
     void identityProbeUsesOnlyItsOwnCredentialsOnAnIsolatedSession(boolean managedAudit, String credential,
@@ -350,7 +349,6 @@ class HttpIdentitySessionTest {
             }
         }
     }
-
 
     private static Map<String, String> keepSessionProbe(String sessionId) {
         var headers = new HashMap<>(ScannerSentinels.stripAuthOnly());
@@ -747,7 +745,7 @@ class HttpIdentitySessionTest {
                     initialized.add(session);
                     reply(exchange, 202, ""); return;
                 }
-                if (!initialized.contains(session)) { reply(exchange, 409, "initialization required"); return; }
+                if (!initialized.contains(session)) { reply(exchange, 409, "initialisation required"); return; }
                 operationSessions.add(session);
                 if (expireNextOperation) {
                     expireNextOperation = false;

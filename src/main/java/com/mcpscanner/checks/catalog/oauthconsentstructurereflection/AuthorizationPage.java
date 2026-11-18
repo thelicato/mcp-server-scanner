@@ -31,5 +31,4 @@ record AuthorizationPage(URI url, List<HttpRequestResponse> exchanges) {
                 ResponseHeaders.values(finalExchange().response(), "Content-Security-Policy").stream(),
                 document().metaContentSecurityPolicies().stream()).toList();
     }
-
 }

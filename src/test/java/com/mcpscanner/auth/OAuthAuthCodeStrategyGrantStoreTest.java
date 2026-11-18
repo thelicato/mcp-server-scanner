@@ -152,7 +152,6 @@ class OAuthAuthCodeStrategyGrantStoreTest {
         assertThat(valueWithin(Duration.ofSeconds(5), check)).contains("done");
     }
 
-
     @Test
     void aCheckWaitingOnAnotherLockNeverDeadlocksWithAThreadThatRefreshesUnderThatLock() throws Exception {
         OAuthAuthCodeStrategy strategy = expiringStrategy(new AtomicInteger());

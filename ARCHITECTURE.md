@@ -51,11 +51,11 @@ HOST checks register with Burp as per-request: Burp's own per-host invocation wo
 
 Packages under `checks/`:
 
-- `api` — the kernel: descriptors, kinds, `CheckFactory` (the `ServiceLoader` SPI), `CheckServices`, `CheckCatalog`, `CheckRunner`, `HostAudits`, `CheckLog`. `api/crossidentity` is the probe kit shared by Check access and session binding.
-- `registry` — the Montoya side: `McpCheckAdapter` and one adapter per kind, owning toggles, lifecycle logging and the evidence swap. It never names a concrete check.
-- `issue` — issue rendering shared by checks.
-- `shared` — toolkits: JSON-RPC parsing (`jsonrpc`), probe sessions (`session`), anonymous probing (`probe`, `auth`), event-stream probes (`stream`), Collaborator (`collaborator`), OAuth (`oauth`), field naming, redaction.
-- `catalog/<check>` — one package per check.
+- `api` - the kernel: descriptors, kinds, `CheckFactory` (the `ServiceLoader` SPI), `CheckServices`, `CheckCatalog`, `CheckRunner`, `HostAudits`, `CheckLog`. `api/crossidentity` is the probe kit shared by Check access and session binding.
+- `registry` - the Montoya side: `McpCheckAdapter` and one adapter per kind, owning toggles, lifecycle logging and the evidence swap. It never names a concrete check.
+- `issue` - issue rendering shared by checks.
+- `shared` - toolkits: JSON-RPC parsing (`jsonrpc`), probe sessions (`session`), anonymous probing (`probe`, `auth`), event-stream probes (`stream`), Collaborator (`collaborator`), OAuth (`oauth`), field naming, redaction.
+- `catalog/<check>` - one package per check.
 
 **Streamed replies.** Burp discards a check invocation's whole result once any send met a streaming refusal, even one the check recovered from. The adapter detects this and files the issues itself. `StreamingFallback` recovers probes outside Burp (JDK client, or a raw socket for foreign `Host` headers), and every such send is reported through `http/OutsideBurpSends` so request counts stay right.
 
@@ -65,8 +65,8 @@ Packages under `checks/`:
 
 ## Scan generation
 
-- `scan/request` — the request generator: one builder per `RequestFamily` (tool calls, resource and template reads, prompts, list requests, notifications, lifecycle requests, OAuth client registration), filtered by the user's toggles, the server's capabilities and the negotiated version.
-- `scan/field` — the field generator: every JSON leaf under `params` becomes an insertion point, plus non-transport request headers and resource-template variables. Burp builds with native JSON-RPC insertion points get those argument leaves left to Burp, so fields are not fuzzed twice.
+- `scan/request` - the request generator: one builder per `RequestFamily` (tool calls, resource and template reads, prompts, list requests, notifications, lifecycle requests, OAuth client registration), filtered by the user's toggles, the server's capabilities and the negotiated version.
+- `scan/field` - the field generator: every JSON leaf under `params` becomes an insertion point, plus non-transport request headers and resource-template variables. Burp builds with native JSON-RPC insertion points get those argument leaves left to Burp, so fields are not fuzzed twice.
 - `McpScanLauncher` renders each request once and sends the batch to the chosen `ScanMode`: the extension's own engine (default) or a Burp audit with the built-in checks too.
 - `OwnedArguments` fills a tool call's arguments from the primary user's owned values, so Scan and Check access send the same owner request.
 
@@ -76,9 +76,9 @@ Montoya cannot start an audit without Burp's built-in checks, so `engine/McpScan
 
 ## Users and Check access
 
-- `identity` — every user (one **primary user** that Connect and Scan run as, plus compared users), their in-memory credentials and owned values. Credentials are bound to the endpoint's origin and cleared when it changes.
-- `access/mining` — "Collect IDs": calls read-only tools as each user to learn which object ids are theirs. Write tools run only when opted in and confirmed. Every user's calls in a pass run concurrently on as many workers as extension scans use (`mcp.scan.engine_workers`); each pass waits for the previous one because it feeds that pass's IDs. By default a user is sent whatever their passes need; `mcp.mining.requests_per_user` sets an optional ceiling.
-- `access/comparison` — Check access: per item, the owner's request, a replay as each compared user and an anonymous replay, with escalation probes where they can matter. Operation-level findings are filed as Burp issues; object-level ones only when a hand-entered private marker proves them, otherwise they stay on the Access grid as possible leaks.
+- `identity` - every user (one **primary user** that Connect and Scan run as, plus compared users), their in-memory credentials and owned values. Credentials are bound to the endpoint's origin and cleared when it changes.
+- `access/mining` - "Collect IDs": calls read-only tools as each user to learn which object ids are theirs. Write tools run only when opted in and confirmed. Every user's calls in a pass run concurrently on as many workers as extension scans use (`mcp.scan.engine_workers`); each pass waits for the previous one because it feeds that pass's IDs. By default a user is sent whatever their passes need; `mcp.mining.requests_per_user` sets an optional ceiling.
+- `access/comparison` - Check access: per item, the owner's request, a replay as each compared user and an anonymous replay, with escalation probes where they can matter. Operation-level findings are filed as Burp issues; object-level ones only when a hand-entered private marker proves them, otherwise they stay on the Access grid as possible leaks.
 
 ## Running checks outside Burp
 

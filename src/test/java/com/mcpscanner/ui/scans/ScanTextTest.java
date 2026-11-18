@@ -64,9 +64,9 @@ class ScanTextTest {
     @Test
     void describesARunningInvocationWithAndWithoutAField() {
         assertThat(text.nowRunning(new RunningInvocation("File traversal", "tools/call read_file",
-                Optional.of("params.arguments.path")))).isEqualTo("File traversal — tools/call read_file · params.arguments.path");
+                Optional.of("params.arguments.path")))).isEqualTo("File traversal - tools/call read_file · params.arguments.path");
         assertThat(text.nowRunning(new RunningInvocation("Session lifecycle", "ping", Optional.empty())))
-                .isEqualTo("Session lifecycle — ping");
+                .isEqualTo("Session lifecycle - ping");
     }
 
     @Test

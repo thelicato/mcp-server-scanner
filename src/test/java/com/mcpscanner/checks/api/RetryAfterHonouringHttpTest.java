@@ -157,10 +157,10 @@ class RetryAfterHonouringHttpTest {
         http.sendRequest(request("other.test"));
 
         assertThat(eventLog.snapshot()).extracting(entry -> entry.level() + " " + entry.message()).containsExactly(
-                "INFO Scan check: demo — HTTP 429 from mcp.test: waiting 30 s as Retry-After asks, then resending",
-                "INFO Scan check: demo — HTTP 429 from mcp.test: Retry-After 600 s is over 5 min; not waiting",
-                "DEBUG Scan check: demo — HTTP 429 from mcp.test: no Retry-After; not waiting",
-                "INFO Scan check: demo — HTTP 429 from other.test: no Retry-After; not waiting");
+                "INFO Scan check: demo - HTTP 429 from mcp.test: waiting 30 s as Retry-After asks, then resending",
+                "INFO Scan check: demo - HTTP 429 from mcp.test: Retry-After 600 s is over 5 min; not waiting",
+                "DEBUG Scan check: demo - HTTP 429 from mcp.test: no Retry-After; not waiting",
+                "INFO Scan check: demo - HTTP 429 from other.test: no Retry-After; not waiting");
     }
 
     @Test
@@ -171,8 +171,8 @@ class RetryAfterHonouringHttpTest {
         http.sendRequest(request("mcp.test"));
 
         assertThat(eventLog.snapshot()).extracting(entry -> entry.level() + " " + entry.message()).containsExactly(
-                "INFO Scan check: demo — HTTP 429 from mcp.test: no Retry-After; not waiting",
-                "INFO Scan check: demo — HTTP 429 from mcp.test: waiting 30 s as Retry-After asks, then resending");
+                "INFO Scan check: demo - HTTP 429 from mcp.test: no Retry-After; not waiting",
+                "INFO Scan check: demo - HTTP 429 from mcp.test: waiting 30 s as Retry-After asks, then resending");
     }
 
     @Test
@@ -185,7 +185,7 @@ class RetryAfterHonouringHttpTest {
         assertThat(exchange.response().statusCode()).isEqualTo((short) 429);
         assertThat(server.sent).hasSize(1);
         assertThat(eventLog.snapshot()).extracting(entry -> entry.level() + " " + entry.message()).contains(
-                "DEBUG Scan check: demo — HTTP 429 from mcp.test: wait abandoned (no longer wanted); "
+                "DEBUG Scan check: demo - HTTP 429 from mcp.test: wait abandoned (no longer wanted); "
                         + "returning the 429 without resending");
     }
 
@@ -203,7 +203,7 @@ class RetryAfterHonouringHttpTest {
         assertThat(waits).isEmpty();
         assertThat(server.sent).hasSize(1);
         assertThat(eventLog.snapshot()).extracting(entry -> entry.level() + " " + entry.message()).containsExactly(
-                "INFO Scan check: demo — HTTP 429 from mcp.test: not waiting on a concurrent probe");
+                "INFO Scan check: demo - HTTP 429 from mcp.test: not waiting on a concurrent probe");
     }
 
     @Test

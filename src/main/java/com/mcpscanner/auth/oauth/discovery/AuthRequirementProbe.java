@@ -12,7 +12,7 @@ public final class AuthRequirementProbe {
     private static final Pattern BEARER_SCHEME = Pattern.compile("(?i)(^|[\\s,])bearer(\\s|,|$)");
     private static final String NO_OAUTH_ANSWER = "The server needs credentials and advertises no OAuth sign-in";
     private static final String NO_RESPONSE_REASON =
-            "Server did not answer the unauthenticated probe — check the endpoint, or choose an auth type manually";
+            "Server did not answer the unauthenticated probe - check the endpoint, or choose an auth type manually";
 
     private final ChallengeSender post;
     private final ChallengeSender streamGet;

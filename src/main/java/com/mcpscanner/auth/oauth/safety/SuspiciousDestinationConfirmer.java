@@ -16,7 +16,7 @@ import javax.swing.SwingUtilities;
 /**
  * Renders a confirmation prompt when {@link SuspiciousDestinationGate} encounters a
  * tolerated-with-prompt classification (loopback, RFC1918, link-local, cloud-metadata,
- * cross-origin, etc.). The gate has already classified the destination — the confirmer
+ * cross-origin, etc.). The gate has already classified the destination - the confirmer
  * only decides whether to surface the prompt and what the user said.
  */
 @FunctionalInterface
@@ -46,7 +46,7 @@ public interface SuspiciousDestinationConfirmer {
     /** Default implementation used by production wiring. */
     final class SwingConfirmer implements SuspiciousDestinationConfirmer {
 
-        private static final String DIALOG_TITLE = "MCP Server Scanner — confirm OAuth destination";
+        private static final String DIALOG_TITLE = "MCP Server Scanner - confirm OAuth destination";
 
         private final McpEventLog eventLog;
         private final Supplier<Window> parentSupplier;

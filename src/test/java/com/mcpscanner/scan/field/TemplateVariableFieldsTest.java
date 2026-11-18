@@ -97,7 +97,6 @@ class TemplateVariableFieldsTest {
         assertThat(range.endIndexExclusive()).isEqualTo(request.bodyOffset() + variableStart + 2);
     }
 
-
     @Test
     void repeatedVariableNamesGetDistinctPointNames() throws Exception {
         registry.record(UriTemplateExpansion.expand("items/{id}/sub/{id}"));
@@ -108,7 +107,6 @@ class TemplateVariableFieldsTest {
         assertThat(uriOf(point(request, "MCP template variable: id #2")
                 .buildHttpRequestWithPayload(ByteArray.byteArray("X")))).isEqualTo("items/id/sub/X");
     }
-
 
     @Test
     void unrecordedUrisAndOtherMethodsGetNoVariablePoints() {

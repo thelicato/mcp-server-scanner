@@ -60,7 +60,7 @@ class StreamingResponseReaderTest {
         PipedInputStream stream = new PipedInputStream(upstream, 64 * 1024);
         upstream.write(completedEvent.getBytes(StandardCharsets.UTF_8));
         upstream.flush();
-        // Deliberately do not close upstream — readAllBytes() would block forever here.
+        // Deliberately do not close upstream - readAllBytes() would block forever here.
 
         CompletableFuture<UnstreamedReply> reading = CompletableFuture
                 .supplyAsync(() -> {

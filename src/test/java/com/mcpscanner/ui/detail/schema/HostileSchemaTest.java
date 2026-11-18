@@ -15,7 +15,7 @@ import static org.junit.jupiter.api.Assertions.assertTimeoutPreemptively;
 class HostileSchemaTest {
 
     private static final Duration TIGHT = Duration.ofSeconds(1);
-    private static final String TRUNCATED = "Schema too large to show in full — see Raw.";
+    private static final String TRUNCATED = "Schema too large to show in full - see Raw.";
 
     @Test
     void aPropertyFanOutStopsAtTheRowBudgetWithOneTruncationRow() {

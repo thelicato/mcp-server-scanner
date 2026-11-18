@@ -44,7 +44,6 @@ final class RefreshRequestFactory {
                 .orElse(request);
     }
 
-
     private static Optional<String> basicSecret(OAuthClient client, ClientAuthentication authentication) {
         if (!client.type().isConfidential()) {
             return Optional.empty();
@@ -61,5 +60,4 @@ final class RefreshRequestFactory {
                 .map(entry -> BasicCredentials.formEncode(entry.getKey()) + "=" + BasicCredentials.formEncode(entry.getValue()))
                 .collect(Collectors.joining("&"));
     }
-
 }

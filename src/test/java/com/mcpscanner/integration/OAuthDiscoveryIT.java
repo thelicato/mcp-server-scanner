@@ -44,7 +44,6 @@ class OAuthDiscoveryIT {
         MontoyaTestFactory.install();
     }
 
-
     @Test
     void fullMode_discoversBoundProtectedResourceMetadata() throws Exception {
         int port = findFreePort();

@@ -32,7 +32,7 @@ class CrossClientResponseLeakCheckTest {
 
     private static final String ISSUE = "MCP response delivered to another client";
     private static final Duration PROBE_TIMEOUT = Duration.ofMillis(300);
-    private static final String PREFIX = "Scan check: cross-client-response-leak — ";
+    private static final String PREFIX = "Scan check: cross-client-response-leak - ";
     private static final int FULL_ROUND_WITHOUT_CROSSING = 2 + RetriedRound.MAX_ATTEMPTS * LeakTrial.CLIENTS;
 
     private Optional<HttpService> probeService = Optional.empty();

@@ -33,7 +33,7 @@ final class PersistedJsonDocument<T> {
         try {
             store.accept(McpObjectMapper.INSTANCE.writeValueAsString(value));
         } catch (JsonProcessingException e) {
-            throw new IllegalStateException("Failed to serialize the " + reader.label(), e);
+            throw new IllegalStateException("Failed to serialise the " + reader.label(), e);
         }
     }
 

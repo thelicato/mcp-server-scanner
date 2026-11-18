@@ -48,7 +48,7 @@ public final class GrantBackedAuthStrategy implements AuthStrategy {
                                                             TokenExchange exchange, Clock clock) {
         if (identityProvider == null) {
             throw new OAuthFlowException(OAuthFlowException.Reason.MISSING_CREDENTIAL,
-                    "Organization identity provider is not configured");
+                    "Organisation identity provider is not configured");
         }
         var credentials = new InMemoryCredentialStore();
         var flow = new EnterpriseManagedFlow(identityProvider, exchange, credentials, clock);

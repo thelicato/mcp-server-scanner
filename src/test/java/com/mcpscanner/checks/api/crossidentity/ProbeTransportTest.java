@@ -32,7 +32,7 @@ class ProbeTransportTest {
         assertThat(transport.sample(request)).isNull();
         assertThat(eventLog.snapshot()).extracting(McpEventLog.LogEntry::level, McpEventLog.LogEntry::message)
                 .containsExactly(
-                        tuple(McpEventLog.Level.INFO, "Scan check: session-binding — stopped tools/call t "
+                        tuple(McpEventLog.Level.INFO, "Scan check: session-binding - stopped tools/call t "
                                 + "(request budget used up: 40 direct requests per identity)"));
     }
 

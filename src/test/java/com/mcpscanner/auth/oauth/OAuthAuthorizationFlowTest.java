@@ -52,7 +52,7 @@ class OAuthAuthorizationFlowTest {
      * TEST reproduction of the deleted production {@code validatorBackedGate} semantics
      * (loopback-tolerant, private/link-local-rejecting): rejects RFC1918 / link-local hosts but
      * allows {@code http://127.0.0.1} issuers, which the HttpServer-driven tests use. This is NOT
-     * the production gate — production uses {@code DefaultSuspiciousDestinationGate}. If
+     * the production gate - production uses {@code DefaultSuspiciousDestinationGate}. If
      * {@link OAuthUrlValidator}'s contract changes, this test gate may need updating.
      */
     private static final SuspiciousDestinationGate VALIDATOR_GATE = (url, purpose) -> {
@@ -93,7 +93,6 @@ class OAuthAuthorizationFlowTest {
                                            McpEventLog eventLog) {
         return newFlow(listenerFactory, browserLauncher, clock, VALIDATOR_GATE, eventLog);
     }
-
 
     /** No-arg-equivalent flow: default factory + desktop launcher, validator gate, routed via Burp. */
     private OAuthAuthorizationFlow newFlow() {
@@ -543,7 +542,7 @@ class OAuthAuthorizationFlowTest {
 
     /**
      * When pre-discovered AS metadata is supplied the flow skips the Nimbus well-known re-fetch
-     * entirely. The well-known endpoint is registered to return 404 here — if the fix is absent
+     * entirely. The well-known endpoint is registered to return 404 here - if the fix is absent
      * the flow would throw; if present it succeeds.
      */
     @Test
@@ -788,7 +787,7 @@ class OAuthAuthorizationFlowTest {
         String registrationPath = "/register";
         registerMetadataWithRegistration(issuer, "/authorize", "/token", registrationPath);
         authServer.createContext(registrationPath, exchange -> {
-            // Close the exchange's TCP connection without sending any response bytes —
+            // Close the exchange's TCP connection without sending any response bytes -
             // forces a Nimbus IOException/ParseException through the catch block.
             exchange.close();
         });
@@ -1712,9 +1711,6 @@ class OAuthAuthorizationFlowTest {
             out.write(bytes);
         }
     }
-
-
-
 
     @Test
     void resolveMetadataWrapsNonIssuerGeneralExceptionAsOAuthException() throws Exception {

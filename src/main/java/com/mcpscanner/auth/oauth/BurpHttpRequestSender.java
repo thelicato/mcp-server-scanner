@@ -34,7 +34,7 @@ import java.util.function.Function;
  *   <li>A {@code null} Montoya response (transport failure) is surfaced as an
  *       {@link IOException}, preserving Nimbus's transport-failure contract so existing
  *       {@code catch (IOException)} branches still fire.</li>
- *   <li>Non-2xx responses are returned verbatim (status + headers + body) — never thrown —
+ *   <li>Non-2xx responses are returned verbatim (status + headers + body) - never thrown -
  *       so Nimbus's own success/error parsing is unchanged.</li>
  * </ul>
  */

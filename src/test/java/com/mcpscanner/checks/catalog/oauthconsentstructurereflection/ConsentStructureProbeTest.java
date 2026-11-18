@@ -25,7 +25,7 @@ import static org.mockito.Mockito.verify;
 
 class ConsentStructureProbeTest {
 
-    private static final String PREFIX = "Scan check: test — ";
+    private static final String PREFIX = "Scan check: test - ";
     private final McpEventLog eventLog = mock(McpEventLog.class);
 
     @BeforeEach
@@ -227,7 +227,7 @@ class ConsentStructureProbeTest {
     void aNegativeResultIsADecisionNotASkip() {
         probe(new ScriptedConsentServer().build());
 
-        verify(eventLog).info(PREFIX + "decision: not reported — no marker parsed as HTML structure on the "
+        verify(eventLog).info(PREFIX + "decision: not reported - no marker parsed as HTML structure on the "
                 + "authorization page");
         verify(eventLog, never()).info(contains("skipped"));
     }

@@ -24,6 +24,14 @@ Architecture overview: [ARCHITECTURE.md](./ARCHITECTURE.md). Java 17.
 - `build` does not run the latency or CVE suites (localhost hides serialised sends and locks held across a send): run `slowLinkTest` after changing send paths, locking or concurrency, `burpCanary` after changing connection reuse, and `cveTargets -Pcheck=<id>` after changing a check.
 - Raise a declared concurrency in `SlowLinkIT` only when the code really sends that many requests at once, never to make it pass.
 
+## Writing
+
+These apply to everything you write: docs, comments, log and UI text, issue text, manifests and commit messages.
+
+- Use British English consistently (behaviour, serialise, normalise, licence, authorise, recognise). Keep an American spelling only where it is a name: identifiers, wire values (the MCP `initialize` method, the `Authorization` header, `401 Unauthorized`), OAuth spec terms (authorization server, authorization code), the `catalog` package and "catalog check", and third-party names (CWE titles, Burp's Organizer).
+- Never use em dashes. Use a plain hyphen, a colon, a comma or a new sentence.
+- Do not add useless newlines: write each Markdown or HTML paragraph and list item on one line (no hard wrapping), never leave two blank lines in a row (Python keeps PEP 8's two between top-level definitions), and never leave a blank line before a closing brace or at the start or end of a file.
+
 ## Adding a check
 
 Every check is exactly one of three kinds: `INSERTION_POINT` (once per fuzzed field), `REQUEST` (once per scanned request) or `HOST` (once per host trial, retried until conclusive by `HostAudits`). To add one, change no shared code:
@@ -78,18 +86,18 @@ Rules a check must follow (most are enforced by tests):
 
 ## Package map (`src/main/java/com/mcpscanner/`)
 
-- `McpScannerExtension`, `*Wiring`, `ExtensionFoundation` — entry point and object graph.
-- `mcp` — protocol-level domain types shared by checks and scanning (request detection, bounded reads, SSE parsing, tool safety).
-- `config` — persisted settings.
-- `logging` — the in-process event log shown in the Logger tab.
-- `http` — Burp HTTP plumbing leaf: request building, connection reuse, request counting, upstream evidence; `http/wire` is a raw-socket HTTP/1.1 sender.
-- `client` — connecting to an MCP server: discovery, the scanner session, Burp and JDK transports, redirects, stale-connection resends.
-- `proxy` — local loopback proxy that sits between Burp's scanner and the target (SSE unwrapping, JSON-RPC id rewriting, credentials, evidence capture).
-- `auth` — authentication strategies; `auth/oauth` OAuth 2.1 with PKCE, DCR and metadata discovery.
-- `identity` — users (primary and compared), their credentials and owned values.
-- `access` — Check access (cross-identity comparison) and `access/mining` (collecting IDs).
-- `checks` — `api` (kernel and kinds), `registry` (Montoya adapters), `issue` (issue rendering), `shared` (toolkits), `catalog/<check>` (one package per check).
-- `scan` — request generator (`scan/request`), field and insertion-point generator (`scan/field`), launcher and scan modes.
-- `engine` — the extension's own scan engine (extension checks without Burp's built-in ones).
-- `automation` (in `src/automation/java`, not `src/main`) — loopback-only test automation API used by the headless Burp harness. It ships only in the harness JAR (`./gradlew harnessJar`), found through `ExtensionAutomation` and `META-INF/services`; `check` fails if it reaches the release JAR.
-- `ui` — Swing UI; `ui/state` holds the connection state machine.
+- `McpScannerExtension`, `*Wiring`, `ExtensionFoundation`: entry point and object graph.
+- `mcp`: protocol-level domain types shared by checks and scanning (request detection, bounded reads, SSE parsing, tool safety).
+- `config`: persisted settings.
+- `logging`: the in-process event log shown in the Logger tab.
+- `http`: Burp HTTP plumbing leaf: request building, connection reuse, request counting, upstream evidence; `http/wire` is a raw-socket HTTP/1.1 sender.
+- `client`: connecting to an MCP server: discovery, the scanner session, Burp and JDK transports, redirects, stale-connection resends.
+- `proxy`: local loopback proxy that sits between Burp's scanner and the target (SSE unwrapping, JSON-RPC id rewriting, credentials, evidence capture).
+- `auth`: authentication strategies; `auth/oauth` OAuth 2.1 with PKCE, DCR and metadata discovery.
+- `identity`: users (primary and compared), their credentials and owned values.
+- `access`: Check access (cross-identity comparison) and `access/mining` (collecting IDs).
+- `checks`: `api` (kernel and kinds), `registry` (Montoya adapters), `issue` (issue rendering), `shared` (toolkits), `catalog/<check>` (one package per check).
+- `scan`: request generator (`scan/request`), field and insertion-point generator (`scan/field`), launcher and scan modes.
+- `engine`: the extension's own scan engine (extension checks without Burp's built-in ones).
+- `automation` (in `src/automation/java`, not `src/main`): loopback-only test automation API used by the headless Burp harness. It ships only in the harness JAR (`./gradlew harnessJar`), found through `ExtensionAutomation` and `META-INF/services`; `check` fails if it reaches the release JAR.
+- `ui`: Swing UI; `ui/state` holds the connection state machine.

@@ -316,7 +316,6 @@ class SseProxySharedRecoveryTest {
         } finally { proxy.stop(); }
     }
 
-
     @Test
     void pendingScopeRecoveryAllowsDisconnectAndRejectsRetryWithNewIdentity() throws Exception {
         try (Server server = new Server(Stage.OPERATION, 403)) {
@@ -851,7 +850,6 @@ class SseProxySharedRecoveryTest {
             } finally { proxy.stop(); }
         }
     }
-
 
     private static WireResponse<InputStream> modernAdmission() {
         String admission = "{\"jsonrpc\":\"2.0\",\"id\":1,\"result\":{\"capabilities\":{},\"supportedVersions\":[\"2026-07-28\"]}}";

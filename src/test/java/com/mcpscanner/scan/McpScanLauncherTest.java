@@ -180,7 +180,7 @@ class McpScanLauncherTest {
         launchBurpAudit(pingScan(2));
 
         assertThat(eventLog.snapshot()).anySatisfy(entry -> assertThat(entry.message())
-                .isEqualTo("Audit started — 2 requests"));
+                .isEqualTo("Audit started - 2 requests"));
         verify(logging, times(2)).logToOutput("Added ping to Burp audit");
     }
 
@@ -189,7 +189,7 @@ class McpScanLauncherTest {
         launchBurpAudit(pingScan(1));
 
         assertThat(eventLog.snapshot()).anySatisfy(entry -> assertThat(entry.message())
-                .isEqualTo("Audit started — 1 request"));
+                .isEqualTo("Audit started - 1 request"));
     }
 
     @Test

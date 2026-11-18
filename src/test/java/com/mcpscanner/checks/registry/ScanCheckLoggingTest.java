@@ -28,9 +28,9 @@ class ScanCheckLoggingTest {
 
         List<String> infos = infos();
         assertThat(infos).hasSize(2);
-        assertThat(infos.get(0)).isEqualTo("Scan check: demo-check — started");
+        assertThat(infos.get(0)).isEqualTo("Scan check: demo-check - started");
         assertThat(infos.get(1))
-                .startsWith("Scan check: demo-check — finished in ")
+                .startsWith("Scan check: demo-check - finished in ")
                 .endsWith("ms, 0 requests, 0 issues");
     }
 
@@ -43,7 +43,7 @@ class ScanCheckLoggingTest {
         });
 
         assertThat(infos().get(1))
-                .matches("Scan check: demo-check — finished in \\d+ms, 2 requests, 0 issues");
+                .matches("Scan check: demo-check - finished in \\d+ms, 2 requests, 0 issues");
     }
 
     @Test

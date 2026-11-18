@@ -35,7 +35,7 @@ public final class HostReachability {
     }
 
     private static boolean isIpv6UniqueLocalAddress(String host) {
-        // RFC 4193: fc00::/7 — first byte is 0xfc or 0xfd, so the IPv6 literal's
+        // RFC 4193: fc00::/7 - first byte is 0xfc or 0xfd, so the IPv6 literal's
         // first hextet starts with "fc" or "fd". Require an IPv6 colon to avoid
         // matching hostnames like "fc.example.com".
         if (host.indexOf(':') < 0 || host.length() < 3) return false;

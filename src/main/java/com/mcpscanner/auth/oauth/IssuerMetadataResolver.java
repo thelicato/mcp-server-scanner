@@ -93,5 +93,4 @@ final class IssuerMetadataResolver {
         guard.requireAllowedIfPresent(metadata.getTokenEndpointURI(), PURPOSE_TOKEN_ENDPOINT, mcpResource);
         guard.requireAllowedIfPresent(metadata.getRegistrationEndpointURI(), PURPOSE_REGISTRATION_ENDPOINT, mcpResource);
     }
-
 }

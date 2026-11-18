@@ -127,7 +127,7 @@ class HyperlinkLabelTest {
 
         awaitWithinOneSecond().untilTrue(sinkCalled);
         // If the sink exception escaped the daemon thread it would surface as a test
-        // framework error or an uncaught exception in the daemon — neither should happen.
+        // framework error or an uncaught exception in the daemon - neither should happen.
     }
 
     private static ConditionFactory awaitWithinOneSecond() {

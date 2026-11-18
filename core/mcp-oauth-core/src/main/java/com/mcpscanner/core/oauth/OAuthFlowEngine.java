@@ -155,5 +155,4 @@ public final class OAuthFlowEngine {
         return credential.orElseThrow(() -> new OAuthFlowException(OAuthFlowException.Reason.MISSING_CREDENTIAL,
                 "No credential is available for this binding"));
     }
-
 }

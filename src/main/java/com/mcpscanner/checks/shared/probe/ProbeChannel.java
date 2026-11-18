@@ -45,5 +45,4 @@ public final class ProbeChannel {
     public int budget() {
         return budget.limit();
     }
-
 }

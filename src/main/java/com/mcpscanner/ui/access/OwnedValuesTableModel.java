@@ -11,7 +11,7 @@ import java.util.Optional;
 final class OwnedValuesTableModel extends AbstractTableModel {
 
     static final String[] COLUMNS = {"Value", "Argument", "Source", "Scope", "Origin"};
-    private static final String NONE = "—";
+    private static final String NONE = "-";
 
     private List<OwnedValue> rows = List.of();
 

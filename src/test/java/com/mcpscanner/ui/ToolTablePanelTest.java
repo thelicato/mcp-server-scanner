@@ -171,11 +171,11 @@ class ToolTablePanelTest {
         javax.accessibility.AccessibleContext context = panel.table().getTableHeader().getAccessibleContext();
 
         assertThat(context.getAccessibleName()).isEqualTo("Tick all tools for scanning");
-        assertThat(context.getAccessibleDescription()).isEqualTo("Some shown tools ticked — press Space to tick them all");
+        assertThat(context.getAccessibleDescription()).isEqualTo("Some shown tools ticked - press Space to tick them all");
 
         panel.view().selectAllHeader().toggle();
 
-        assertThat(context.getAccessibleDescription()).isEqualTo("All shown tools ticked — press Space to untick them");
+        assertThat(context.getAccessibleDescription()).isEqualTo("All shown tools ticked - press Space to untick them");
     }
 
     @Test

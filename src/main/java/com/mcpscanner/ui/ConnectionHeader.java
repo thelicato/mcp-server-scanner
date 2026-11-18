@@ -124,7 +124,6 @@ final class ConnectionHeader extends JPanel {
         }
     }
 
-
     private JPanel statusRow() {
         JPanel row = new JPanel(new BorderLayout(GAP, 0));
         row.setBorder(BorderFactory.createCompoundBorder(

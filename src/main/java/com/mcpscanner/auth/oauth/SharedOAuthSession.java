@@ -133,7 +133,7 @@ public final class SharedOAuthSession {
 
     public OAuthTokens currentTokens() {
         return tokens(currentCredential()
-                .orElseThrow(() -> new OAuthException("No OAuth credential available; reconnect to re-authorize")));
+                .orElseThrow(() -> new OAuthException("No OAuth credential available; reconnect to re-authorise")));
     }
 
     private Optional<OAuthCredential> currentCredential() {
@@ -169,7 +169,7 @@ public final class SharedOAuthSession {
         } catch (CallbackValidationException failure) {
             throw callbackFailure(failure);
         } catch (OAuthFlowException failure) {
-            throw new OAuthException(failure.getMessage() + "; reconnect to authorize the required scopes");
+            throw new OAuthException(failure.getMessage() + "; reconnect to authorise the required scopes");
         }
     }
 

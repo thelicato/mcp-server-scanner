@@ -9,7 +9,6 @@ import com.mcpscanner.mcp.TooManyRequests;
 
 final class ComparisonTransport {
 
-
     private final Http http;
 
     ComparisonTransport(Http http) {

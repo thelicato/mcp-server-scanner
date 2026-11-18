@@ -17,10 +17,10 @@ out/
 .worktrees/
 .claude
 
-# Scratch files — never commit.
+# Scratch files - never commit.
 /scratch.md
 *.scratch
-# Internal planning, decision records and scratch — never commit.
+# Internal planning, decision records and scratch - never commit.
 /docs/
 
 # Local MCP scanner comparison and development notes.

@@ -102,5 +102,4 @@ public final class OAuthMetadataDiscoverer {
                 new AsWellKnownProbe(http, gate, eventLog)),
                 eventLog, http, true);
     }
-
 }
