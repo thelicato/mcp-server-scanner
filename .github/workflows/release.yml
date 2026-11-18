@@ -1,0 +1,57 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*.*.*"
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v6
+
+      - name: Check the tag matches the project version
+        run: |
+          project_version=$(./gradlew -q properties | awk '/^version:/ {print $2}')
+          if [ "${GITHUB_REF_NAME#v}" != "$project_version" ]; then
+            echo "::error::Tag $GITHUB_REF_NAME does not match version $project_version in build.gradle"
+            exit 1
+          fi
+
+      - name: Build and test
+        run: ./gradlew build shadowJar
+
+      - name: Checksum the JAR
+        working-directory: build/libs
+        run: sha256sum *-all.jar > SHA256SUMS
+
+      - name: Set up Node
+        uses: actions/setup-node@v5
+        with:
+          node-version: "22"
+
+      - name: Create the release with the changelog
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: npx changelogithub
+
+      - name: Attach the JAR
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release upload "$GITHUB_REF_NAME" build/libs/*-all.jar build/libs/SHA256SUMS
