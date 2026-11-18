@@ -37,6 +37,19 @@ class ExchangeRedactorTest {
     }
 
     @Test
+    void redactsSecretsInAnyRequestHeaderAndInTheUrl() {
+        ExchangeRedactor redactor = new ExchangeRedactor(Set.of("client-token-1"));
+        HttpRequest request = HttpRequest.httpRequestFromUrl("https://api.example/v1?access_token=client-token-1")
+                .withHeader("X-Api-Key", "client-token-1").withHeader("Accept", "application/json");
+
+        HttpRequest redacted = redactor.redact(HttpRequestResponse.httpRequestResponse(request, null)).request();
+
+        assertThat(redacted.headerValue("X-Api-Key")).isEqualTo(ExchangeRedactor.REDACTED);
+        assertThat(redacted.headerValue("Accept")).isEqualTo("application/json");
+        assertThat(redacted.path()).isEqualTo("/v1?access_token=%5Bredacted+by+MCP+scanner%5D");
+    }
+
+    @Test
     void redactsTheLongestSecretFirstAndIgnoresTrivialValues() {
         ExchangeRedactor redactor = new ExchangeRedactor(Set.of("abcd", "abcdef", "ab"));
 

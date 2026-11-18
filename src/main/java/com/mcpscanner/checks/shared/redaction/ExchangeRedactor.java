@@ -12,6 +12,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -19,6 +20,7 @@ import java.util.stream.Stream;
 public final class ExchangeRedactor {
 
     public static final String REDACTED = "[redacted by MCP scanner]";
+    private static final String URL_REDACTED = URLEncoder.encode(REDACTED, StandardCharsets.UTF_8);
     private static final int MINIMUM_SECRET_LENGTH = 4;
     private static final Set<String> FRAMING_HEADERS = Set.of("content-length", "transfer-encoding");
     private static final Pattern TOKEN_FIELDS = Pattern.compile(
@@ -46,11 +48,15 @@ public final class ExchangeRedactor {
     }
 
     public String redact(String text) {
+        return redact(text, REDACTED);
+    }
+
+    private String redact(String text, String replacement) {
         String redacted = text == null ? "" : text;
         for (String secret : secrets) {
-            redacted = redacted.replace(secret, REDACTED);
+            redacted = redacted.replace(secret, replacement);
         }
-        return TOKEN_FIELDS.matcher(redacted).replaceAll("$1" + REDACTED + "$2");
+        return TOKEN_FIELDS.matcher(redacted).replaceAll("$1" + Matcher.quoteReplacement(replacement) + "$2");
     }
 
     private static Stream<String> encodings(String secret) {
@@ -60,8 +66,17 @@ public final class ExchangeRedactor {
     private HttpRequest redact(HttpRequest request) {
         HttpRequest redacted = request.withBody(redact(request.bodyToString()));
         String authorization = request.headerValue(AuthHeaderNames.AUTHORIZATION);
-        return authorization == null ? redacted
-                : redacted.withHeader(AuthHeaderNames.AUTHORIZATION, redact(authorization));
+        if (authorization != null) {
+            redacted = redacted.withHeader(AuthHeaderNames.AUTHORIZATION, redact(authorization));
+        }
+        for (HttpHeader header : request.headers()) {
+            String value = redact(header.value());
+            if (!value.equals(header.value())) {
+                redacted = redacted.withHeader(header.name(), value);
+            }
+        }
+        String path = redact(request.path(), URL_REDACTED);
+        return path.equals(request.path()) ? redacted : redacted.withPath(path);
     }
 
     private HttpResponse redact(HttpResponse response) {

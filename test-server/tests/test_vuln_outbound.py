@@ -121,3 +121,20 @@ def test_real_http_fetch_reaches_listener(tmp_path: Path) -> None:
 def test_invalid_url_does_not_break_fetch_inspection(server: TestServer) -> None:
     server.session().request("prompts/list", {"cursor": "http://[::1/"})
     assert [attempt["url"] for attempt in server.fetches()] == ["http://[::1/"]
+
+
+def _import_page(server: TestServer) -> None:
+    session = server.session(headers={"authorization": "Bearer alice-token"})
+    session.call_tool("import_page", {"source_url": CANARY})
+
+
+def test_token_passthrough_forwards_the_callers_token_only_when_vulnerable(make_server: ServerFactory) -> None:
+    vulnerable = make_server(default_mode="safe", vulns={"token_passthrough": "vulnerable"})
+    _import_page(vulnerable)
+    assert vulnerable.getter.urls == [CANARY]
+    assert vulnerable.getter.headers == [{"Authorization": "Bearer alice-token"}]
+
+    safe = make_server(default_mode="safe")
+    _import_page(safe)
+    assert safe.getter.urls == [CANARY]
+    assert safe.getter.headers == [{}]

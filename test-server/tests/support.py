@@ -6,7 +6,7 @@ import secrets
 import socket
 import threading
 import time
-from collections.abc import Iterator
+from collections.abc import Iterator, Mapping
 from contextlib import contextmanager
 from dataclasses import dataclass, field
 from pathlib import Path
@@ -28,9 +28,11 @@ BASE_URL = "http://testserver"
 @dataclass
 class RecordingGetter:
     urls: list[str] = field(default_factory=list)
+    headers: list[dict[str, str]] = field(default_factory=list)
 
-    async def get(self, url: str) -> str:
+    async def get(self, url: str, headers: Mapping[str, str] | None = None) -> str:
         self.urls.append(url)
+        self.headers.append(dict(headers or {}))
         return f"fetched {url}"
 
 

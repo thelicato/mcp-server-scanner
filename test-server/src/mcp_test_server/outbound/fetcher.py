@@ -5,6 +5,7 @@ import re
 import threading
 import time
 from dataclasses import asdict, dataclass
+from collections.abc import Mapping
 from typing import Any, Protocol
 
 import httpx
@@ -26,16 +27,16 @@ def fetchable_url(value: Any) -> str | None:
 
 
 class HttpGetter(Protocol):
-    async def get(self, url: str) -> str: ...
+    async def get(self, url: str, headers: Mapping[str, str] | None = None) -> str: ...
 
 
 class HttpxGetter:
     def __init__(self, timeout_seconds: float) -> None:
         self._timeout = timeout_seconds
 
-    async def get(self, url: str) -> str:
+    async def get(self, url: str, headers: Mapping[str, str] | None = None) -> str:
         async with httpx.AsyncClient(timeout=self._timeout, follow_redirects=False) as client:
-            response = await client.get(url)
+            response = await client.get(url, headers=dict(headers or {}))
             return response.text[:_BODY_LIMIT]
 
 
@@ -54,11 +55,11 @@ class OutboundFetcher:
         self._pending: set[asyncio.Task[str]] = set()
         self._lock = threading.Lock()
 
-    async def fetch(self, source: str, path: str, url: str) -> str:
+    async def fetch(self, source: str, path: str, url: str, headers: Mapping[str, str] | None = None) -> str:
         with self._lock:
             self._attempts.append(FetchAttempt(source, path, url, time.time()))
         try:
-            return await self._getter.get(url)
+            return await self._getter.get(url, headers)
         except (httpx.HTTPError, httpx.InvalidURL, OSError, ValueError) as error:
             return f"fetch failed: {type(error).__name__}"
 

@@ -12,7 +12,7 @@ EXPECTED = {
     "shell_command_injection", "blind_shell_command_injection", "python_eval_injection",
     "javascript_eval_injection", "sql_table_injection", "sql_literal_injection",
     "fetch_tool_arguments", "fetch_resource_uri", "fetch_list_cursor", "fetch_meta", "fetch_client_info",
-    "fetch_headers", "fetch_oauth_client_metadata",
+    "fetch_headers", "fetch_oauth_client_metadata", "token_passthrough",
     "downstream_route_escape", "downstream_raw_segment", "downstream_encoded_dot_segment",
     "redirect_unregistered", "redirect_http_downgrade", "redirect_path_normalisation",
     "redirect_script_scheme_registration", "redirect_wildcard_registration",

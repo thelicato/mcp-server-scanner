@@ -200,6 +200,14 @@ Fetches in safe mode never happen. Every attempt is recorded at `GET /_test/fetc
 | `fetch_headers` | Every request header except `Host`, `Origin`, `Content-Length` and `Connection` |
 | `fetch_oauth_client_metadata` | DCR `client_uri`, `logo_uri` and `jwks_uri` |
 
+### Token passthrough
+
+| Name | Surface | Vulnerable | Safe |
+|---|---|---|---|
+| `token_passthrough` | Tool `import_page` (`source_url`, a URL or bare host) | Fetches the URL with the caller's `Authorization` header forwarded | Fetches the URL without the caller's credential |
+
+Unlike the `fetch_*` modules, it fetches in both modes, so the outbound-request check fires on both and only the token passthrough check tells them apart.
+
 ### Downstream route escape
 
 | Name | Surface | Vulnerable | Safe |
