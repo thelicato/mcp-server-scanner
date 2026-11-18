@@ -114,7 +114,9 @@ class McpScannerExtensionTest {
                 eq(ScanCheckType.PER_REQUEST));
         verify(scanner).registerActiveScanCheck(argThat(activeManagedWithId("token-passthrough")),
                 eq(ScanCheckType.PER_INSERTION_POINT));
-        verify(scanner, times(0 + 4 + 17)).registerActiveScanCheck(any(ActiveScanCheck.class), any(ScanCheckType.class));
+        verify(scanner).registerActiveScanCheck(argThat(activeManagedWithId("pkce-enforcement")),
+                eq(ScanCheckType.PER_REQUEST));
+        verify(scanner, times(0 + 4 + 18)).registerActiveScanCheck(any(ActiveScanCheck.class), any(ScanCheckType.class));
     }
 
     @Test

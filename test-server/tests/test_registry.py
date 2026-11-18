@@ -18,6 +18,7 @@ EXPECTED = {
     "redirect_script_scheme_registration", "redirect_wildcard_registration",
     "consent_client_name_reflection", "consent_state_reflection",
     "refresh_missing_client_secret", "refresh_wrong_client_secret", "refresh_scope_expansion",
+    "pkce_not_required", "pkce_verifier_unchecked", "pkce_plain_accepted",
     "cross_identity_object", "cross_identity_resource", "cross_identity_role", "cross_identity_session",
     "code_reuse", "code_redemption_race",
     "session_guessable_ids", "session_delete_ignored",

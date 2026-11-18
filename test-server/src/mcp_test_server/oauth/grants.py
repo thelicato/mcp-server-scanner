@@ -23,6 +23,7 @@ class AuthorizationGrant:
     scope: str
     code_challenge: str | None
     subject: str
+    code_challenge_method: str | None = None
 
 
 @dataclass(frozen=True)

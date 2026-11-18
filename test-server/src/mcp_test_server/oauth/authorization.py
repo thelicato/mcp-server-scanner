@@ -46,9 +46,8 @@ class AuthorizationRequest:
     def protocol_error(self) -> str | None:
         if self.parameters.get("response_type") != "code":
             return "unsupported_response_type"
-        if not self.parameters.get("code_challenge") or self.parameters.get("code_challenge_method") != "S256":
-            return "invalid_request"
-        return None
+        return self._context.pkce_policy.challenge_error(self.parameters.get("code_challenge"),
+                                                         self.parameters.get("code_challenge_method"))
 
     def approve(self) -> Response:
         grant = AuthorizationGrant(
@@ -57,6 +56,7 @@ class AuthorizationRequest:
             scope=self.parameters.get("scope") or DEFAULT_SCOPE,
             code_challenge=self.parameters.get("code_challenge"),
             subject=TEST_SUBJECT,
+            code_challenge_method=self.parameters.get("code_challenge_method"),
         )
         return self.redirect({"code": self._context.grants.issue_code(grant)})
 

@@ -8,6 +8,7 @@ from typing import Any, Protocol
 from mcp_test_server.oauth.clients import ClientRegistry
 from mcp_test_server.oauth.consent import ConsentPage
 from mcp_test_server.oauth.grants import GrantStore
+from mcp_test_server.oauth.pkce_policy import PkcePolicy
 from mcp_test_server.oauth.redirect_policy import RedirectPolicy
 from mcp_test_server.oauth.refresh_policy import RefreshPolicy
 from mcp_test_server.oauth.signer import JwtSigner
@@ -37,3 +38,4 @@ class AuthorizationServerContext:
     consent_page: ConsentPage
     consent_mode: ConsentMode
     registration_observers: Sequence[RegistrationObserver]
+    pkce_policy: PkcePolicy

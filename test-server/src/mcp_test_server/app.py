@@ -16,6 +16,7 @@ from mcp_test_server.oauth.consent import ConsentPage
 from mcp_test_server.oauth.credential_gate import CredentialGate
 from mcp_test_server.oauth.grants import GrantStore
 from mcp_test_server.oauth.redirect_policy import RedirectPolicy
+from mcp_test_server.oauth.pkce_policy import PkcePolicy
 from mcp_test_server.oauth.refresh_policy import RefreshPolicy
 from mcp_test_server.oauth.routes import authorization_server_routes
 from mcp_test_server.oauth.server_context import AuthorizationServerContext
@@ -118,6 +119,7 @@ class ServerAssembly:
             consent_page=ConsentPage(self.surface.consent_reflections),
             consent_mode=self._settings.consent,
             registration_observers=self.surface.registration_observers,
+            pkce_policy=PkcePolicy(self.surface.pkce_weaknesses),
         )
 
     def _inspection(self) -> InspectionApi:

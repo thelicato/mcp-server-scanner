@@ -306,6 +306,9 @@ A `redirect_uri` that is not registered is sorted into one shape, and only that 
 | `refresh_missing_client_secret` | Confidential-client refresh succeeds with no secret (or an empty one) | 401 `invalid_client` |
 | `refresh_wrong_client_secret` | Confidential-client refresh succeeds with a wrong secret | 401 |
 | `refresh_scope_expansion` | `scope` wider than the grant is issued | 400 `invalid_scope` |
+| `pkce_not_required` | `/authorize` issues a code with no `code_challenge`, and `/token` redeems it with no `code_verifier` | Redirect with `error=invalid_request` |
+| `pkce_verifier_unchecked` | `/token` redeems a code without checking the `code_verifier` against its challenge | 400 `invalid_grant` |
+| `pkce_plain_accepted` | `/authorize` accepts `code_challenge_method=plain` although the metadata advertises only `S256` | Redirect with `error=invalid_request` |
 
 An unknown `client_id` gives a 400 page that does not reflect any input. That is the reflection check's invalid-client control.
 

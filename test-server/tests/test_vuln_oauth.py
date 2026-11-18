@@ -210,7 +210,7 @@ def test_issued_access_token_is_accepted_by_mcp_endpoint(make_server: ServerFact
 
 
 def test_pkce_and_code_reuse_rejected(make_server: ServerFactory) -> None:
-    server = make_server(consent="auto")
+    server = make_server(consent="auto", vulns={"pkce_verifier_unchecked": "safe"})
     _, challenge = pkce_pair()
     response = server.client.get("/authorize", params={
         "response_type": "code", "client_id": "public-client", "redirect_uri": HTTPS_REGISTERED,
@@ -303,3 +303,48 @@ def test_code_redemption_race_admits_only_overlapping_redemptions(make_server: S
     statuses = asyncio.run(_concurrent_redemption_statuses(server, code, verifier, 3))
     assert statuses.count(200) == issued
     assert server.client.post("/token", data=_redemption_form(code, verifier)).status_code == 400
+
+
+def _code(server: TestServer, **pkce: str) -> str | None:
+    response = server.client.get("/authorize", params={
+        "response_type": "code", "client_id": "public-client", "redirect_uri": HTTPS_REGISTERED, **pkce})
+    return parse_qs(urlsplit(response.headers["location"]).query).get("code", [None])[0]
+
+
+def _redeems(server: TestServer, code: str, **verifier: str) -> bool:
+    form = {"grant_type": "authorization_code", "code": code, "client_id": "public-client", **verifier}
+    return server.client.post("/token", data=form).status_code == 200
+
+
+ALL_PKCE_SAFE = {"pkce_not_required": "safe", "pkce_verifier_unchecked": "safe", "pkce_plain_accepted": "safe"}
+
+
+@pytest.mark.parametrize("mode", ["vulnerable", "safe"])
+def test_pkce_not_required(make_server: ServerFactory, mode: str) -> None:
+    server = make_server(consent="auto", vulns={**ALL_PKCE_SAFE, "pkce_not_required": mode})
+    code = _code(server)
+    assert (code is not None and _redeems(server, code)) is (mode == "vulnerable")
+
+
+@pytest.mark.parametrize("mode", ["vulnerable", "safe"])
+def test_pkce_verifier_unchecked(make_server: ServerFactory, mode: str) -> None:
+    server = make_server(consent="auto", vulns={**ALL_PKCE_SAFE, "pkce_verifier_unchecked": mode})
+    _, challenge = pkce_pair()
+    code = _code(server, code_challenge=challenge, code_challenge_method="S256")
+    assert code is not None
+    assert _redeems(server, code, code_verifier="wrong-verifier") is (mode == "vulnerable")
+
+
+@pytest.mark.parametrize("mode", ["vulnerable", "safe"])
+def test_pkce_plain_accepted(make_server: ServerFactory, mode: str) -> None:
+    server = make_server(consent="auto", vulns={**ALL_PKCE_SAFE, "pkce_plain_accepted": mode})
+    code = _code(server, code_challenge="plain-verifier-0123456789", code_challenge_method="plain")
+    assert (code is not None and _redeems(server, code, code_verifier="plain-verifier-0123456789")) is (
+        mode == "vulnerable")
+
+
+def test_correct_s256_still_redeems_when_every_pkce_module_is_safe(make_server: ServerFactory) -> None:
+    server = make_server(consent="auto", vulns=ALL_PKCE_SAFE)
+    verifier, challenge = pkce_pair()
+    code = _code(server, code_challenge=challenge, code_challenge_method="S256")
+    assert code is not None and _redeems(server, code, code_verifier=verifier)

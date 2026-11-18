@@ -11,6 +11,7 @@ from mcp_test_server.oauth.consent import ConsentReflections
 from mcp_test_server.oauth.credential_gate import AuthWeakness
 from mcp_test_server.oauth.grants import CodeWeakness
 from mcp_test_server.oauth.redirect_policy import RedirectWeakness
+from mcp_test_server.oauth.pkce_policy import PkceWeakness
 from mcp_test_server.oauth.refresh_policy import RefreshWeakness
 from mcp_test_server.oauth.server_context import RegistrationObserver
 from mcp_test_server.oauth.token_verifier import JwtWeakness
@@ -44,5 +45,6 @@ class ServerSurface:
     jwt_weaknesses: WeaknessSet[JwtWeakness] = field(default_factory=WeaknessSet)
     redirect_weaknesses: WeaknessSet[RedirectWeakness] = field(default_factory=WeaknessSet)
     refresh_weaknesses: WeaknessSet[RefreshWeakness] = field(default_factory=WeaknessSet)
+    pkce_weaknesses: WeaknessSet[PkceWeakness] = field(default_factory=WeaknessSet)
     session_weaknesses: WeaknessSet[SessionWeakness] = field(default_factory=WeaknessSet)
     code_weaknesses: WeaknessSet[CodeWeakness] = field(default_factory=WeaknessSet)

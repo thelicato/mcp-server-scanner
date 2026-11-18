@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import base64
 import binascii
-import hashlib
 import hmac
 from collections.abc import Mapping
 from urllib.parse import unquote
@@ -55,7 +54,8 @@ class TokenEndpoint:
             raise TokenError("invalid_grant")
         if form.get("redirect_uri", grant.redirect_uri) != grant.redirect_uri:
             raise TokenError("invalid_grant")
-        if not _pkce_matches(grant.code_challenge, form.get("code_verifier")):
+        if not self._context.pkce_policy.verifier_matches(grant.code_challenge, grant.code_challenge_method,
+                                                          form.get("code_verifier")):
             raise TokenError("invalid_grant")
         return self._issue(client, RefreshGrant(client.client_id, grant.scope, grant.subject), None)
 
@@ -94,11 +94,3 @@ def _client_credentials(request: Request, form: Mapping[str, str]) -> tuple[str 
         return unquote(client_id), unquote(secret)
     return form.get("client_id"), form.get("client_secret")
 
-
-def _pkce_matches(challenge: str | None, verifier: str | None) -> bool:
-    if challenge is None:
-        return True
-    if verifier is None:
-        return False
-    digest = hashlib.sha256(verifier.encode()).digest()
-    return hmac.compare_digest(base64.urlsafe_b64encode(digest).rstrip(b"=").decode(), challenge)

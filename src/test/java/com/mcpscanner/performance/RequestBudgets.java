@@ -33,6 +33,7 @@ public final class RequestBudgets {
             Scan of one tool call, sql-injection                            | 36
             Scan of one tool call, sibling-route-auth-parity                | 0
             Scan of one tool call, ssrf-filter-bypass                       | 0
+            Scan of one tool call, pkce-enforcement                         | 5
             Scan of one tool call, token-passthrough                        | 1
             Scan of one tool call, unauthenticated-request-execution        | 14
             Generated calls for one tool with two pattern-bound optional arguments | 3
