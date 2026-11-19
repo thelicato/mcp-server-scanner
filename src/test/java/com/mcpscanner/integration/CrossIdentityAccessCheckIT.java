@@ -48,6 +48,7 @@ class CrossIdentityAccessCheckIT {
 
     private static final String SESSION_CHECK_ID = "session-binding";
     private static final String OPERATION = "MCP operation available to a lower-privilege identity";
+    private static final String OPERATION_TO_PEER = "MCP operation available to a disallowed identity";
     private static final String RESULT = "MCP operation result available to another principal";
     private static final String NOTIFICATION = "{\"jsonrpc\":\"2.0\",\"method\":\"notifications/initialized\"}";
     private static final List<String> MODULES = List.of("cross_identity_object", "cross_identity_resource",
@@ -132,7 +133,7 @@ class CrossIdentityAccessCheckIT {
             assertThat(issue.detail()).contains("Identity: carol");
         });
         assertThat(vulnerable.issues().get(LIST_USERS)).hasSize(2)
-                .allSatisfy(issue -> assertThat(issue.name()).isEqualTo(OPERATION));
+                .allSatisfy(CrossIdentityAccessCheckIT::namedForItsIdentity);
         assertThat(vulnerable.issues().get(WHOAMI)).isEmpty();
         assertThat(vulnerable.debugLines()).noneMatch(line -> line.contains("session_binding:")
                 || line.contains("session_rebind"));
@@ -146,14 +147,14 @@ class CrossIdentityAccessCheckIT {
             assertThat(issue.confidence()).isEqualTo(AuditIssueConfidence.FIRM);
         }).anySatisfy(issue -> assertThat(issue.detail()).contains("Probe: foreign-reference."));
         assertThat(issues.get(PRIVATE_NOTE)).hasSize(2).allSatisfy(issue -> {
-            assertThat(issue.name()).isEqualTo(OPERATION);
+            namedForItsIdentity(issue);
             assertThat(issue.confidence()).isEqualTo(AuditIssueConfidence.FIRM);
         });
         assertThat(issues.get(DELETE_PROJECT)).singleElement().satisfies(issue -> {
             assertThat(issue.name()).isEqualTo(OPERATION);
             assertThat(issue.detail()).contains("Identity: carol");
         });
-        assertThat(issues.get(LIST_USERS)).hasSize(2).allSatisfy(issue -> assertThat(issue.name()).isEqualTo(OPERATION));
+        assertThat(issues.get(LIST_USERS)).hasSize(2).allSatisfy(CrossIdentityAccessCheckIT::namedForItsIdentity);
         assertThat(issues.get(WHOAMI)).noneSatisfy(issue -> assertThat(issue.detail()).contains("Probe: session."));
         assertThat(issues.get(SEARCH)).isEmpty();
         assertThat(issues.get(HANDBOOK)).isEmpty();
@@ -228,6 +229,11 @@ class CrossIdentityAccessCheckIT {
                     .run(check, List.of(base)));
         }
         return issues;
+    }
+
+    private static void namedForItsIdentity(AuditIssue issue) {
+        assertThat(issue.name()).as("bob is a peer, so his finding is not called lower-privilege")
+                .isEqualTo(issue.detail().contains("Identity: bob") ? OPERATION_TO_PEER : OPERATION);
     }
 
     private static PrincipalRoster roster() {

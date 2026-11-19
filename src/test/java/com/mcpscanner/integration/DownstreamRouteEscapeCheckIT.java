@@ -63,7 +63,10 @@ class DownstreamRouteEscapeCheckIT {
                 "tools/call get_order | MCP field: params.arguments.order_id");
         assertThat(fields).filteredOn(field -> !field.contains("get_invoice") && !field.contains("get_order"))
                 .isNotEmpty()
-                .allMatch(field -> field.contains("review_file_") || field.contains("file:///"));
+                .as("every other report is a surface of the path traversal modules: tool read_file_<v>, prompt "
+                        + "review_file_<v> or a file:/// template")
+                .allMatch(field -> field.contains("read_file_") || field.contains("review_file_")
+                        || field.contains("file:///"));
     }
 
     private static List<String> reportedFields(String... serverArgs) throws Exception {

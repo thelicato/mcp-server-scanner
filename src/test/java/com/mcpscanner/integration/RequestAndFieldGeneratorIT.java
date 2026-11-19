@@ -21,6 +21,8 @@ import com.mcpscanner.scan.UriTemplateExpansion;
 import com.mcpscanner.scan.field.McpFieldGenerator;
 import com.mcpscanner.scan.field.TemplateExpansionRegistry;
 import com.mcpscanner.scan.request.GeneratedScan;
+import com.mcpscanner.mcp.ParamHeaderFramer;
+import com.mcpscanner.mcp.ToolParamHeaders;
 import com.mcpscanner.scan.request.McpHttpRequestFactory;
 import com.mcpscanner.scan.request.McpMessage;
 import com.mcpscanner.scan.request.RequestFamily;
@@ -273,8 +275,10 @@ class RequestAndFieldGeneratorIT {
                 new ServerCapabilities(result.serverMetadata().capabilities()), negotiatedVersion);
         GeneratedScan scan = RequestGenerator.standard().scanAll(surface, family -> true);
         scan.messages().forEach(message -> message.templateExpansion().ifPresent(templateExpansions::record));
+        ToolParamHeaders toolParamHeaders = new ToolParamHeaders(warning -> { });
+        toolParamHeaders.learn(result.tools());
         return new Connected(scan, Map.copyOf(manager.scannerSession().scannerHeaders()), negotiatedVersion,
-                manager.scannerSession());
+                new ParamHeaderFramer(manager.scannerSession(), toolParamHeaders));
     }
 
     private List<HttpRequest> sendAll(int port, Connected connected) throws Exception {

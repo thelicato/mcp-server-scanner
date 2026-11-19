@@ -108,8 +108,10 @@ class RequestFamiliesPanelTest {
         JButton shortcut = button(new RequestFamiliesPanel(settings), label);
 
         assertThat(shortcut.getClientProperty("JButton.buttonType")).isNull();
+        assertThat(shortcut.getClientProperty(com.mcpscanner.ui.widgets.UiStyle.STYLE_CLASS)).isNull();
         assertThat(shortcut.isBorderPainted()).isTrue();
-        assertThat(shortcut.getFont().isBold()).isFalse();
+        assertThat(shortcut.getFont()).as("the look and feel's own button font, not a heading font")
+                .isEqualTo(new JButton(label).getFont());
     }
 
     @org.junit.jupiter.params.ParameterizedTest

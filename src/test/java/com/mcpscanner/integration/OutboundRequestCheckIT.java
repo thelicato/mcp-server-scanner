@@ -64,7 +64,7 @@ class OutboundRequestCheckIT {
         assertThat(locations(issues)).contains(
                 "MCP field: params.arguments.url in tools/call fetch_document",
                 "MCP field: params.arguments.options.timeout_seconds in tools/call fetch_document",
-                "MCP field: params.arguments.options.tags in tools/call fetch_document",
+                "MCP field: params.arguments.options.tags[0] in tools/call fetch_document",
                 "MCP field: params.uri",
                 "MCP field: params.cursor",
                 "MCP field: params._meta.progressToken",

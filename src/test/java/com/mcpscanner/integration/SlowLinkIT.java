@@ -50,7 +50,10 @@ class SlowLinkIT {
     private static final int CONNECT_CONCURRENCY = 1;
     private static final int EXTENSION_SCAN_WORKERS = (int) ResourceCap.EXTENSION_SCAN_WORKERS.defaultValue();
     private static final int EXTENSION_SCAN_EFFECTIVE_CONCURRENCY = 5;
-    private static final int CHECK_ACCESS_EFFECTIVE_CONCURRENCY = 3;
+    // Check access runs four read-only items at once, but each item's owner, compared-user and anonymous calls
+    // follow one another, and write tools run alone after every read. Over the fixture's eight items that
+    // sustains about two requests in flight.
+    private static final int CHECK_ACCESS_EFFECTIVE_CONCURRENCY = 2;
     private static final int COLLECT_IDS_EFFECTIVE_CONCURRENCY = 7;
     private static final String USER_INFO_CALL = "{\"jsonrpc\":\"2.0\",\"id\":1,\"method\":\"tools/call\","
             + "\"params\":{\"name\":\"user_info\",\"arguments\":{\"username\":\"alice\"}}}";

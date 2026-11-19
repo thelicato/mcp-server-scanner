@@ -6,6 +6,7 @@ import com.mcpscanner.checks.api.AccessLedger;
 import com.mcpscanner.checks.api.CheckCatalog;
 import com.mcpscanner.checks.api.CheckRunner;
 import com.mcpscanner.checks.api.CheckServices;
+import com.mcpscanner.cvetargets.run.ArmLateIssues;
 import com.mcpscanner.checks.api.PrincipalRoster;
 import com.mcpscanner.checks.api.PrincipalListings;
 import com.mcpscanner.checks.api.McpCheck;
@@ -57,17 +58,22 @@ class ClientRegistrationScanIT {
         try (McpCheckItSupport.RunningServer server = McpCheckItSupport.startServer(
                 "--default-mode", "safe", "--vuln", "fetch_oauth_client_metadata=" + mode);
              LoopbackCollaborator collaborator = LoopbackCollaborator.start()) {
-            McpCheck check = CheckCatalog.discover(new CheckServices(McpEventLog.noop(),
+            ArmLateIssues late = new ArmLateIssues();
+            McpCheck check = CheckCatalog.discover(late.collectingFor(new CheckServices(McpEventLog.noop(),
                     CheckServices.standalone().authStrategy(), () -> Optional.of(collaborator), Optional::empty,
-                PrincipalRoster::empty, AccessLedger.noop(), PrincipalListings.unknown()))
+                PrincipalRoster::empty, AccessLedger.noop(), PrincipalListings.unknown())))
                     .find("outbound-request").orElseThrow();
             VerbatimHeaderHttp http = new VerbatimHeaderHttp();
             HttpRequestResponse baseline = http.sendRequest(new ClientRegistrationRequestFactory()
                     .build(generatedRegistration(URI.create("http://127.0.0.1:" + server.port() + "/register"))));
 
             assertThat((int) baseline.response().statusCode()).isBetween(200, 299);
-            return new CheckRunner(http, new McpInsertionPointProvider()::provideInsertionPoints)
-                    .run(check, List.of(baseline));
+            try {
+                return new CheckRunner(http, new McpInsertionPointProvider()::provideInsertionPoints, late)
+                        .run(check, List.of(baseline));
+            } finally {
+                late.close();
+            }
         }
     }
 
