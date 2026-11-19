@@ -4,7 +4,7 @@ public final class ExtensionVersion {
 
     public static final String CURRENT = resolve();
 
-    private static final String FALLBACK = "2.3.1";
+    private static final String FALLBACK = "2.4.0";
 
     private ExtensionVersion() {
     }
