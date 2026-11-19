@@ -37,6 +37,14 @@ jobs:
       - name: Build and test
         run: ./gradlew build shadowJar
 
+      - name: Upload test reports
+        if: failure()
+        uses: actions/upload-artifact@v7
+        with:
+          name: test-reports
+          path: build/reports/tests/**
+          retention-days: 7
+
       - name: Checksum the JAR
         working-directory: build/libs
         run: sha256sum *-all.jar > SHA256SUMS
