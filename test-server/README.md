@@ -204,9 +204,9 @@ Fetches in safe mode never happen. Every attempt is recorded at `GET /_test/fetc
 
 | Name | Surface | Vulnerable | Safe |
 |---|---|---|---|
-| `token_passthrough` | Tool `import_page` (`source_url`, a URL or bare host) | Fetches the URL with the caller's `Authorization` header forwarded | Fetches the URL without the caller's credential |
+| `token_passthrough` | Tool `import_page` (`source_url`, a URL or bare host) | Fetches the URL with the caller's `Authorization` header forwarded | Returns an allowlist error and fetches nothing |
 
-Unlike the `fetch_*` modules, it fetches in both modes, so the outbound-request check fires on both and only the token passthrough check tells them apart.
+When vulnerable, the outbound-request check fires on `import_page` too, because the server does request the URL. Only the token passthrough check reports that the caller's credential went with it.
 
 ### Downstream route escape
 

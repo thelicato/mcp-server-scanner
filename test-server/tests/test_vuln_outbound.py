@@ -136,5 +136,13 @@ def test_token_passthrough_forwards_the_callers_token_only_when_vulnerable(make_
 
     safe = make_server(default_mode="safe")
     _import_page(safe)
-    assert safe.getter.urls == [CANARY]
-    assert safe.getter.headers == [{}]
+    assert safe.getter.urls == []
+
+
+def test_localhost_subdomains_are_fetched_over_loopback_with_their_name_as_host() -> None:
+    from mcp_test_server.outbound.fetcher import _loopback_for_localhost
+
+    target, headers = _loopback_for_localhost("http://abc123.localhost:4100/x", {"Accept": "*/*"})
+    assert str(target) == "http://127.0.0.1:4100/x"
+    assert headers == {"Accept": "*/*", "Host": "abc123.localhost:4100"}
+    assert _loopback_for_localhost("http://canary.oast.example/probe", {}) == ("http://canary.oast.example/probe", {})

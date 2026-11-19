@@ -35,9 +35,23 @@ class HttpxGetter:
         self._timeout = timeout_seconds
 
     async def get(self, url: str, headers: Mapping[str, str] | None = None) -> str:
+        target, sent_headers = _loopback_for_localhost(url, dict(headers or {}))
         async with httpx.AsyncClient(timeout=self._timeout, follow_redirects=False) as client:
-            response = await client.get(url, headers=dict(headers or {}))
+            response = await client.get(target, headers=sent_headers)
             return response.text[:_BODY_LIMIT]
+
+
+def _loopback_for_localhost(url: str, headers: dict[str, str]) -> tuple[str | httpx.URL, dict[str, str]]:
+    # RFC 6761: every *.localhost name is loopback. Not every resolver agrees, and the scanner's tests hand out
+    # <id>.localhost hosts for their stand-in Collaborator, so connect to 127.0.0.1 and keep the name as Host.
+    try:
+        parsed = httpx.URL(url)
+    except httpx.InvalidURL:
+        return url, headers
+    host = parsed.host.lower()
+    if parsed.scheme != "http" or not host.endswith(".localhost"):
+        return url, headers
+    return parsed.copy_with(host="127.0.0.1"), {**headers, "Host": parsed.netloc.decode("ascii")}
 
 
 @dataclass(frozen=True)

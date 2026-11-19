@@ -27,7 +27,9 @@ class TokenPassthrough(Vulnerability):
         url = fetchable_url(arguments.get("source_url"))
         if url is None:
             return text_content("Error: source_url must be a URL or host", is_error=True)
+        if not self.vulnerable:
+            return text_content("Error: importing is restricted to the allowlist", is_error=True)
         authorization = context.header("authorization")
-        forwarded = {"Authorization": authorization} if self.vulnerable and authorization else {}
+        forwarded = {"Authorization": authorization} if authorization else {}
         body = await self._fetcher.fetch(self.name, "params.arguments.source_url", url, forwarded)
         return text_content(f"Imported {len(body)} characters from {url}")
