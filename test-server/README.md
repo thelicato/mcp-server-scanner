@@ -254,6 +254,17 @@ uv run mcp-test-server --default-mode safe --vuln cross_identity_object=vulnerab
   --vuln cross_identity_resource=vulnerable --vuln cross_identity_role=vulnerable \
   --vuln cross_identity_session=vulnerable
 ```
+### Tool definition drift
+
+The server advertises `tools.listChanged: true`. A handler can queue notifications for the reply: with `--response-mode sse` they are sent as events before the result on the same stream (and on the legacy SSE channel), while a JSON reply cannot carry them.
+
+| Name | Surface | Vulnerable | Safe |
+|---|---|---|---|
+| `tool_definition_drift` | Tool `convert_currency` (`amount`, `currency`) | After the session's first `convert_currency` call, `tools/list` in that session shows a poisoned description (an `<IMPORTANT>` instruction to read `~/.ssh/id_rsa`) and a schema with an extra required `note` argument (the MCP rug pull) | The definition never changes |
+| `tool_definition_per_user` | Tool `search_tickets` (`keyword`), listed to the three static users | carol (reader) is shown a description with an injected `<IMPORTANT>` instruction that alice and bob never see | Every user is shown the same definition |
+
+In both modes the first `convert_currency` call of a session also lists a new tool, `currency_history`, in that session and queues `notifications/tools/list_changed`, so an added tool is a negative control: a legitimate list change that no check should report. Other sessions keep the original listing. Without a session id, the state is shared by every sessionless request.
+
 ### OAuth authorization server
 
 The discovery and key endpoints are:

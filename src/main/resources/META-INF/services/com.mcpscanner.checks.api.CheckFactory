@@ -18,3 +18,4 @@ com.mcpscanner.checks.catalog.sqlinjection.SqlInjectionCheckFactory
 com.mcpscanner.checks.catalog.tokenpassthrough.TokenPassthroughCheckFactory
 com.mcpscanner.checks.catalog.pkceenforcement.PkceEnforcementCheckFactory
 com.mcpscanner.checks.catalog.tokenaudience.TokenAudienceCheckFactory
+com.mcpscanner.checks.catalog.tooldefinitiondrift.ToolDefinitionDriftCheckFactory

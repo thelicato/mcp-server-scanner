@@ -66,6 +66,8 @@ class SseMessageEndpoint:
             body = parse_body(await request.body())
         except ValueError:
             return JSONResponse({"error": "Parse error"}, status_code=400)
-        for reply in await dispatch_all(self._dispatcher, body, context_for(request, channel_id)):
-            await queue.put(sse_event("message", json.dumps(reply)))
+        context = context_for(request, channel_id)
+        replies = await dispatch_all(self._dispatcher, body, context)
+        for message in [*context.notifications, *replies]:
+            await queue.put(sse_event("message", json.dumps(message)))
         return Response("Accepted", status_code=202)

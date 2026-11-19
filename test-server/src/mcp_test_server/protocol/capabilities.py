@@ -11,7 +11,7 @@ class CapabilityAdvertiser:
     def capabilities(self) -> JsonObject:
         capabilities: JsonObject = {}
         if self._families.any_enabled(Family.TOOLS_CALL, Family.TOOLS_LIST):
-            capabilities["tools"] = {"listChanged": False}
+            capabilities["tools"] = {"listChanged": True}
         if self._families.any_enabled(
             Family.RESOURCES_READ,
             Family.RESOURCES_LIST,

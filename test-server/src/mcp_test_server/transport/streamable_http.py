@@ -72,7 +72,7 @@ class StreamableHttpEndpoint:
             return rejection
         context = context_for(request, session_id, self._sessions.owner_of(session_id))
         replies = await dispatch_all(self._dispatcher, body, context)
-        return self._render(replies, body.batch, session_id)
+        return self._render(replies, body.batch, session_id, context.notifications)
 
     def _session_for(self, request: Request, body: ParsedBody) -> tuple[str | None, Response | None]:
         if self._modern_gate.is_modern(body, request.headers):
@@ -102,14 +102,15 @@ class StreamableHttpEndpoint:
             return False
         return any(isinstance(m, dict) and m.get("method") not in _SESSIONLESS_METHODS for m in body.messages)
 
-    def _render(self, replies: list[JsonObject], batch: bool, session_id: str | None) -> Response:
+    def _render(self, replies: list[JsonObject], batch: bool, session_id: str | None,
+                notifications: list[JsonObject]) -> Response:
         headers = {SESSION_HEADER: session_id} if session_id else {}
         if not replies:
             return Response(status_code=202, headers=headers)
         payload: object = replies if batch else replies[0]
         if self._response_mode is ResponseMode.SSE:
-            event = sse_event("message", json.dumps(payload))
-            return StreamingResponse(iter([event]), media_type="text/event-stream", headers=headers)
+            events = [sse_event("message", json.dumps(message)) for message in [*notifications, payload]]
+            return StreamingResponse(iter(events), media_type="text/event-stream", headers=headers)
         return JSONResponse(payload, headers=headers)
 
     def _delete(self, request: Request) -> Response:

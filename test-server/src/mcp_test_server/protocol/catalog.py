@@ -14,10 +14,15 @@ ResourceHandler = Callable[[str, CallContext], Awaitable[JsonObject]]
 TemplateHandler = Callable[[str, dict[str, str], CallContext], Awaitable[JsonObject]]
 PromptHandler = Callable[[dict[str, str], CallContext], Awaitable[JsonObject]]
 Visibility = Callable[[CallContext], bool]
+Revision = Callable[[CallContext], JsonObject]
 
 
 def visible_to_everyone(context: CallContext) -> bool:
     return True
+
+
+def unrevised(context: CallContext) -> JsonObject:
+    return {}
 
 
 @dataclass(frozen=True)
@@ -28,6 +33,7 @@ class Tool:
     handler: ToolHandler
     destructive: bool = False
     visible_to: Visibility = visible_to_everyone
+    revision: Revision = unrevised
 
     def describe(self) -> JsonObject:
         return {
@@ -36,6 +42,9 @@ class Tool:
             "inputSchema": self.input_schema,
             "annotations": {"destructiveHint": self.destructive, "readOnlyHint": not self.destructive},
         }
+
+    def describe_for(self, context: CallContext) -> JsonObject:
+        return {**self.describe(), **self.revision(context)}
 
 
 @dataclass(frozen=True)

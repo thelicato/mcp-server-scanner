@@ -118,7 +118,9 @@ class McpScannerExtensionTest {
                 eq(ScanCheckType.PER_REQUEST));
         verify(scanner).registerActiveScanCheck(argThat(activeManagedWithId("token-audience")),
                 eq(ScanCheckType.PER_REQUEST));
-        verify(scanner, times(0 + 4 + 19)).registerActiveScanCheck(any(ActiveScanCheck.class), any(ScanCheckType.class));
+        verify(scanner).registerActiveScanCheck(argThat(activeManagedWithId("tool-definition-drift")),
+                eq(ScanCheckType.PER_REQUEST));
+        verify(scanner, times(0 + 4 + 20)).registerActiveScanCheck(any(ActiveScanCheck.class), any(ScanCheckType.class));
     }
 
     @Test

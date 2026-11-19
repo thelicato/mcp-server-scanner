@@ -11,7 +11,7 @@ Discovers MCP tools, resources, resource templates, and prompts, builds JSON-RPC
 - **Protocol and transports:** Auto detects modern `server/discover` HTTP, initialize-based Streamable HTTP, then legacy SSE. Explicit modes are available. A local proxy lets Burp's scanner consume `text/event-stream` replies.
 - **Auth:** each user has its own credentials: none, a bearer token, custom headers, or an OAuth 2.1 sign-in with PKCE. All OAuth users sign in through one shared OAuth client. It supports pre-registered clients, hosted Client ID Metadata Documents, and legacy dynamic client registration, with protected-resource and OAuth/OIDC authorization-server discovery.
 - **Access control between users:** scan as one user and compare what other users can list, call and read.
-- **Active checks:** 20 scan checks, listed under [Checks](#checks).
+- **Active checks:** 21 scan checks, listed under [Checks](#checks).
 
 Aimed at MCP server **operators** auditing their own deployments.
 
@@ -42,6 +42,7 @@ Each check has a toggle in the **Scan Checks** tab. Severity is the headline rat
 | **MCP OAuth authorization code redeemed more than once** (part of the check above) | per host | Medium / Certain when a second sequential or concurrent redemption returns a working token |
 | **MCP sibling route authentication parity** | per host | Low / Firm when the main route refuses a catalog listing without credentials and a sibling route (`/mcp_message`, `/messages`, `/message`, `/sse`, `/mcp/` and similar) or the advertised legacy SSE message route answers it |
 | **MCP session lifecycle** | per host | High / Firm when probe session IDs are guessable (repeated, increasing, known time-based formats - UUID v1/v6/v7, ULID, KSUID, Snowflake, ObjectId - whose clock and counter fields leave under 64 random bits, or under 64 varying bits after hex/base64 decoding; up to 30 probe sessions when the first eight are borderline) and a bare ID runs a request without credentials; Low / Firm for guessable IDs alone (Tentative when only the live session's ID repeats); Low / Firm when a session still answers ping, or still opens its GET event stream (while a never-issued ID's stream is refused), after a successful DELETE. Runs only when the server issues `Mcp-Session-Id`, or on legacy SSE (guessability only, on probe streams of its own, skipped when the message route carries no session id); uses its own probe sessions and never touches the scanner's |
+| **MCP tool definition drift** | per host (tried on each scanned tool call until one changes a definition, up to 10; once per host for compared users) | Medium / Firm when, in the check's own session, a tool's description, title, annotations or schema changes after the scanned call is replayed and stays changed on a further listing, while two listings before the call matched; the issue says whether `notifications/tools/list_changed` announced it. Low / Firm when a compared user is given a different definition of a tool that matched across two of the scanning user's sessions. Added or hidden tools are not reported |
 
 ## Build
 

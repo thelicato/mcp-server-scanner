@@ -22,6 +22,7 @@ EXPECTED = {
     "cross_identity_object", "cross_identity_resource", "cross_identity_role", "cross_identity_session",
     "code_reuse", "code_redemption_race",
     "session_guessable_ids", "session_delete_ignored",
+    "tool_definition_drift", "tool_definition_per_user",
 }
 DROPPED_PASSIVE_FIXTURES = ("leaky", "poisoned", "hidden_method")
 

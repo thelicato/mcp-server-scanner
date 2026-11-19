@@ -28,7 +28,7 @@ def list_handlers(catalog: Catalog, paginator: Paginator) -> list[ListHandler]:
             "tools/list",
             Family.TOOLS_LIST,
             "tools",
-            lambda context: [tool.describe() for tool in catalog.tools.values() if tool.visible_to(context)],
+            lambda context: [tool.describe_for(context) for tool in catalog.tools.values() if tool.visible_to(context)],
             paginator,
         ),
         ListHandler(
