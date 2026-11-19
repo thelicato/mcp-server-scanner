@@ -564,7 +564,12 @@ class UsersPanelTest {
 
         onEdt(() -> {
             javax.swing.JTable table = panel.table();
-            table.setSize(340, table.getHeight());
+            int nameHeader = headerWidth(table, IdentityTableModel.NAME);
+            int nameContent = contentWidth(table, IdentityTableModel.NAME);
+            assertThat(nameContent).as("the long name must not fit in its header width").isGreaterThan(nameHeader);
+            int minimum = neededWidth(table) - nameContent + nameHeader;
+            int width = minimum + (nameContent - nameHeader) / 2;
+            table.setSize(width, table.getHeight());
             table.doLayout();
             int status = table.getColumnModel().getColumn(IdentityTableModel.STATUS).getWidth();
             for (int row = 0; row < table.getRowCount(); row++) {
@@ -573,11 +578,10 @@ class UsersPanelTest {
                         .getPreferredSize().width);
             }
             int name = table.getColumnModel().getColumn(IdentityTableModel.NAME).getWidth();
-            assertThat(name).isGreaterThanOrEqualTo(table.getTableHeader().getDefaultRenderer()
-                    .getTableCellRendererComponent(table, "Name", false, false, -1, IdentityTableModel.NAME)
-                    .getPreferredSize().width);
-            assertThat(java.util.stream.IntStream.range(0, table.getColumnCount())
-                    .map(column -> table.getColumnModel().getColumn(column).getWidth()).sum()).isEqualTo(340);
+            assertThat(name).as("name gives way").isLessThan(nameContent + IdentityTable.CELL_PADDING)
+                    .as("but never below its header").isGreaterThanOrEqualTo(nameHeader);
+            assertThat(IntStream.range(0, table.getColumnCount())
+                    .map(column -> table.getColumnModel().getColumn(column).getWidth()).sum()).isEqualTo(width);
         });
     }
 
@@ -591,7 +595,8 @@ class UsersPanelTest {
             javax.swing.JTable table = panel.table();
             javax.swing.JScrollPane scroll = (javax.swing.JScrollPane) SwingUtilities.getAncestorOfClass(
                     javax.swing.JScrollPane.class, table);
-            scroll.setSize(430, 200);
+            java.awt.Insets insets = scroll.getInsets();
+            scroll.setSize(Math.max(430, neededWidth(table) + insets.left + insets.right), 200);
             scroll.doLayout();
             scroll.getViewport().doLayout();
             table.doLayout();
@@ -612,6 +617,24 @@ class UsersPanelTest {
             assertThat(table.getTableHeader().getToolTipText(new java.awt.event.MouseEvent(table.getTableHeader(),
                     0, 0, 0, access.x + 2, access.y + 2, 0, false))).isEqualTo("Access vs User 1");
         });
+    }
+
+    private static int neededWidth(javax.swing.JTable table) {
+        return IntStream.range(0, table.getColumnCount())
+                .map(column -> contentWidth(table, column) + IdentityTable.CELL_PADDING).sum();
+    }
+
+    private static int contentWidth(javax.swing.JTable table, int column) {
+        return IntStream.range(0, table.getRowCount())
+                .map(row -> table.prepareRenderer(table.getCellRenderer(row, column), row, column)
+                        .getPreferredSize().width)
+                .reduce(headerWidth(table, column), Math::max);
+    }
+
+    private static int headerWidth(javax.swing.JTable table, int column) {
+        return table.getTableHeader().getDefaultRenderer()
+                .getTableCellRendererComponent(table, table.getColumnName(column), false, false, -1, column)
+                .getPreferredSize().width;
     }
 
     private void typeToken(String token) throws Exception {

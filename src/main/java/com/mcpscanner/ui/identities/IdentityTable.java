@@ -19,7 +19,7 @@ final class IdentityTable extends JTable {
 
     private static final int ROW_HEIGHT = 22;
     private static final int HEADER_ALLOWANCE = 30;
-    private static final int CELL_PADDING = 8;
+    static final int CELL_PADDING = 8;
 
     private final IdentityTableModel model;
     private final int[] contentWidths = new int[IdentityTableModel.COLUMN_COUNT];
