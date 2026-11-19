@@ -1,6 +1,9 @@
 package com.mcpscanner.checks.catalog.tooldefinitiondrift;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.mcpscanner.mcp.McpToolDefinition;
+import com.mcpscanner.mcp.ToolAnnotations;
+import com.mcpscanner.mcp.ToolSafety;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -44,8 +47,26 @@ record ToolSnapshot(Map<String, JsonNode> tools) {
         return changesTo(again, Set.of()).stream().map(DefinitionChange::key).collect(Collectors.toSet());
     }
 
+    boolean mayWrite(String tool) {
+        JsonNode definition = tools.get(tool);
+        if (definition == null) {
+            return true;
+        }
+        JsonNode annotations = definition.path("annotations");
+        return ToolSafety.mayWrite(new McpToolDefinition(tool, definition.path("description").asText(""),
+                definition.path("inputSchema").toString(), List.of(), new ToolAnnotations(
+                        annotations.path("title").asText(null), hint(annotations, "readOnlyHint"),
+                        hint(annotations, "destructiveHint"), hint(annotations, "idempotentHint"),
+                        hint(annotations, "openWorldHint"))));
+    }
+
     boolean keeps(DefinitionChange change) {
         JsonNode definition = tools.get(change.tool());
         return definition != null && definition.path(change.field()).equals(change.after());
+    }
+
+    private static Boolean hint(JsonNode annotations, String name) {
+        JsonNode hint = annotations.path(name);
+        return hint.isBoolean() ? hint.booleanValue() : null;
     }
 }

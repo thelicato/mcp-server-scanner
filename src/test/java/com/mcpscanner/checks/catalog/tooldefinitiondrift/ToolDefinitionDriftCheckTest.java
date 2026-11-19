@@ -124,7 +124,8 @@ class ToolDefinitionDriftCheckTest {
     @Test
     void aDescriptionThatChangesOnEveryListingIsVolatileNotDrift() {
         DriftServer server = DriftServer.serving(view -> List.of("{\"name\":\"convert\",\"description\":"
-                + "\"Rates as of listing " + view.listing() + "\",\"inputSchema\":{\"type\":\"object\"}}"));
+                + "\"Rates as of listing " + view.listing() + "\",\"inputSchema\":{\"type\":\"object\"}"
+                + DriftServer.READ_ONLY + "}"));
 
         assertThat(check().audit(DriftServer.toolCall(), server.http)).isEmpty();
         assertThat(log()).anyMatch(line -> line.contains("1 field(s) changed between two plain listings"));
@@ -138,6 +139,17 @@ class ToolDefinitionDriftCheckTest {
         assertThat(check().audit(DriftServer.toolCall(), server.http)).isEmpty();
         assertThat(log()).contains(PREFIX + "decision: definitions changed after calling convert but not on the "
                 + "next listing");
+    }
+
+    @Test
+    void aToolThatMayWriteIsNeverReplayed() {
+        String writing = DriftServer.CONVERT.replace(DriftServer.READ_ONLY, "");
+        DriftServer server = DriftServer.serving(view -> List.of(writing));
+
+        assertThat(sessionTrial().run(DriftServer.toolCall(), server.http).settlement())
+                .isEqualTo(HostSettlement.UNSUITABLE_SEED);
+        assertThat(server.methods()).doesNotContain("tools/call").endsWith("DELETE");
+        assertThat(log()).anyMatch(line -> line.contains("not annotated read-only"));
     }
 
     @Test

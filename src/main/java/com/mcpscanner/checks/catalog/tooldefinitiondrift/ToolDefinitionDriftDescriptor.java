@@ -13,9 +13,10 @@ final class ToolDefinitionDriftDescriptor {
     static final CheckDescriptor DESCRIPTOR = new CheckDescriptor(
             "tool-definition-drift",
             "MCP tool definition drift",
-            "Opens its own MCP session, lists the tools twice as a control, replays the scanned tool call, lists "
-                    + "them again and reports a tool whose description, title, annotations or schema changed "
-                    + "while the session was in use and stayed changed (a rug pull), noting whether the server "
+            "Opens its own MCP session, lists the tools twice as a control, replays the scanned call of a tool "
+                    + "annotated read-only (never one that may write), lists them again and reports a tool whose "
+                    + "description, title, annotations or schema changed while the session was in use and stayed "
+                    + "changed (a rug pull), noting whether the server "
                     + "announced it with notifications/tools/list_changed. It also lists the tools as every "
                     + "compared user and reports a tool whose definition differs from the one the scanning user "
                     + "was shown, unchanged, in two separate sessions.",

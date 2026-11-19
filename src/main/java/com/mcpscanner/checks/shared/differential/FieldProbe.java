@@ -6,11 +6,7 @@ import burp.api.montoya.http.message.HttpRequestResponse;
 import burp.api.montoya.http.message.requests.HttpRequest;
 import burp.api.montoya.scanner.audit.insertionpoint.AuditInsertionPoint;
 import com.mcpscanner.checks.shared.evidence.PayloadHighlights;
-import com.mcpscanner.http.TextMarkers;
 import com.mcpscanner.mcp.TooManyRequests;
-
-import java.util.List;
-import java.util.Optional;
 
 public final class FieldProbe {
 
@@ -20,7 +16,6 @@ public final class FieldProbe {
     private final AuditInsertionPoint insertionPoint;
     private final Http http;
     private final String described;
-    private Optional<JsonSplice> splice;
     private int consecutiveUnanswered;
     private boolean rateLimited;
 
@@ -58,21 +53,6 @@ public final class FieldProbe {
         }
         HttpRequestResponse exchange = sent(insertionPoint.buildHttpRequestWithPayload(ByteArray.byteArray(payload)));
         return PayloadHighlights.ofPayload(exchange, insertionPoint, payload);
-    }
-
-    public HttpRequestResponse send(SplicedRequest spliced) {
-        if (gaveUp()) {
-            return null;
-        }
-        HttpRequestResponse exchange = sent(spliced.request());
-        return exchange == null ? null : TextMarkers.inRequest(exchange, List.of(spliced.splicedText()));
-    }
-
-    public Optional<JsonSplice> splice() {
-        if (splice == null) {
-            splice = JsonSplice.of(insertionPoint, base.request());
-        }
-        return splice;
     }
 
     public boolean gaveUp() {

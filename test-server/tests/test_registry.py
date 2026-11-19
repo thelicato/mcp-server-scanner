@@ -23,7 +23,7 @@ EXPECTED = {
     "code_reuse", "code_redemption_race",
     "session_guessable_ids", "session_delete_ignored",
     "tool_definition_drift", "tool_definition_per_user",
-    "template_injection", "nosql_operator_injection", "nosql_where_injection", "prototype_pollution",
+    "template_injection",
     "verbose_errors",
 }
 DROPPED_PASSIVE_FIXTURES = ("leaky", "poisoned", "hidden_method")

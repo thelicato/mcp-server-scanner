@@ -36,10 +36,8 @@ public final class RequestBudgets {
             Scan of one tool call, pkce-enforcement                         | 5
             Scan of one tool call, token-audience                           | 0
             Scan of one tool call, token-passthrough                        | 1
-            Scan of one tool call, tool-definition-drift                    | 6
+            Scan of one tool call, tool-definition-drift                    | 3
             Scan of one tool call, template-injection                       | 25
-            Scan of one tool call, nosql-injection                          | 57
-            Scan of one tool call, prototype-pollution                      | 12
             Scan of one tool call, verbose-errors                           | 4
             Scan of one tool call, unauthenticated-request-execution        | 14
             Generated calls for one tool with two pattern-bound optional arguments | 3

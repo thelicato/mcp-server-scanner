@@ -122,13 +122,9 @@ class McpScannerExtensionTest {
                 eq(ScanCheckType.PER_REQUEST));
         verify(scanner).registerActiveScanCheck(argThat(activeManagedWithId("template-injection")),
                 eq(ScanCheckType.PER_INSERTION_POINT));
-        verify(scanner).registerActiveScanCheck(argThat(activeManagedWithId("nosql-injection")),
-                eq(ScanCheckType.PER_INSERTION_POINT));
-        verify(scanner).registerActiveScanCheck(argThat(activeManagedWithId("prototype-pollution")),
-                eq(ScanCheckType.PER_INSERTION_POINT));
         verify(scanner).registerActiveScanCheck(argThat(activeManagedWithId("verbose-errors")),
                 eq(ScanCheckType.PER_REQUEST));
-        verify(scanner, times(0 + 4 + 24)).registerActiveScanCheck(any(ActiveScanCheck.class), any(ScanCheckType.class));
+        verify(scanner, times(0 + 4 + 22)).registerActiveScanCheck(any(ActiveScanCheck.class), any(ScanCheckType.class));
     }
 
     @Test

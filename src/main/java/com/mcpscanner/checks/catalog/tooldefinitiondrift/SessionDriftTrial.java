@@ -25,6 +25,8 @@ final class SessionDriftTrial implements HostTrial {
     static final SkipReason UNANSWERED = SkipReason.transportFailure("a probe tools/list got no answer");
     private static final SkipReason NOT_A_TOOL_CALL =
             SkipReason.notApplicable("needs a tools/call to replay in its own session");
+    private static final SkipReason MAY_WRITE = SkipReason.notApplicable(
+            "the scanned tool is not annotated read-only, so its call is not replayed");
     private static final SkipReason CALL_UNANSWERED =
             SkipReason.transportFailure("the replayed tools/call got no answer");
 
@@ -71,6 +73,9 @@ final class SessionDriftTrial implements HostTrial {
         }
         if (first.tools().isEmpty()) {
             return stop(base, NO_TOOLS, HostSettlement.SETTLED);
+        }
+        if (first.tools().mayWrite(seed.tool())) {
+            return stop(base, MAY_WRITE, HostSettlement.UNSUITABLE_SEED);
         }
         Listing control = session.list();
         if (control.failed()) {

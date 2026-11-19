@@ -387,4 +387,14 @@ public class DeletedTypesTest {
                             "com.mcpscanner.checks.catalog.crossclientresponseleak.HostClaim")
                     .because("Checks that probe each host until a conclusive trial are HOST checks with "
                             + "HostTrials; HostAudits owns the per-host claims and retry limits for every one.");
+
+    @ArchTest
+    static final ArchRule the_destructive_injection_checks_must_not_return =
+            noClasses().should().resideInAPackage("com.mcpscanner.checks.catalog.nosqlinjection..")
+                    .orShould().resideInAPackage("com.mcpscanner.checks.catalog.prototypepollution..")
+                    .because("Removed before release because they were destructive. The NoSQL check's {\"$ne\": x}, "
+                            + "{\"$regex\": \".*\"} and always-true $where probes match every record, so a write tool "
+                            + "could update or delete all of them; the prototype pollution check left a property on "
+                            + "Object.prototype that only a process restart removes. A returning check must use "
+                            + "probes that never match more than the original value and leave no lasting state.");
 }
