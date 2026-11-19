@@ -19,3 +19,6 @@ com.mcpscanner.checks.catalog.tokenpassthrough.TokenPassthroughCheckFactory
 com.mcpscanner.checks.catalog.pkceenforcement.PkceEnforcementCheckFactory
 com.mcpscanner.checks.catalog.tokenaudience.TokenAudienceCheckFactory
 com.mcpscanner.checks.catalog.tooldefinitiondrift.ToolDefinitionDriftCheckFactory
+com.mcpscanner.checks.catalog.templateinjection.TemplateInjectionCheckFactory
+com.mcpscanner.checks.catalog.nosqlinjection.NosqlInjectionCheckFactory
+com.mcpscanner.checks.catalog.prototypepollution.PrototypePollutionCheckFactory

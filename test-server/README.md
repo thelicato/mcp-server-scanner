@@ -180,6 +180,10 @@ The prefix-sibling differential works like this:
 | `sql_literal_injection` | `find_note` (`title`) | `SELECT body FROM notes WHERE title = '<title>'`; `first' -- q` returns `alpha` like `first` | Bound parameter |
 | `python_eval_injection` | `calculate` (`expression`) | Python `eval()`, run in a separate worker process and bounded by `--command-timeout` so the server never stalls | AST arithmetic only |
 | `javascript_eval_injection` | `render_greeting` (`template`) | `node` evaluates the value as a JS template literal. `${require('child_process').execSync(...)}` runs | Substitutes only `${name}` and `${product}` |
+| `template_injection` | `preview_signature` (`signature`) | Jinja2 renders `"Kind regards,\n" + signature + "\n{{ company }}"` as template source, so `{{1237*6631}}` gives `8202547` and the template reaches Python objects | The signature is passed as a template variable and rendered as text |
+| `nosql_operator_injection` | `find_note_by_title` (`title`) | The argument goes into a MongoDB-style filter as received, so `{"$ne": "x"}` lists every note and `{"$regex": "^road"}` matches by pattern (`$eq`, `$ne`, `$gt`, `$gte`, `$lt`, `$lte`, `$in`, `$nin`, `$regex`, `$exists`) | Anything but a string is refused: `Error: title must be a string` |
+| `nosql_where_injection` | `list_notes_by_owner` (`owner`) | `$where` JavaScript `this.owner == '<owner>'`, evaluated by a strict parser of comparisons, `\|\|`, `&&`, booleans and parentheses; `x' \|\| 'a'=='a` lists every note | The owner is an equality operand in the filter |
+| `prototype_pollution` | `format_invoice` (`customer`, `options.currency`, `options.locale`) | The arguments are deep-merged into the invoice settings by a lodash-style merge that follows `__proto__` and `constructor.prototype` in a model of JavaScript objects; `{"__proto__": {"k": "v"}}` adds `k = v` to every later invoice until restart, because the invoice lists settings as `for...in` does (the lodash.merge CVE-2018-16487 shape) | The merge skips `__proto__`, `constructor` and `prototype` (as lodash 4.17.12 does) |
 
 ### Outbound fetch
 

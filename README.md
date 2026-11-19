@@ -11,7 +11,7 @@ Discovers MCP tools, resources, resource templates, and prompts, builds JSON-RPC
 - **Protocol and transports:** Auto detects modern `server/discover` HTTP, initialize-based Streamable HTTP, then legacy SSE. Explicit modes are available. A local proxy lets Burp's scanner consume `text/event-stream` replies.
 - **Auth:** each user has its own credentials: none, a bearer token, custom headers, or an OAuth 2.1 sign-in with PKCE. All OAuth users sign in through one shared OAuth client. It supports pre-registered clients, hosted Client ID Metadata Documents, and legacy dynamic client registration, with protected-resource and OAuth/OIDC authorization-server discovery.
 - **Access control between users:** scan as one user and compare what other users can list, call and read.
-- **Active checks:** 21 scan checks, listed under [Checks](#checks).
+- **Active checks:** 24 scan checks, listed under [Checks](#checks).
 
 Aimed at MCP server **operators** auditing their own deployments.
 
@@ -28,6 +28,9 @@ Each check has a toggle in the **Scan Checks** tab. Severity is the headline rat
 | MCP command injection (Collaborator-backed) | per field | High; Medium / Tentative for argument injection, when a value is parsed as a command-line option |
 | MCP file path traversal | per field | High |
 | **MCP SQL injection** | per field (and each host or path segment of a URI value) | High / Firm when SQL-only syntax (a `--` line comment or backtick identifier quoting) and a second, independent syntax family each reproduce the baseline reply while a same-characters falsifier changes it, confirmed over three rounds; High / Tentative with one family. A field that runs whole SQL statements by design (a SQL console tool) is not reported |
+| **MCP NoSQL injection** | per field | High / Firm when two techniques separate: a probe ({"$ne": x}, {"$regex": ".*"}, or an always-true breakout from a quoted `$where` string) gets a different reply from a plain random value while a falsifier of the same shape ({"$eq": x}, an always-false breakout) gets exactly the random value's reply, with reflections masked, the baseline stable and two repeats with fresh values agreeing; High / Tentative with one technique |
+| **MCP server-side template injection** | per field | High / Firm when a multiplication of two random numbers appended in one engine's syntax (`{{ }}`, `${ }`, `<%= %>`, `#{ }` or `{ }`) comes back as the product, the same multiplication without template syntax does not, and two repeats with fresh numbers are evaluated too |
+| **MCP server-side prototype pollution** | per field (members of JSON objects) | High / Firm when a random property added under a `__proto__` (or `constructor.prototype`) key beside the field appears in the reply to the next, unmodified request, the same nesting under an ordinary key does not, and a repeat with a fresh property also appears. The scanner's random property stays on the server until its process restarts |
 | MCP outbound request (Collaborator-backed, including payloads after a URL value's own host to pass prefix allowlists, and OAuth registration URL fields) | per field | Medium |
 | **MCP token passthrough** (Collaborator-backed) | per field (fields and headers that take a URL or host) | High / Certain when the server's request to a Collaborator address planted in the field carries the scanning user's own credential |
 | **MCP SSRF address filter bypass** (Collaborator-backed) | per field (URL argument of fetch, browse and scrape tools) | High / Firm when the reply to the loopback spelling contains the target's own page; High / Tentative when the spelling is only no longer refused and the same spelling of the Collaborator address is fetched |
