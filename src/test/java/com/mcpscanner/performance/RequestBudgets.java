@@ -40,6 +40,7 @@ public final class RequestBudgets {
             Scan of one tool call, template-injection                       | 25
             Scan of one tool call, nosql-injection                          | 57
             Scan of one tool call, prototype-pollution                      | 12
+            Scan of one tool call, verbose-errors                           | 4
             Scan of one tool call, unauthenticated-request-execution        | 14
             Generated calls for one tool with two pattern-bound optional arguments | 3
             Check access per item, stateless server, same credentials       | 3

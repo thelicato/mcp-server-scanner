@@ -11,7 +11,7 @@ Discovers MCP tools, resources, resource templates, and prompts, builds JSON-RPC
 - **Protocol and transports:** Auto detects modern `server/discover` HTTP, initialize-based Streamable HTTP, then legacy SSE. Explicit modes are available. A local proxy lets Burp's scanner consume `text/event-stream` replies.
 - **Auth:** each user has its own credentials: none, a bearer token, custom headers, or an OAuth 2.1 sign-in with PKCE. All OAuth users sign in through one shared OAuth client. It supports pre-registered clients, hosted Client ID Metadata Documents, and legacy dynamic client registration, with protected-resource and OAuth/OIDC authorization-server discovery.
 - **Access control between users:** scan as one user and compare what other users can list, call and read.
-- **Active checks:** 24 scan checks, listed under [Checks](#checks).
+- **Active checks:** 25 scan checks, listed under [Checks](#checks).
 
 Aimed at MCP server **operators** auditing their own deployments.
 
@@ -35,6 +35,7 @@ Each check has a toggle in the **Scan Checks** tab. Severity is the headline rat
 | **MCP token passthrough** (Collaborator-backed) | per field (fields and headers that take a URL or host) | High / Certain when the server's request to a Collaborator address planted in the field carries the scanning user's own credential |
 | **MCP SSRF address filter bypass** (Collaborator-backed) | per field (URL argument of fetch, browse and scrape tools) | High / Firm when the reply to the loopback spelling contains the target's own page; High / Tentative when the spelling is only no longer refused and the same spelling of the Collaborator address is fetched |
 | MCP downstream route escape | per field | Information |
+| **MCP verbose error messages** | per request | Low / Firm when params sent as a string, arguments with another JSON type, a 64 KiB string argument or every argument left out make the server return a stack trace or a server source file path that the baseline reply and the probe itself do not contain, and a resend of the most revealing probe discloses the same kind again; Information / Firm when only a framework or runtime version is disclosed |
 | MCP JWT access token validation | per host | High |
 | MCP OAuth refresh grant validation | per host | Medium |
 | **MCP token audience validation** | per host (while the OAuth session holds a refresh token) | High / Certain when the MCP server accepts a JWT its authorization server issued, through an RFC 8707 refresh, for an unrelated resource; Information / Tentative when the accepted token is opaque, so the audience cannot be shown |

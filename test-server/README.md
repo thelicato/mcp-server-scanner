@@ -185,6 +185,12 @@ The prefix-sibling differential works like this:
 | `nosql_where_injection` | `list_notes_by_owner` (`owner`) | `$where` JavaScript `this.owner == '<owner>'`, evaluated by a strict parser of comparisons, `\|\|`, `&&`, booleans and parentheses; `x' \|\| 'a'=='a` lists every note | The owner is an equality operand in the filter |
 | `prototype_pollution` | `format_invoice` (`customer`, `options.currency`, `options.locale`) | The arguments are deep-merged into the invoice settings by a lodash-style merge that follows `__proto__` and `constructor.prototype` in a model of JavaScript objects; `{"__proto__": {"k": "v"}}` adds `k = v` to every later invoice until restart, because the invoice lists settings as `for...in` does (the lodash.merge CVE-2018-16487 shape) | The merge skips `__proto__`, `constructor` and `prototype` (as lodash 4.17.12 does) |
 
+### Verbose errors
+
+| Name | Tool (arguments) | Vulnerable | Safe |
+|---|---|---|---|
+| `verbose_errors` | `convert_temperature` (`celsius` number, `scale` `fahrenheit` or `kelvin`) | A bad argument (another JSON type, an unknown scale, a missing argument) returns a tool error with the Python traceback, its source file paths and the Python and Starlette versions, as a server left in debug mode does | `Error: celsius must be a number and scale one of fahrenheit, kelvin`; the details are logged at debug level |
+
 ### Outbound fetch
 
 Each module fetches every string value of the right shape from its fields:

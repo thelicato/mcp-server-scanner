@@ -22,3 +22,4 @@ com.mcpscanner.checks.catalog.tooldefinitiondrift.ToolDefinitionDriftCheckFactor
 com.mcpscanner.checks.catalog.templateinjection.TemplateInjectionCheckFactory
 com.mcpscanner.checks.catalog.nosqlinjection.NosqlInjectionCheckFactory
 com.mcpscanner.checks.catalog.prototypepollution.PrototypePollutionCheckFactory
+com.mcpscanner.checks.catalog.verboseerrors.VerboseErrorsCheckFactory
