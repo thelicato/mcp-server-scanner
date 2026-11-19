@@ -62,7 +62,11 @@ public final class DefaultSuspiciousDestinationGate implements SuspiciousDestina
     }
 
     public static DefaultSuspiciousDestinationGate toleratingCrossOrigin(McpEventLog eventLog) {
-        return withDefaultResolver(DefaultSuspiciousDestinationGate::isOnlyCrossOrigin, eventLog);
+        return toleratingCrossOrigin(eventLog, HostResolver.defaultResolver());
+    }
+
+    public static DefaultSuspiciousDestinationGate toleratingCrossOrigin(McpEventLog eventLog, HostResolver resolver) {
+        return prompting(DefaultSuspiciousDestinationGate::isOnlyCrossOrigin, resolver, eventLog);
     }
 
     private static DefaultSuspiciousDestinationGate withDefaultResolver(SuspiciousDestinationConfirmer confirmer,

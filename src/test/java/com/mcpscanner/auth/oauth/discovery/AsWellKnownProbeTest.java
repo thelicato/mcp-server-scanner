@@ -42,7 +42,7 @@ class AsWellKnownProbeTest {
     void setUp() {
         com.mcpscanner.testutil.MontoyaTestFactory.install();
         http = mock(Http.class);
-        probe = new AsWellKnownProbe(http, DefaultSuspiciousDestinationGate.allowingSuspicious(null), null);
+        probe = new AsWellKnownProbe(http, FixedAddresses.allowingSuspicious(), null, FixedAddresses.PUBLIC);
     }
 
     @Test
@@ -147,7 +147,7 @@ class AsWellKnownProbeTest {
                 (url, purpose) -> com.mcpscanner.auth.oauth.safety.SuspiciousDestinationGate.Decision.deny(
                         new com.mcpscanner.auth.oauth.safety.SuspiciousDestinationGate.Reason(
                                 url, "10.0.0.1", java.util.List.of("private"), purpose, "denied")),
-                null);
+                null, FixedAddresses.PUBLIC);
 
         assertThat(gated.probe(MCP_RESOURCE)).isEmpty();
         verifyNoInteractions(http);
@@ -163,7 +163,8 @@ class AsWellKnownProbeTest {
         when(redirect.headers()).thenReturn(java.util.List.of(location));
         when(http.sendRequest(any(HttpRequest.class), any(RequestOptions.class)))
                 .thenAnswer(invocation -> responseWith(redirect));
-        AsWellKnownProbe defaultProbe = new AsWellKnownProbe(http, DefaultSuspiciousDestinationGate.allowingSuspicious(null), null);
+        AsWellKnownProbe defaultProbe = new AsWellKnownProbe(http, FixedAddresses.allowingSuspicious(), null,
+                FixedAddresses.PUBLIC);
 
         assertThat(defaultProbe.probe(URI.create("https://public.example/mcp"))).isEmpty();
 
@@ -175,7 +176,8 @@ class AsWellKnownProbeTest {
     @Test
     void probeEmitsWarnLogWhenResponseNull() {
         McpEventLog eventLog = new McpEventLog(null);
-        AsWellKnownProbe probeWithLog = new AsWellKnownProbe(http, DefaultSuspiciousDestinationGate.allowingSuspicious(null), eventLog);
+        AsWellKnownProbe probeWithLog = new AsWellKnownProbe(http, FixedAddresses.allowingSuspicious(), eventLog,
+                FixedAddresses.PUBLIC);
         stubNullResponse();
 
         probeWithLog.probe(MCP_RESOURCE);

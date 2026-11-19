@@ -18,6 +18,7 @@ import org.mockito.ArgumentMatcher;
 
 import java.net.URI;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -51,7 +52,7 @@ class PrmToAsResolverTest {
                     HttpRequestResponse stubbed = responsesByUrl.get(request.url());
                     return stubbed != null ? stubbed : responseWith(null);
                 });
-        resolver = new PrmToAsResolver(http, null, allowAllGate());
+        resolver = new PrmToAsResolver(http, null, allowAllGate(), FixedAddresses.PUBLIC);
     }
 
     @org.junit.jupiter.params.ParameterizedTest
@@ -257,7 +258,7 @@ class PrmToAsResolverTest {
     @Test
     void resolveEmitsWarnLogWhenResponseNull() {
         McpEventLog eventLog = new McpEventLog(null);
-        PrmToAsResolver resolverWithLog = new PrmToAsResolver(http, eventLog, allowAllGate());
+        PrmToAsResolver resolverWithLog = new PrmToAsResolver(http, eventLog, allowAllGate(), FixedAddresses.PUBLIC);
         // PRM_URL not stubbed -> answer returns null response
 
         resolverWithLog.resolve(PRM_URL, DiscoverySource.PRM_WELL_KNOWN, MCP_RESOURCE);
@@ -274,7 +275,7 @@ class PrmToAsResolverTest {
                         java.util.List.of(OAuthUrlValidator.CLASSIFICATION_PRIVATE),
                         purpose, "denied"));
         AtomicInteger sendInvocations = countingHttp();
-        PrmToAsResolver gated = new PrmToAsResolver(http, null, denyingGate);
+        PrmToAsResolver gated = new PrmToAsResolver(http, null, denyingGate, FixedAddresses.PUBLIC);
 
         Optional<DiscoveredMetadata> result = gated.resolve(PRM_URL, DiscoverySource.PRM_WELL_KNOWN, MCP_RESOURCE);
 
@@ -294,7 +295,7 @@ class PrmToAsResolverTest {
             }
             return SuspiciousDestinationGate.Decision.allow();
         };
-        PrmToAsResolver gated = new PrmToAsResolver(http, null, selectiveGate);
+        PrmToAsResolver gated = new PrmToAsResolver(http, null, selectiveGate, FixedAddresses.PUBLIC);
 
         Optional<DiscoveredMetadata> result = gated.resolve(PRM_URL, DiscoverySource.PRM_WELL_KNOWN, MCP_RESOURCE);
 
@@ -367,4 +368,5 @@ class PrmToAsResolverTest {
     private static HostResolver stubResolver() {
         return host -> java.util.List.of();
     }
+
 }

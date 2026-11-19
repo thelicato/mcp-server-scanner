@@ -41,7 +41,8 @@ class PrmWellKnownProbeTest {
         com.mcpscanner.testutil.MontoyaTestFactory.install();
         http = mock(Http.class);
         resolver = mock(PrmToAsResolver.class);
-        probe = new PrmWellKnownProbe(http, resolver, DefaultSuspiciousDestinationGate.allowingSuspicious(null), null);
+        probe = new PrmWellKnownProbe(http, resolver, FixedAddresses.allowingSuspicious(), null, new DiscoveryTrail(),
+                FixedAddresses.PUBLIC);
     }
 
     @Test
@@ -96,7 +97,7 @@ class PrmWellKnownProbeTest {
                 (url, purpose) -> com.mcpscanner.auth.oauth.safety.SuspiciousDestinationGate.Decision.deny(
                         new com.mcpscanner.auth.oauth.safety.SuspiciousDestinationGate.Reason(
                                 url, "10.0.0.1", java.util.List.of("private"), purpose, "denied")),
-                null);
+                null, new DiscoveryTrail(), FixedAddresses.PUBLIC);
 
         assertThat(gated.probe(MCP_RESOURCE)).isEmpty();
         verifyNoInteractions(http);
@@ -112,7 +113,8 @@ class PrmWellKnownProbeTest {
         when(location.value()).thenReturn("https://127.0.0.1/private");
         when(redirect.headers()).thenReturn(java.util.List.of(location));
         stubHttpReturns(responseWith(redirect));
-        PrmWellKnownProbe defaultProbe = new PrmWellKnownProbe(http, resolver, DefaultSuspiciousDestinationGate.allowingSuspicious(null), null);
+        PrmWellKnownProbe defaultProbe = new PrmWellKnownProbe(http, resolver, FixedAddresses.allowingSuspicious(),
+                null, new DiscoveryTrail(), FixedAddresses.PUBLIC);
 
         assertThat(defaultProbe.probe(URI.create("https://public.example/mcp"))).isEmpty();
 
@@ -132,7 +134,8 @@ class PrmWellKnownProbeTest {
         when(response.body()).thenReturn(body);
         stubHttpReturns(responseWith(response));
         URI localResource = URI.create("http://127.0.0.1:3000/mcp");
-        PrmWellKnownProbe defaultProbe = new PrmWellKnownProbe(http, resolver, DefaultSuspiciousDestinationGate.allowingSuspicious(null), null);
+        PrmWellKnownProbe defaultProbe = new PrmWellKnownProbe(http, resolver, FixedAddresses.allowingSuspicious(),
+                null, new DiscoveryTrail(), FixedAddresses.PUBLIC);
         DiscoveredMetadata expected = sampleDiscoveredMetadata();
         when(resolver.resolveFetchedPrm(any(), any(), any(), any())).thenReturn(Optional.of(expected));
 
@@ -164,7 +167,8 @@ class PrmWellKnownProbeTest {
         when(resolver.resolveFetchedPrm(prmUrl, DiscoverySource.PRM_WELL_KNOWN, localResource, "{}"))
                 .thenReturn(Optional.of(expected));
 
-        assertThat(new PrmWellKnownProbe(http, resolver, DefaultSuspiciousDestinationGate.allowingSuspicious(null), null).probe(localResource)).containsSame(expected);
+        assertThat(new PrmWellKnownProbe(http, resolver, FixedAddresses.allowingSuspicious(), null,
+                new DiscoveryTrail(), FixedAddresses.PUBLIC).probe(localResource)).containsSame(expected);
 
         ArgumentCaptor<HttpRequest> requests = ArgumentCaptor.forClass(HttpRequest.class);
         verify(http, org.mockito.Mockito.times(2)).sendRequest(requests.capture(), any(RequestOptions.class));
@@ -175,7 +179,8 @@ class PrmWellKnownProbeTest {
     @Test
     void probeEmitsWarnLogWhenResponseNull() {
         McpEventLog eventLog = new McpEventLog(null);
-        PrmWellKnownProbe probeWithLog = new PrmWellKnownProbe(http, resolver, DefaultSuspiciousDestinationGate.allowingSuspicious(null), eventLog);
+        PrmWellKnownProbe probeWithLog = new PrmWellKnownProbe(http, resolver, FixedAddresses.allowingSuspicious(),
+                eventLog, new DiscoveryTrail(), FixedAddresses.PUBLIC);
         stubNullResponse();
 
         probeWithLog.probe(MCP_RESOURCE);

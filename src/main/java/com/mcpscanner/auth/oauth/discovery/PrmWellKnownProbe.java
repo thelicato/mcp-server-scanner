@@ -3,6 +3,7 @@ package com.mcpscanner.auth.oauth.discovery;
 import burp.api.montoya.http.Http;
 import com.mcpscanner.auth.oauth.safety.DefaultSuspiciousDestinationGate;
 import com.mcpscanner.auth.oauth.safety.FetchPurpose;
+import com.mcpscanner.auth.oauth.safety.HostResolver;
 import com.mcpscanner.auth.oauth.safety.SuspiciousDestinationGate;
 import com.mcpscanner.logging.McpEventLog;
 
@@ -29,10 +30,19 @@ public class PrmWellKnownProbe implements MetadataProbe {
                       SuspiciousDestinationGate gate,
                       McpEventLog eventLog,
                       DiscoveryTrail trail) {
+        this(http, resolver, gate, eventLog, trail, HostResolver.defaultResolver());
+    }
+
+    PrmWellKnownProbe(Http http,
+                      PrmToAsResolver resolver,
+                      SuspiciousDestinationGate gate,
+                      McpEventLog eventLog,
+                      DiscoveryTrail trail,
+                      HostResolver hostResolver) {
         this.trail = trail;
         this.resolver = resolver;
         this.eventLog = eventLog != null ? eventLog : McpEventLog.noop();
-        this.fetcher = new MetadataDocumentFetcher(http, gate, this.eventLog);
+        this.fetcher = new MetadataDocumentFetcher(http, gate, this.eventLog, hostResolver);
     }
 
     @Override

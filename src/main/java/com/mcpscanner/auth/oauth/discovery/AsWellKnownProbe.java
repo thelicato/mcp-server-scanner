@@ -5,6 +5,7 @@ import com.mcpscanner.auth.oauth.ExpectedIssuer;
 import com.mcpscanner.auth.oauth.OAuthException;
 import com.mcpscanner.auth.oauth.safety.DefaultSuspiciousDestinationGate;
 import com.mcpscanner.auth.oauth.safety.FetchPurpose;
+import com.mcpscanner.auth.oauth.safety.HostResolver;
 import com.mcpscanner.auth.oauth.safety.SuspiciousDestinationGate;
 import com.mcpscanner.logging.McpEventLog;
 import com.nimbusds.oauth2.sdk.as.AuthorizationServerMetadata;
@@ -20,8 +21,12 @@ public class AsWellKnownProbe implements MetadataProbe {
     private final McpEventLog eventLog;
 
     public AsWellKnownProbe(Http http, SuspiciousDestinationGate gate, McpEventLog eventLog) {
+        this(http, gate, eventLog, HostResolver.defaultResolver());
+    }
+
+    AsWellKnownProbe(Http http, SuspiciousDestinationGate gate, McpEventLog eventLog, HostResolver hostResolver) {
         this.eventLog = eventLog != null ? eventLog : McpEventLog.noop();
-        this.fetcher = new MetadataDocumentFetcher(http, gate, this.eventLog);
+        this.fetcher = new MetadataDocumentFetcher(http, gate, this.eventLog, hostResolver);
     }
 
     @Override

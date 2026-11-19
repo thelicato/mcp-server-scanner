@@ -6,6 +6,7 @@ import com.mcpscanner.auth.oauth.BurpMetadataClient;
 import com.mcpscanner.auth.oauth.OAuthUrlValidator;
 import com.mcpscanner.auth.oauth.safety.DefaultSuspiciousDestinationGate;
 import com.mcpscanner.auth.oauth.safety.FetchPurpose;
+import com.mcpscanner.auth.oauth.safety.HostResolver;
 import com.mcpscanner.auth.oauth.safety.SuspiciousDestinationGate;
 import com.mcpscanner.core.oauth.MetadataRedirectPolicy;
 import com.mcpscanner.logging.McpEventLog;
@@ -23,10 +24,14 @@ final class MetadataDocumentFetcher {
     private final McpEventLog eventLog;
 
     MetadataDocumentFetcher(Http http, SuspiciousDestinationGate gate, McpEventLog eventLog) {
+        this(http, gate, eventLog, HostResolver.defaultResolver());
+    }
+
+    MetadataDocumentFetcher(Http http, SuspiciousDestinationGate gate, McpEventLog eventLog, HostResolver resolver) {
         this.metadataClient = new BurpMetadataClient(new BurpHttpRequestSender(http));
         this.gate = gate;
         this.eventLog = eventLog != null ? eventLog : McpEventLog.noop();
-        this.redirectGate = DefaultSuspiciousDestinationGate.toleratingCrossOrigin(this.eventLog);
+        this.redirectGate = DefaultSuspiciousDestinationGate.toleratingCrossOrigin(this.eventLog, resolver);
     }
 
     Optional<String> fetch(URI initialUrl, FetchPurpose purpose) {

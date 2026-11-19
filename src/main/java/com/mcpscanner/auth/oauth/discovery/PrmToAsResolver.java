@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.mcpscanner.mcp.McpObjectMapper;
 import com.mcpscanner.auth.oauth.OAuthException;
 import com.mcpscanner.auth.oauth.safety.FetchPurpose;
+import com.mcpscanner.auth.oauth.safety.HostResolver;
 import com.mcpscanner.auth.oauth.safety.SuspiciousDestinationGate;
 import com.mcpscanner.auth.oauth.safety.DefaultSuspiciousDestinationGate;
 import com.mcpscanner.logging.McpEventLog;
@@ -25,8 +26,12 @@ public class PrmToAsResolver {
     private final McpEventLog eventLog;
 
     public PrmToAsResolver(Http http, McpEventLog eventLog, SuspiciousDestinationGate gate) {
+        this(http, eventLog, gate, HostResolver.defaultResolver());
+    }
+
+    PrmToAsResolver(Http http, McpEventLog eventLog, SuspiciousDestinationGate gate, HostResolver resolver) {
         this.eventLog = eventLog != null ? eventLog : McpEventLog.noop();
-        this.fetcher = new MetadataDocumentFetcher(http, gate, this.eventLog);
+        this.fetcher = new MetadataDocumentFetcher(http, gate, this.eventLog, resolver);
     }
 
     public Optional<DiscoveredMetadata> resolve(URI prmDocUrl, DiscoverySource source) {

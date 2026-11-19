@@ -48,7 +48,7 @@ class MetadataDocumentFetcherTest {
             return SuspiciousDestinationGate.Decision.allow();
         };
 
-        var body = new MetadataDocumentFetcher(http, gate, McpEventLog.noop())
+        var body = new MetadataDocumentFetcher(http, gate, McpEventLog.noop(), FixedAddresses.PUBLIC)
                 .fetch(URI.create("https://mcp.example/.well-known/prm"), PURPOSE);
 
         assertThat(body).contains("metadata");
@@ -77,7 +77,7 @@ class MetadataDocumentFetcherTest {
                             uri, null, List.of(), purpose, "denied"));
         };
 
-        assertThat(new MetadataDocumentFetcher(http, gate, McpEventLog.noop())
+        assertThat(new MetadataDocumentFetcher(http, gate, McpEventLog.noop(), FixedAddresses.PUBLIC)
                 .fetch(URI.create("https://mcp.example/metadata"), PURPOSE)).isEmpty();
 
         assertThat(gated).containsExactly(URI.create("https://mcp.example/metadata"),
@@ -89,7 +89,8 @@ class MetadataDocumentFetcherTest {
     void wellKnownFetchRequiresStatus200WhileResolverFetchAcceptsOtherSuccessStatuses() {
         stubResponses(Map.of("https://mcp.example/metadata", new StubResponse(201, null, "metadata")));
         MetadataDocumentFetcher fetcher = new MetadataDocumentFetcher(
-                http, (uri, purpose) -> SuspiciousDestinationGate.Decision.allow(), McpEventLog.noop());
+                http, (uri, purpose) -> SuspiciousDestinationGate.Decision.allow(), McpEventLog.noop(),
+                        FixedAddresses.PUBLIC);
         URI url = URI.create("https://mcp.example/metadata");
 
         assertThat(fetcher.fetchOk(url, PURPOSE)).isEmpty();
@@ -109,7 +110,7 @@ class MetadataDocumentFetcherTest {
                 .thenReturn(requestResponse);
 
         assertThat(new MetadataDocumentFetcher(http,
-                (uri, purpose) -> SuspiciousDestinationGate.Decision.allow(), McpEventLog.noop())
+                (uri, purpose) -> SuspiciousDestinationGate.Decision.allow(), McpEventLog.noop(), FixedAddresses.PUBLIC)
                 .fetch(URI.create("https://mcp.example/metadata"), PURPOSE)).isEmpty();
 
         org.mockito.Mockito.verify(http).sendRequest(any(HttpRequest.class), any(RequestOptions.class));
@@ -127,7 +128,8 @@ class MetadataDocumentFetcherTest {
             gated.add(uri);
             return SuspiciousDestinationGate.Decision.allow();
         };
-        MetadataDocumentFetcher fetcher = new MetadataDocumentFetcher(http, gate, McpEventLog.noop());
+        MetadataDocumentFetcher fetcher = new MetadataDocumentFetcher(http, gate, McpEventLog.noop(),
+                FixedAddresses.PUBLIC);
 
         assertThat(fetcher.fetch(URI.create("https://mcp.example/loop"), PURPOSE)).isEmpty();
         org.mockito.Mockito.verify(http).sendRequest(any(HttpRequest.class), any(RequestOptions.class));
@@ -178,6 +180,7 @@ class MetadataDocumentFetcherTest {
         when(requestResponse.response()).thenReturn(response);
         return requestResponse;
     }
+
 
     private record StubResponse(int status, String location, String body) {}
 }
