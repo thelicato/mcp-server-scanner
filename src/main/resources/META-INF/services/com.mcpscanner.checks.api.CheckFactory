@@ -17,3 +17,4 @@ com.mcpscanner.checks.catalog.ssrffilterbypass.SsrfFilterBypassCheckFactory
 com.mcpscanner.checks.catalog.sqlinjection.SqlInjectionCheckFactory
 com.mcpscanner.checks.catalog.tokenpassthrough.TokenPassthroughCheckFactory
 com.mcpscanner.checks.catalog.pkceenforcement.PkceEnforcementCheckFactory
+com.mcpscanner.checks.catalog.tokenaudience.TokenAudienceCheckFactory

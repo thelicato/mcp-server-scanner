@@ -68,10 +68,14 @@ class TokenEndpoint:
         scope = self._context.refresh_policy.granted_scope(grant.scope, form.get("scope"))
         if scope is None:
             raise TokenError("invalid_scope")
-        return self._issue(client, RefreshGrant(client.client_id, scope, grant.subject), form["refresh_token"])
+        return self._issue(client, RefreshGrant(client.client_id, scope, grant.subject), form["refresh_token"],
+                           form.get("resource"))
 
-    def _issue(self, client: RegisteredClient, grant: RefreshGrant, refresh_token: str | None) -> Response:
-        access_token = self._context.signer.access_token(grant.subject, grant.scope, client.client_id)
+    def _issue(self, client: RegisteredClient, grant: RefreshGrant, refresh_token: str | None,
+               resource: str | None = None) -> Response:
+        # RFC 8707: a refresh naming another resource gets a token whose audience is that resource.
+        audience = {"aud": resource} if resource and resource != self._context.signer.audience else {}
+        access_token = self._context.signer.access_token(grant.subject, grant.scope, client.client_id, **audience)
         return JSONResponse(
             {
                 "access_token": access_token,

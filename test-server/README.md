@@ -312,6 +312,8 @@ A `redirect_uri` that is not registered is sorted into one shape, and only that 
 
 An unknown `client_id` gives a 400 page that does not reflect any input. That is the reflection check's invalid-client control.
 
+The token endpoint follows RFC 8707 on refresh: a `resource` naming another server gets an access token whose `aud` is that resource. With `jwt_wrong_audience` vulnerable, the MCP endpoint accepts such a token, which is what the token audience check looks for.
+
 ## Request families
 
 Each family can be switched off with `--disable-family`. A disabled method returns JSON-RPC `-32601`, and its capability is dropped from `initialize`.

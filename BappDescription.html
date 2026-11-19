@@ -4,7 +4,7 @@
 <ul>
   <li>Connects to modern <code class="InlineCode">server/discover</code> HTTP, initialize-based Streamable HTTP and legacy SSE servers, with automatic transport detection and a local proxy so the scanner can handle <code class="InlineCode">text/event-stream</code> replies.</li>
   <li>Handles the authentication your target uses: none, a bearer token, custom headers, or OAuth 2.1 with PKCE, including pre-registered clients, Client ID Metadata Documents and dynamic client registration.</li>
-  <li>Runs scan checks that can be toggled individually, covering unauthenticated request execution, command injection, file path traversal, out-of-band requests, token passthrough, session binding and lifecycle, cross-client response leaks, JWT validation, and OAuth refresh, redirect, PKCE and authorization flaws.</li>
+  <li>Runs scan checks that can be toggled individually, covering unauthenticated request execution, command injection, file path traversal, out-of-band requests, token passthrough, session binding and lifecycle, cross-client response leaks, JWT validation, token audience, and OAuth refresh, redirect, PKCE and authorization flaws.</li>
   <li>Tests access control between users: define a primary user and compared users, each with their own credentials, owned IDs and private markers, then find where a lower-privilege or anonymous user can call tools or read results that belong to someone else.</li>
   <li>Sends any discovered tool, resource, template or prompt to Repeater, with the primary user's credentials and session headers applied automatically.</li>
   <li>Ships with a deliberately vulnerable test server so you can try the checks end to end.</li>

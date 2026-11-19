@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import asyncio
 import base64
+import json
 import re
 from typing import Any
 from urllib.parse import parse_qs, urlsplit
@@ -10,7 +11,7 @@ import httpx
 import pytest
 
 from tests.conftest import ServerFactory
-from tests.support import TestServer, pkce_pair, raw_get
+from tests.support import McpSession, TestServer, pkce_pair, raw_get
 
 REGISTERED = "http://127.0.0.1:49151/scancheck-registered-1"
 HTTPS_REGISTERED = "https://client.example/callback"
@@ -348,3 +349,29 @@ def test_correct_s256_still_redeems_when_every_pkce_module_is_safe(make_server: 
     verifier, challenge = pkce_pair()
     code = _code(server, code_challenge=challenge, code_challenge_method="S256")
     assert code is not None and _redeems(server, code, code_verifier=verifier)
+
+
+def _claims(token: str) -> dict[str, Any]:
+    payload = token.split(".")[1]
+    claims: dict[str, Any] = json.loads(base64.urlsafe_b64decode(payload + "=" * (-len(payload) % 4)))
+    return claims
+
+
+@pytest.mark.parametrize("mode", ["vulnerable", "safe"])
+def test_a_token_refreshed_for_another_resource_is_accepted_only_when_the_audience_is_unchecked(
+        make_server: ServerFactory, mode: str) -> None:
+    server = make_server(consent="auto", default_mode="safe", vulns={"jwt_wrong_audience": mode})
+    tokens = _tokens(server, "public-client", None, HTTPS_REGISTERED, "mcp:tools")
+    refreshed = _refresh(server, "public-client", tokens["refresh_token"], {}, resource="https://other.example/mcp")
+    foreign = refreshed.json()["access_token"]
+    assert _claims(foreign)["aud"] == "https://other.example/mcp"
+    session = McpSession(server.client, {"authorization": f"Bearer {foreign}"})
+    assert (session.initialize().status_code == 200) is (mode == "vulnerable")
+
+
+def test_a_refresh_naming_this_server_keeps_its_audience(make_server: ServerFactory) -> None:
+    server = make_server(consent="auto", default_mode="safe")
+    tokens = _tokens(server, "public-client", None, HTTPS_REGISTERED, "mcp:tools")
+    own = _claims(tokens["access_token"])["aud"]
+    refreshed = _refresh(server, "public-client", tokens["refresh_token"], {}, resource=own)
+    assert _claims(refreshed.json()["access_token"])["aud"] == own

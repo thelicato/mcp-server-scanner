@@ -11,7 +11,7 @@ Discovers MCP tools, resources, resource templates, and prompts, builds JSON-RPC
 - **Protocol and transports:** Auto detects modern `server/discover` HTTP, initialize-based Streamable HTTP, then legacy SSE. Explicit modes are available. A local proxy lets Burp's scanner consume `text/event-stream` replies.
 - **Auth:** each user has its own credentials: none, a bearer token, custom headers, or an OAuth 2.1 sign-in with PKCE. All OAuth users sign in through one shared OAuth client. It supports pre-registered clients, hosted Client ID Metadata Documents, and legacy dynamic client registration, with protected-resource and OAuth/OIDC authorization-server discovery.
 - **Access control between users:** scan as one user and compare what other users can list, call and read.
-- **Active checks:** 19 scan checks, listed under [Checks](#checks).
+- **Active checks:** 20 scan checks, listed under [Checks](#checks).
 
 Aimed at MCP server **operators** auditing their own deployments.
 
@@ -34,6 +34,7 @@ Each check has a toggle in the **Scan Checks** tab. Severity is the headline rat
 | MCP downstream route escape | per field | Information |
 | MCP JWT access token validation | per host | High |
 | MCP OAuth refresh grant validation | per host | Medium |
+| **MCP token audience validation** | per host (while the OAuth session holds a refresh token) | High / Certain when the MCP server accepts a JWT its authorization server issued, through an RFC 8707 refresh, for an unrelated resource; Information / Tentative when the accepted token is opaque, so the audience cannot be shown |
 | **MCP OAuth PKCE enforcement** | per host | Medium / Certain when a code requested with no code_challenge is redeemed with no code_verifier, or a code is redeemed with a code_verifier that does not match its S256 challenge; Low when a plain challenge is accepted although only S256 is advertised; Information when the metadata does not advertise S256 or advertises plain. The code tests run only when the server issues codes without a login |
 | MCP OAuth redirect policy | per host | Medium / Firm when an authorization code reaches an unregistered redirect URI; Information for error redirects, script-scheme registration and wildcard expansion |
 | MCP OAuth consent page HTML structure reflection | per host | Information |
