@@ -12,14 +12,14 @@ class FileReader:
         self._resolver = resolver
 
     def read(self, value: str) -> str:
-        target = self._resolver.resolve(value)
-        if target.is_dir():
-            return "\n".join(sorted(entry.name for entry in target.iterdir()))
-        if not target.parent.exists():
-            raise PathDenied(f"Parent directory does not exist: {target.parent}")
-        if not target.exists():
-            raise PathDenied(f"ENOENT: no such file or directory, open '{target}'")
         try:
+            target = self._resolver.resolve(value)
+            if target.is_dir():
+                return "\n".join(sorted(entry.name for entry in target.iterdir()))
+            if not target.parent.exists():
+                raise PathDenied(f"Parent directory does not exist: {target.parent}")
+            if not target.exists():
+                raise PathDenied(f"ENOENT: no such file or directory, open '{target}'")
             return _read_text(target)
         except OSError as error:
             raise PathDenied(f"{type(error).__name__}: {error.strerror}") from error

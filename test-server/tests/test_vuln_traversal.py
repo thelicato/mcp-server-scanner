@@ -132,3 +132,13 @@ def test_tool_errors_are_flagged(make_server: ServerFactory) -> None:
     session = _server(make_server, "traversal_plain", "safe").session()
     result: dict[str, Any] = session.call_tool("read_file_plain", {"path": "/etc/passwd"})
     assert result["isError"] is True
+
+
+@pytest.mark.parametrize(("vuln", "variant"), [("traversal_plain", "plain"), ("traversal_encoded", "encoded"),
+                                               ("traversal_prefix_sibling", "prefix")])
+def test_an_over_long_path_is_a_clean_tool_error(make_server: ServerFactory, vuln: str, variant: str) -> None:
+    for mode in ("vulnerable", "safe"):
+        session = _server(make_server, vuln, mode).session()
+        result: dict[str, Any] = session.call_tool(f"read_file_{variant}", {"path": "a" * 300})
+        assert result["isError"] is True
+        assert tool_text(result) == "Error: OSError: File name too long"
